@@ -76,7 +76,6 @@ export default function LoginPage() {
     setAuthError(null);
     setAuthSuccess(false);
 
-    // Simulate API request delay
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
       
