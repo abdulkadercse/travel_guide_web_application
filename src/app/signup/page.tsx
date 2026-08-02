@@ -5,6 +5,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { ImageSlider } from "@/components/ui/image-slider";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   FaUser,
   FaPhone,
@@ -14,13 +19,35 @@ import {
   FaEye,
   FaEyeSlash,
   FaCompass,
-  FaArrowRight,
   FaCheckCircle,
   FaExclamationCircle,
-  FaGoogle,
-  FaGithub
+  FaGoogle
 } from "react-icons/fa";
 import { CgSpinner } from "react-icons/cg";
+
+// Localized images of Bangladesh Travel Spots saved in public/images
+const bdTravelImages = [
+  {
+    url: "/images/paharpur.jpg",
+    title: "Sompura Mahavihara",
+    location: "Paharpur, Naogaon",
+  },
+  {
+    url: "/images/coxs-bazar.jpg",
+    title: "Cox's Bazar Sea Beach",
+    location: "Cox's Bazar, Bangladesh",
+  },
+  {
+    url: "/images/bandarban.jpg",
+    title: "Nilgiri Mountain Range",
+    location: "Bandarban",
+  },
+  {
+    url: "/images/sylhet.jpg",
+    title: "Lush Green Tea Gardens",
+    location: "Sylhet",
+  },
+];
 
 // Zod schema with password matching validation
 const signupSchema = z
@@ -31,22 +58,22 @@ const signupSchema = z
     phone: z
       .string()
       .min(7, { message: "Please enter a valid phone number" })
-      .regex(/^[0-9+\s()-]+$/, { message: "Phone number contains invalid characters" }),
+      .regex(/^[0-9+\s()-]+$/, { message: "Invalid phone format" }),
     email: z
       .string()
       .min(1, { message: "Email is required" })
-      .email({ message: "Please enter a valid email address" }),
+      .email({ message: "Please enter a valid email" }),
     address: z
       .string()
-      .min(5, { message: "Address must be at least 5 characters" }),
+      .min(4, { message: "Address must be at least 4 characters" }),
     password: z
       .string()
       .min(6, { message: "Password must be at least 6 characters" }),
     confirmPassword: z
       .string()
-      .min(1, { message: "Please confirm your password" }),
+      .min(1, { message: "Please confirm password" }),
     terms: z.boolean().refine((val) => val === true, {
-      message: "You must accept the terms and conditions",
+      message: "You must accept terms",
     }),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -106,379 +133,268 @@ export default function SignupPage() {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 15, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring" as const,
+        stiffness: 120,
+        damping: 14,
+      },
+    },
+  };
+
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-slate-950 text-slate-100 relative overflow-hidden font-sans selection:bg-indigo-500 selection:text-white py-12 px-4 sm:px-6">
-      {/* Background Decorative Gradient Orbs */}
-      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-indigo-600/30 to-purple-600/30 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-gradient-to-br from-cyan-600/20 to-blue-700/30 blur-[140px] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-500/5 rounded-full blur-[160px] pointer-events-none" />
+    <div className="bg-[url('/images/bg-travel.jpg')] bg-cover bg-center w-full min-h-screen flex items-center justify-center p-3 sm:p-6 font-sans relative overflow-hidden selection:bg-indigo-500 selection:text-white">
+      {/* Background Dark Overlay Filter */}
+      <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-[2px]" />
 
-      {/* Grid pattern overlay */}
-      <div 
-        className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b15_1px,transparent_1px),linear-gradient(to_bottom,#1e293b15_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" 
-      />
+      <motion.div
+        className="w-full max-w-5xl bg-slate-900/70 backdrop-blur-xl border border-white/15 rounded-2xl overflow-hidden shadow-2xl shadow-black/80 grid grid-cols-1 lg:grid-cols-12 min-h-[640px] relative z-10"
+        initial={{ opacity: 0, scale: 0.97 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+      >
+        {/* Top Highlight border line */}
+        <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
 
-      <div className="relative z-10 w-full max-w-xl">
-        {/* Brand Header */}
-        <div className="flex flex-col items-center text-center mb-8">
-          <div className="h-14 w-14 rounded-2xl bg-gradient-to-tr from-indigo-500 to-cyan-400 p-[1px] shadow-lg shadow-indigo-500/20 mb-4 transition-transform duration-300 hover:scale-105">
-            <div className="h-full w-full bg-slate-900/90 backdrop-blur-xl rounded-[15px] flex items-center justify-center">
-              <FaCompass className="h-7 w-7 text-indigo-400 animate-pulse" />
-            </div>
-          </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-            Create an Account
-          </h1>
-          <p className="mt-2 text-sm text-slate-400 max-w-sm">
-            Join <span className="font-semibold text-indigo-400">Travla</span> today to unlock personalized travel recommendations
-          </p>
-        </div>
-
-        {/* Card Container */}
-        <div className="bg-slate-900/60 backdrop-blur-2xl border border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/50 relative overflow-hidden">
-          
-          {/* Top highlight line */}
-          <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
-
-          {/* Success Banner */}
-          {authSuccess && (
-            <div className="mb-6 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-              <FaCheckCircle className="h-5 w-5 shrink-0 mt-0.5" />
-              <div>
-                <p className="font-semibold">Account Created Successfully!</p>
-                <p className="text-xs text-emerald-400/80 mt-0.5">
-                  Your account is ready. You can now <Link href="/login" className="underline font-medium hover:text-white">Sign In</Link>.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Error Banner */}
-          {authError && (
-            <div className="mb-6 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-sm flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-              <FaExclamationCircle className="h-5 w-5 shrink-0 mt-0.5" />
-              <div>
-                <p className="font-semibold">Registration Failed</p>
-                <p className="text-xs text-rose-400/80 mt-0.5">{authError}</p>
-              </div>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-            
-            {/* Grid 2-cols for Name & Phone */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Full Name */}
-              <div className="space-y-1.5">
-                <label 
-                  htmlFor="name" 
-                  className="block text-xs font-semibold uppercase tracking-wider text-slate-300"
-                >
-                  Full Name
-                </label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-400 transition-colors">
-                    <FaUser className="h-4 w-4" />
-                  </div>
-                  <input
-                    id="name"
-                    type="text"
-                    placeholder="John Doe"
-                    autoComplete="name"
-                    {...register("name")}
-                    className={`w-full bg-slate-950/60 text-slate-100 placeholder-slate-500 text-sm rounded-xl pl-10 pr-4 py-2.5 border transition-all duration-200 focus:outline-none ${
-                      errors.name
-                        ? "border-rose-500/80 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20"
-                        : "border-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 hover:border-slate-700"
-                    }`}
-                  />
-                </div>
-                {errors.name && (
-                  <p className="text-xs text-rose-400 mt-1 flex items-center gap-1">
-                    <FaExclamationCircle className="h-3.5 w-3.5 inline" />
-                    {errors.name.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Phone Number */}
-              <div className="space-y-1.5">
-                <label 
-                  htmlFor="phone" 
-                  className="block text-xs font-semibold uppercase tracking-wider text-slate-300"
-                >
-                  Phone Number
-                </label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-400 transition-colors">
-                    <FaPhone className="h-4 w-4" />
-                  </div>
-                  <input
-                    id="phone"
-                    type="tel"
-                    placeholder="+1 (555) 000-0000"
-                    autoComplete="tel"
-                    {...register("phone")}
-                    className={`w-full bg-slate-950/60 text-slate-100 placeholder-slate-500 text-sm rounded-xl pl-10 pr-4 py-2.5 border transition-all duration-200 focus:outline-none ${
-                      errors.phone
-                        ? "border-rose-500/80 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20"
-                        : "border-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 hover:border-slate-700"
-                    }`}
-                  />
-                </div>
-                {errors.phone && (
-                  <p className="text-xs text-rose-400 mt-1 flex items-center gap-1">
-                    <FaExclamationCircle className="h-3.5 w-3.5 inline" />
-                    {errors.phone.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Email Field */}
-            <div className="space-y-1.5">
-              <label 
-                htmlFor="email" 
-                className="block text-xs font-semibold uppercase tracking-wider text-slate-300"
-              >
-                Email Address
-              </label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-400 transition-colors">
-                  <FaEnvelope className="h-4 w-4" />
-                </div>
-                <input
-                  id="email"
-                  type="email"
-                  placeholder="name@example.com"
-                  autoComplete="email"
-                  {...register("email")}
-                  className={`w-full bg-slate-950/60 text-slate-100 placeholder-slate-500 text-sm rounded-xl pl-10 pr-4 py-2.5 border transition-all duration-200 focus:outline-none ${
-                    errors.email
-                      ? "border-rose-500/80 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20"
-                      : "border-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 hover:border-slate-700"
-                  }`}
-                />
-              </div>
-              {errors.email && (
-                <p className="text-xs text-rose-400 mt-1 flex items-center gap-1">
-                  <FaExclamationCircle className="h-3.5 w-3.5 inline" />
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
-
-            {/* Address Field */}
-            <div className="space-y-1.5">
-              <label 
-                htmlFor="address" 
-                className="block text-xs font-semibold uppercase tracking-wider text-slate-300"
-              >
-                Address
-              </label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-400 transition-colors">
-                  <FaMapMarkerAlt className="h-4 w-4" />
-                </div>
-                <input
-                  id="address"
-                  type="text"
-                  placeholder="123 Street Name, City, Country"
-                  autoComplete="street-address"
-                  {...register("address")}
-                  className={`w-full bg-slate-950/60 text-slate-100 placeholder-slate-500 text-sm rounded-xl pl-10 pr-4 py-2.5 border transition-all duration-200 focus:outline-none ${
-                    errors.address
-                      ? "border-rose-500/80 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20"
-                      : "border-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 hover:border-slate-700"
-                  }`}
-                />
-              </div>
-              {errors.address && (
-                <p className="text-xs text-rose-400 mt-1 flex items-center gap-1">
-                  <FaExclamationCircle className="h-3.5 w-3.5 inline" />
-                  {errors.address.message}
-                </p>
-              )}
-            </div>
-
-            {/* Grid 2-cols for Password & Confirm Password */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Password Field */}
-              <div className="space-y-1.5">
-                <label 
-                  htmlFor="password" 
-                  className="block text-xs font-semibold uppercase tracking-wider text-slate-300"
-                >
-                  Password
-                </label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-400 transition-colors">
-                    <FaLock className="h-4 w-4" />
-                  </div>
-                  <input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="••••••••••••"
-                    autoComplete="new-password"
-                    {...register("password")}
-                    className={`w-full bg-slate-950/60 text-slate-100 placeholder-slate-500 text-sm rounded-xl pl-10 pr-10 py-2.5 border transition-all duration-200 focus:outline-none ${
-                      errors.password
-                        ? "border-rose-500/80 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20"
-                        : "border-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 hover:border-slate-700"
-                    }`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-300 transition-colors focus:outline-none"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                  >
-                    {showPassword ? <FaEyeSlash className="h-4 w-4" /> : <FaEye className="h-4 w-4" />}
-                  </button>
-                </div>
-                {errors.password && (
-                  <p className="text-xs text-rose-400 mt-1 flex items-center gap-1">
-                    <FaExclamationCircle className="h-3.5 w-3.5 inline" />
-                    {errors.password.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Confirm Password Field */}
-              <div className="space-y-1.5">
-                <label 
-                  htmlFor="confirmPassword" 
-                  className="block text-xs font-semibold uppercase tracking-wider text-slate-300"
-                >
-                  Confirm Password
-                </label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-400 transition-colors">
-                    <FaLock className="h-4 w-4" />
-                  </div>
-                  <input
-                    id="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
-                    placeholder="••••••••••••"
-                    autoComplete="new-password"
-                    {...register("confirmPassword")}
-                    className={`w-full bg-slate-950/60 text-slate-100 placeholder-slate-500 text-sm rounded-xl pl-10 pr-10 py-2.5 border transition-all duration-200 focus:outline-none ${
-                      errors.confirmPassword
-                        ? "border-rose-500/80 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20"
-                        : "border-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 hover:border-slate-700"
-                    }`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-300 transition-colors focus:outline-none"
-                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
-                  >
-                    {showConfirmPassword ? <FaEyeSlash className="h-4 w-4" /> : <FaEye className="h-4 w-4" />}
-                  </button>
-                </div>
-                {errors.confirmPassword && (
-                  <p className="text-xs text-rose-400 mt-1 flex items-center gap-1">
-                    <FaExclamationCircle className="h-3.5 w-3.5 inline" />
-                    {errors.confirmPassword.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Terms Checkbox */}
-            <div className="pt-1">
-              <label className="flex items-start gap-2.5 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  {...register("terms")}
-                  className="mt-0.5 h-4 w-4 rounded border-slate-700 bg-slate-950/80 text-indigo-600 focus:ring-indigo-500/30 focus:ring-offset-0 transition-colors cursor-pointer"
-                />
-                <span className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors">
-                  I agree to the{" "}
-                  <a href="#terms" onClick={(e) => { e.preventDefault(); alert("Terms of Service modal"); }} className="text-indigo-400 hover:underline">
-                    Terms of Service
-                  </a>{" "}
-                  and{" "}
-                  <a href="#privacy" onClick={(e) => { e.preventDefault(); alert("Privacy Policy modal"); }} className="text-indigo-400 hover:underline">
-                    Privacy Policy
-                  </a>
-                </span>
-              </label>
-              {errors.terms && (
-                <p className="text-xs text-rose-400 mt-1 flex items-center gap-1">
-                  <FaExclamationCircle className="h-3.5 w-3.5 inline" />
-                  {errors.terms.message}
-                </p>
-              )}
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full mt-2 relative group overflow-hidden rounded-xl bg-gradient-to-r from-indigo-500 via-indigo-600 to-cyan-500 p-[1px] font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all duration-300 hover:shadow-indigo-500/40 active:scale-[0.99] disabled:opacity-70"
-            >
-              <div className="w-full bg-slate-950/20 group-hover:bg-transparent rounded-[11px] py-3 px-4 flex items-center justify-center gap-2 text-sm font-semibold transition-colors">
-                {isSubmitting ? (
-                  <>
-                    <CgSpinner className="h-4 w-4 animate-spin text-white" />
-                    <span>Creating account...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Sign Up</span>
-                    <FaArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                  </>
-                )}
-              </div>
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="relative my-5">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-800" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-slate-900 px-3 text-slate-500 font-medium tracking-wider">
-                Or sign up with
-              </span>
-            </div>
-          </div>
-
-          {/* Social Options */}
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={() => alert("Google OAuth flow simulated")}
-              className="flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-950/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 rounded-xl text-xs font-medium text-slate-300 transition-all duration-200 hover:text-white"
-            >
-              <FaGoogle className="h-4 w-4 text-rose-500" />
-              <span>Google</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => alert("GitHub OAuth flow simulated")}
-              className="flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-950/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 rounded-xl text-xs font-medium text-slate-300 transition-all duration-200 hover:text-white"
-            >
-              <FaGithub className="h-4 w-4 text-slate-200" />
-              <span>GitHub</span>
-            </button>
+        {/* Left Side: Bangladesh Travel Spots Image Slider (5 Cols on LG) */}
+        <div className="hidden lg:block lg:col-span-5 relative overflow-hidden">
+          <ImageSlider images={bdTravelImages} interval={4500} />
+          {/* Top Logo Badge */}
+          <div className="absolute top-6 left-6 z-20 flex items-center gap-2 bg-slate-950/70 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15 shadow-lg">
+            <FaCompass className="h-4 w-4 text-emerald-400 animate-pulse" />
+            <span className="text-sm font-bold tracking-wide text-white">Travla BD</span>
           </div>
         </div>
 
-        {/* Footer Link */}
-        <p className="mt-6 text-center text-xs text-slate-400">
-          Already have an account?{" "}
-          <Link
-            href="/login"
-            className="font-semibold text-indigo-400 hover:text-indigo-300 hover:underline transition-colors"
+        {/* Right Side: Sign Up Form (7 Cols on LG) */}
+        <div className="lg:col-span-7 w-full flex flex-col justify-center p-5 sm:p-8">
+          <motion.div
+            className="w-full max-w-lg mx-auto"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
           >
-            Sign in
-          </Link>
-        </p>
-      </div>
+            {/* Header */}
+            <motion.div variants={itemVariants} className="mb-4">
+              <div className="flex items-center justify-between">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                  Create Account
+                </h1>
+                <span className="text-xs text-slate-400">
+                  Already a member?{" "}
+                  <Link href="/login" className="text-indigo-400 font-semibold hover:underline">
+                    Log in
+                  </Link>
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 mt-1">
+                Explore Bangladesh&apos;s finest travel destinations with Travla
+              </p>
+            </motion.div>
+
+            {/* Banners */}
+            {authSuccess && (
+              <motion.div variants={itemVariants} className="mb-3 p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
+                <FaCheckCircle className="h-4 w-4 shrink-0" />
+                <span>Account created! You can now <Link href="/login" className="underline font-bold">Sign In</Link>.</span>
+              </motion.div>
+            )}
+
+            {authError && (
+              <motion.div variants={itemVariants} className="mb-3 p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
+                <FaExclamationCircle className="h-4 w-4 shrink-0" />
+                <span>{authError}</span>
+              </motion.div>
+            )}
+
+            {/* Form */}
+            <motion.form variants={itemVariants} onSubmit={handleSubmit(onSubmit)} className="space-y-3" noValidate>
+              
+              {/* Grid: Name & Phone */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="space-y-1">
+                  <Label htmlFor="name" className="text-xs text-slate-300 font-semibold">Full Name</Label>
+                  <div className="relative">
+                    <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
+                    <Input
+                      id="name"
+                      type="text"
+                      placeholder="John Doe"
+                      {...register("name")}
+                      className={`h-8 text-xs pl-8 bg-slate-950/60 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:ring-indigo-500 ${errors.name ? "border-rose-500" : ""}`}
+                    />
+                  </div>
+                  {errors.name && <p className="text-[10px] text-rose-400 mt-0.5">{errors.name.message}</p>}
+                </div>
+
+                <div className="space-y-1">
+                  <Label htmlFor="phone" className="text-xs text-slate-300 font-semibold">Phone Number</Label>
+                  <div className="relative">
+                    <FaPhone className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="+880 1700-000000"
+                      {...register("phone")}
+                      className={`h-8 text-xs pl-8 bg-slate-950/60 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:ring-indigo-500 ${errors.phone ? "border-rose-500" : ""}`}
+                    />
+                  </div>
+                  {errors.phone && <p className="text-[10px] text-rose-400 mt-0.5">{errors.phone.message}</p>}
+                </div>
+              </div>
+
+              {/* Grid: Email & Address */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="space-y-1">
+                  <Label htmlFor="email" className="text-xs text-slate-300 font-semibold">Email Address</Label>
+                  <div className="relative">
+                    <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="name@example.com"
+                      {...register("email")}
+                      className={`h-8 text-xs pl-8 bg-slate-950/60 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:ring-indigo-500 ${errors.email ? "border-rose-500" : ""}`}
+                    />
+                  </div>
+                  {errors.email && <p className="text-[10px] text-rose-400 mt-0.5">{errors.email.message}</p>}
+                </div>
+
+                <div className="space-y-1">
+                  <Label htmlFor="address" className="text-xs text-slate-300 font-semibold">Address</Label>
+                  <div className="relative">
+                    <FaMapMarkerAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
+                    <Input
+                      id="address"
+                      type="text"
+                      placeholder="Dhaka, Bangladesh"
+                      {...register("address")}
+                      className={`h-8 text-xs pl-8 bg-slate-950/60 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:ring-indigo-500 ${errors.address ? "border-rose-500" : ""}`}
+                    />
+                  </div>
+                  {errors.address && <p className="text-[10px] text-rose-400 mt-0.5">{errors.address.message}</p>}
+                </div>
+              </div>
+
+              {/* Grid: Password & Confirm Password */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="space-y-1">
+                  <Label htmlFor="password" className="text-xs text-slate-300 font-semibold">Password</Label>
+                  <div className="relative">
+                    <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      {...register("password")}
+                      className={`h-8 text-xs pl-8 pr-8 bg-slate-950/60 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:ring-indigo-500 ${errors.password ? "border-rose-500" : ""}`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs"
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  </div>
+                  {errors.password && <p className="text-[10px] text-rose-400 mt-0.5">{errors.password.message}</p>}
+                </div>
+
+                <div className="space-y-1">
+                  <Label htmlFor="confirmPassword" className="text-xs text-slate-300 font-semibold">Confirm Password</Label>
+                  <div className="relative">
+                    <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
+                    <Input
+                      id="confirmPassword"
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      {...register("confirmPassword")}
+                      className={`h-8 text-xs pl-8 pr-8 bg-slate-950/60 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:ring-indigo-500 ${errors.confirmPassword ? "border-rose-500" : ""}`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs"
+                    >
+                      {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  </div>
+                  {errors.confirmPassword && <p className="text-[10px] text-rose-400 mt-0.5">{errors.confirmPassword.message}</p>}
+                </div>
+              </div>
+
+              {/* Terms Checkbox */}
+              <div className="pt-1">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    {...register("terms")}
+                    className="h-3.5 w-3.5 rounded border-slate-800 bg-slate-950 text-indigo-500 focus:ring-indigo-500/20"
+                  />
+                  <span className="text-[11px] text-slate-400">
+                    I agree to the <a href="#terms" onClick={(e) => e.preventDefault()} className="text-indigo-400 hover:underline">Terms & Conditions</a>
+                  </span>
+                </label>
+                {errors.terms && <p className="text-[10px] text-rose-400 mt-0.5">{errors.terms.message}</p>}
+              </div>
+
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full h-9 text-xs bg-gradient-to-r from-indigo-500 via-indigo-600 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-semibold shadow-lg shadow-indigo-500/20 transition-all mt-1"
+              >
+                {isSubmitting ? (
+                  <span className="flex items-center gap-2">
+                    <CgSpinner className="h-3.5 w-3.5 animate-spin" />
+                    Creating account...
+                  </span>
+                ) : (
+                  "Create Account"
+                )}
+              </Button>
+            </motion.form>
+
+            {/* Divider */}
+            <motion.div variants={itemVariants} className="relative my-3">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-slate-800" />
+              </div>
+              <div className="relative flex justify-center text-[10px] uppercase tracking-wider">
+                <span className="bg-slate-900 px-2 text-slate-500 font-medium">Or continue with</span>
+              </div>
+            </motion.div>
+
+            {/* Google Signup Button at Bottom */}
+            <motion.div variants={itemVariants}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => alert("Google signup simulated")}
+                className="w-full h-8 text-xs bg-slate-950/40 border-slate-800 text-slate-200 hover:bg-slate-800 hover:text-white font-medium"
+              >
+                <FaGoogle className="mr-2 h-3.5 w-3.5 text-rose-500" />
+                Sign up with Google
+              </Button>
+            </motion.div>
+          </motion.div>
+        </div>
+      </motion.div>
     </div>
   );
 }
