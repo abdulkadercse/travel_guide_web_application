@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { FormInput, FormSelect, FormTextarea } from "@/components/shared";
+import { FormInput, FormSelect, FormTextarea } from "@/components/ui";
 import { Button } from "@/components/ui/button";
 
 export default function DemoPage() {

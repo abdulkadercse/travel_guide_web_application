@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 import { HomeSlider, defaultSlides } from "@/components/ui/home/slider";
 import Container from "@/components/shared/Container";
+import Navbar from "@/components/shared/Navbar";
+import Footer from "@/components/shared/Footer";
 import { Button } from "@/components/ui/button";
 import {
   FaCompass,
@@ -21,52 +23,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300 font-sans selection:bg-indigo-500 selection:text-white">
-      {/* Navigation Header */}
-      <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-background/80 border-b border-border">
-        <Container>
-          <div className="h-16 flex items-center justify-between">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 group">
-              <FaCompass className="h-6 w-6 text-indigo-500 group-hover:rotate-45 transition-transform duration-300" />
-              <span className="text-xl font-bold tracking-wider text-foreground">
-                Travla<span className="text-indigo-500">BD</span>
-              </span>
-            </Link>
-
-            {/* Quick Actions */}
-            <div className="flex items-center gap-3">
-              {/* Dark Mode Toggle */}
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="rounded-full"
-                title="Toggle Theme"
-              >
-                {theme === "dark" ? (
-                  <FaSun className="h-4 w-4 text-amber-400" />
-                ) : (
-                  <FaMoon className="h-4 w-4 text-slate-700" />
-                )}
-                <span className="sr-only">Toggle Theme</span>
-              </Button>
-
-              {/* Login & Signup buttons */}
-              <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
-                <Link href="/login">Log In</Link>
-              </Button>
-
-              <Button size="sm" className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full px-4" asChild>
-                <Link href="/signup">Sign Up</Link>
-              </Button>
-            </div>
-          </div>
-        </Container>
-      </header>
+      {/* Navbar Component */}
+      <Navbar />
 
       {/* Main Content */}
       <main className="flex-1 w-full space-y-12 pb-12">
-        {/* Full-Width Full-Bleed Home Slider */}
+        {/* Full-Width Home Slider */}
         <section className="w-full">
           <HomeSlider autoplayInterval={3500} />
         </section>
@@ -123,12 +85,8 @@ export default function Home() {
         </Container>
       </main>
 
-      {/* Footer */}
-      <footer className="w-full border-t border-border bg-card py-6 text-center text-xs text-muted-foreground">
-        <Container>
-          <p>© {new Date().getFullYear()} Travla BD. All rights reserved. Made with Next.js, Shadcn & Tailwind CSS.</p>
-        </Container>
-      </footer>
+      {/* Footer Component */}
+      <Footer />
     </div>
   );
 }

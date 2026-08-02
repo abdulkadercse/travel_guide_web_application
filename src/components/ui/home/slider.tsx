@@ -8,8 +8,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
@@ -168,11 +166,7 @@ export function HomeSlider({
           ))}
         </CarouselContent>
 
-        {/* Navigation Arrows inside Container boundaries */}
-        <Container className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-20 pointer-events-none flex justify-between">
-          <CarouselPrevious className="static translate-y-0 pointer-events-auto h-11 w-11 rounded-full bg-slate-950/60 border-white/20 text-white hover:bg-slate-900 hover:text-white backdrop-blur-md shadow-xl" />
-          <CarouselNext className="static translate-y-0 pointer-events-auto h-11 w-11 rounded-full bg-slate-950/60 border-white/20 text-white hover:bg-slate-900 hover:text-white backdrop-blur-md shadow-xl" />
-        </Container>
+  
       </Carousel>
 
       {/* Pagination Dots & Counter Aligned inside Container */}
