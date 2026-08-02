@@ -6,34 +6,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Link from "next/link";
 import {
-  Eye,
-  EyeOff,
-  Mail,
-  Lock,
-  Compass,
-  ArrowRight,
-  CheckCircle2,
-  AlertCircle,
-  Loader2,
-  Globe
-} from "lucide-react";
-
-function GithubIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-      <path d="M9 18c-4.51 2-5-2-7-2" />
-    </svg>
-  );
-}
+  FaEnvelope,
+  FaLock,
+  FaEye,
+  FaEyeSlash,
+  FaCompass,
+  FaArrowRight,
+  FaCheckCircle,
+  FaExclamationCircle,
+  FaGoogle,
+  FaGithub
+} from "react-icons/fa";
+import { CgSpinner } from "react-icons/cg";
 
 // Form validation schema using Zod
 const loginSchema = z.object({
@@ -113,7 +97,7 @@ export default function LoginPage() {
         <div className="flex flex-col items-center text-center mb-8">
           <div className="h-14 w-14 rounded-2xl bg-gradient-to-tr from-indigo-500 to-cyan-400 p-[1px] shadow-lg shadow-indigo-500/20 mb-4 transition-transform duration-300 hover:scale-105">
             <div className="h-full w-full bg-slate-900/90 backdrop-blur-xl rounded-[15px] flex items-center justify-center">
-              <Compass className="h-7 w-7 text-indigo-400 animate-pulse" />
+              <FaCompass className="h-7 w-7 text-indigo-400 animate-pulse" />
             </div>
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
@@ -133,7 +117,7 @@ export default function LoginPage() {
           {/* Success Banner */}
           {authSuccess && (
             <div className="mb-6 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-              <CheckCircle2 className="h-5 w-5 shrink-0 mt-0.5" />
+              <FaCheckCircle className="h-5 w-5 shrink-0 mt-0.5" />
               <div>
                 <p className="font-semibold">Authentication Successful!</p>
                 <p className="text-xs text-emerald-400/80 mt-0.5">
@@ -146,7 +130,7 @@ export default function LoginPage() {
           {/* Error Banner */}
           {authError && (
             <div className="mb-6 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-sm flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-              <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
+              <FaExclamationCircle className="h-5 w-5 shrink-0 mt-0.5" />
               <div>
                 <p className="font-semibold">Sign in failed</p>
                 <p className="text-xs text-rose-400/80 mt-0.5">{authError}</p>
@@ -166,7 +150,7 @@ export default function LoginPage() {
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-400 transition-colors">
-                  <Mail className="h-5 w-5" />
+                  <FaEnvelope className="h-4 w-4" />
                 </div>
                 <input
                   id="email"
@@ -183,7 +167,7 @@ export default function LoginPage() {
               </div>
               {errors.email && (
                 <p className="text-xs text-rose-400 mt-1 flex items-center gap-1">
-                  <AlertCircle className="h-3.5 w-3.5 inline" />
+                  <FaExclamationCircle className="h-3.5 w-3.5 inline" />
                   {errors.email.message}
                 </p>
               )}
@@ -211,7 +195,7 @@ export default function LoginPage() {
               </div>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-400 transition-colors">
-                  <Lock className="h-5 w-5" />
+                  <FaLock className="h-4 w-4" />
                 </div>
                 <input
                   id="password"
@@ -232,15 +216,15 @@ export default function LoginPage() {
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
+                    <FaEyeSlash className="h-4 w-4" />
                   ) : (
-                    <Eye className="h-5 w-5" />
+                    <FaEye className="h-4 w-4" />
                   )}
                 </button>
               </div>
               {errors.password && (
                 <p className="text-xs text-rose-400 mt-1 flex items-center gap-1">
-                  <AlertCircle className="h-3.5 w-3.5 inline" />
+                  <FaExclamationCircle className="h-3.5 w-3.5 inline" />
                   {errors.password.message}
                 </p>
               )}
@@ -264,18 +248,18 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full relative group overflow-hidden rounded-xl bg-gradient-to-r from-indigo-500 via-indigo-600 to-cyan-500 p-[1px] font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all duration-300 hover:shadow-indigo-500/40 active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100"
+              className="w-full relative group overflow-hidden rounded-xl bg-gradient-to-r from-indigo-500 via-indigo-600 to-cyan-500 p-[1px] font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all duration-300 hover:shadow-indigo-500/40 active:scale-[0.99] disabled:opacity-70"
             >
               <div className="w-full bg-slate-950/20 group-hover:bg-transparent rounded-[11px] py-3.5 px-4 flex items-center justify-center gap-2 text-sm font-semibold transition-colors">
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin text-white" />
+                    <CgSpinner className="h-4 w-4 animate-spin text-white" />
                     <span>Signing in...</span>
                   </>
                 ) : (
                   <>
                     <span>Sign In</span>
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    <FaArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                   </>
                 )}
               </div>
@@ -301,7 +285,7 @@ export default function LoginPage() {
               onClick={() => alert("Google OAuth flow simulated")}
               className="flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-950/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 rounded-xl text-xs font-medium text-slate-300 transition-all duration-200 hover:text-white"
             >
-              <Globe className="h-4 w-4 text-indigo-400" />
+              <FaGoogle className="h-4 w-4 text-rose-500" />
               <span>Google</span>
             </button>
             <button
@@ -309,7 +293,7 @@ export default function LoginPage() {
               onClick={() => alert("GitHub OAuth flow simulated")}
               className="flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-950/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 rounded-xl text-xs font-medium text-slate-300 transition-all duration-200 hover:text-white"
             >
-              <GithubIcon className="h-4 w-4 text-slate-200" />
+              <FaGithub className="h-4 w-4 text-slate-200" />
               <span>GitHub</span>
             </button>
           </div>
