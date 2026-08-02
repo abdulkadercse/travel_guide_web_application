@@ -70,8 +70,8 @@ export function FormSelect({
         <Select
           value={value}
           defaultValue={defaultValue}
-          onValueChange={(val) => {
-            if (val && onValueChange) {
+          onValueChange={(val: string | null) => {
+            if (val !== null && onValueChange) {
               onValueChange(val);
             }
           }}
