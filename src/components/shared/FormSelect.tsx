@@ -70,7 +70,11 @@ export function FormSelect({
         <Select
           value={value}
           defaultValue={defaultValue}
-          onValueChange={onValueChange}
+          onValueChange={(val: string | null) => {
+            if (val !== null && onValueChange) {
+              onValueChange(val);
+            }
+          }}
           disabled={disabled}
         >
           <SelectTrigger

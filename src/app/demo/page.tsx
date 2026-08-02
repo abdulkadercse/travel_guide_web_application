@@ -28,7 +28,7 @@ const demoSchema = z.object({
     .max(300, { message: "Special notes cannot exceed 300 characters" }),
 });
 
-type DemoFormData = z.infer<demoSchema>;
+type DemoFormData = z.infer<typeof demoSchema>;
 
 export default function DemoPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
