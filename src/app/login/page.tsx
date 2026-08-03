@@ -5,6 +5,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Link from "next/link";
+import toast from "react-hot-toast";
+import { useLoginMutation } from "@/redux/features/auth/authApi";
+import { useAppDispatch } from "@/redux/hooks";
+import { setUser } from "@/redux/features/auth/authSlice";
 import {
   GlassCard,
   GlassCardHeader,
@@ -23,7 +27,6 @@ import {
   FaEnvelope,
   FaLock,
   FaGoogle,
-  FaCheckCircle,
   FaExclamationCircle,
   FaCompass
 } from "react-icons/fa";
@@ -45,9 +48,8 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [authSuccess, setAuthSuccess] = useState(false);
-  const [authError, setAuthError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+  const [login, { isLoading }] = useLoginMutation();
 
   const {
     register,
@@ -64,27 +66,32 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    setIsSubmitting(true);
-    setAuthError(null);
-    setAuthSuccess(false);
+    const toastId = toast.loading("Logging in...");
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const res = await login({
+        email: data.email,
+        password: data.password,
+      }).unwrap();
 
-      if (data.email === "error@example.com") {
-        throw new Error("Invalid credentials. Please check your email and password.");
-      }
+      if (res?.success && res?.data) {
+        const { accessToken, refreshToken, user } = res.data;
 
-      setAuthSuccess(true);
-      console.log("Logged in successfully:", data);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setAuthError(err.message);
-      } else {
-        setAuthError("An unexpected error occurred. Please try again.");
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        dispatch(setUser({ user, token: accessToken }));
+
+        toast.success("Login successful! Welcome back.", { id: toastId });
+
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1000);
       }
-    } finally {
-      setIsSubmitting(false);
+    } catch (err: any) {
+      const errorMessage = err?.data?.message || err?.message || "Invalid credentials. Please try again.";
+      toast.error(errorMessage, { id: toastId });
     }
   };
 
@@ -114,22 +121,6 @@ export default function LoginPage() {
         </GlassCardHeader>
 
         <GlassCardContent>
-          {/* Success Banner */}
-          {authSuccess && (
-            <div className="mb-4 p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-sm flex items-center gap-2">
-              <FaCheckCircle className="h-4 w-4 shrink-0" />
-              <span>Authentication successful! Welcome back.</span>
-            </div>
-          )}
-
-          {/* Error Banner */}
-          {authError && (
-            <div className="mb-4 p-3 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-sm flex items-center gap-2">
-              <FaExclamationCircle className="h-4 w-4 shrink-0" />
-              <span>{authError}</span>
-            </div>
-          )}
-
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
             <div className="flex flex-col gap-4">
               {/* Email Field */}
@@ -164,7 +155,7 @@ export default function LoginPage() {
                     href="#forgot-password"
                     onClick={(e) => {
                       e.preventDefault();
-                      alert("Forgot password flow triggered.");
+                      toast("Forgot password functionality coming soon!", { icon: "ℹ️" });
                     }}
                     className="text-xs text-indigo-400 underline-offset-4 hover:underline"
                   >
@@ -215,10 +206,10 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isLoading}
               className="w-full bg-gradient-to-r from-indigo-500 via-indigo-600 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-semibold shadow-lg shadow-indigo-500/20"
             >
-              {isSubmitting ? (
+              {isLoading ? (
                 <span className="flex items-center gap-2">
                   <CgSpinner className="h-4 w-4 animate-spin" />
                   Logging in...
@@ -243,7 +234,7 @@ export default function LoginPage() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => alert("Google Sign in simulated")}
+            onClick={() => toast("Google Login coming soon!", { icon: "🚀" })}
             className="w-full bg-slate-950/40 border-slate-800 text-white hover:bg-slate-800/60 font-medium"
           >
             <FaGoogle className="mr-2 h-4 w-4 text-rose-500" />

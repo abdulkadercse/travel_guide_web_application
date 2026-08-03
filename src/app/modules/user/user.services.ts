@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { ICreateUser, IUpdateUser, IUserFilterRequest } from './user.interface';
+import bcrypt from 'bcryptjs';
 
 const createUserDB = async (payload: ICreateUser) => {
   // Check if email already exists
@@ -20,8 +21,17 @@ const createUserDB = async (payload: ICreateUser) => {
     }
   }
 
+  // Hash password
+  const saltRounds = Number(process.env.BCRYPT_SALT_ROUNDS) || 12;
+  const hashedPassword = await bcrypt.hash(payload.password, saltRounds);
+
+  const userData = {
+    ...payload,
+    password: hashedPassword,
+  };
+
   const result = await prisma.user.create({
-    data: payload as any,
+    data: userData as any,
     select: {
       id: true,
       name: true,
@@ -152,9 +162,15 @@ const updateUserDB = async (id: string, payload: IUpdateUser) => {
     }
   }
 
+  const updateData: Record<string, any> = { ...payload };
+  if (payload.password) {
+    const saltRounds = Number(process.env.BCRYPT_SALT_ROUNDS) || 12;
+    updateData.password = await bcrypt.hash(payload.password, saltRounds);
+  }
+
   const result = await prisma.user.update({
     where: { id },
-    data: payload as any,
+    data: updateData,
     select: {
       id: true,
       name: true,

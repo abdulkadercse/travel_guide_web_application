@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
+import { useCreateUserMutation } from "@/redux/features/user/userApi";
 import { ImageSlider } from "@/components/ui/image-slider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,8 +21,6 @@ import {
   FaEye,
   FaEyeSlash,
   FaCompass,
-  FaCheckCircle,
-  FaExclamationCircle,
   FaGoogle
 } from "react-icons/fa";
 import { CgSpinner } from "react-icons/cg";
@@ -86,9 +86,7 @@ type SignupFormData = z.infer<typeof signupSchema>;
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [authSuccess, setAuthSuccess] = useState(false);
-  const [authError, setAuthError] = useState<string | null>(null);
+  const [createUser, { isLoading }] = useCreateUserMutation();
 
   const {
     register,
@@ -109,27 +107,27 @@ export default function SignupPage() {
   });
 
   const onSubmit = async (data: SignupFormData) => {
-    setIsSubmitting(true);
-    setAuthError(null);
-    setAuthSuccess(false);
+    const toastId = toast.loading("Creating your account...");
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const res = await createUser({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        address: data.address,
+        password: data.password,
+      }).unwrap();
 
-      if (data.email === "existing@example.com") {
-        throw new Error("An account with this email already exists.");
-      }
+      if (res?.success) {
+        toast.success("Account created successfully! Redirecting to login...", { id: toastId });
 
-      setAuthSuccess(true);
-      console.log("Registered successfully:", data);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setAuthError(err.message);
-      } else {
-        setAuthError("Registration failed. Please try again.");
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 1500);
       }
-    } finally {
-      setIsSubmitting(false);
+    } catch (err: any) {
+      const errorMessage = err?.data?.message || err?.message || "Registration failed. Please try again.";
+      toast.error(errorMessage, { id: toastId });
     }
   };
 
@@ -206,21 +204,6 @@ export default function SignupPage() {
                 Explore Bangladesh&apos;s finest travel destinations with Travla
               </p>
             </motion.div>
-
-            {/* Banners */}
-            {authSuccess && (
-              <motion.div variants={itemVariants} className="mb-3 p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
-                <FaCheckCircle className="h-4 w-4 shrink-0" />
-                <span>Account created! You can now <Link href="/login" className="underline font-bold">Sign In</Link>.</span>
-              </motion.div>
-            )}
-
-            {authError && (
-              <motion.div variants={itemVariants} className="mb-3 p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
-                <FaExclamationCircle className="h-4 w-4 shrink-0" />
-                <span>{authError}</span>
-              </motion.div>
-            )}
 
             {/* Form */}
             <motion.form variants={itemVariants} onSubmit={handleSubmit(onSubmit)} className="space-y-3" noValidate>
@@ -356,10 +339,10 @@ export default function SignupPage() {
               {/* Submit Button */}
               <Button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isLoading}
                 className="w-full h-9 text-xs bg-gradient-to-r from-indigo-500 via-indigo-600 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-semibold shadow-lg shadow-indigo-500/20 transition-all mt-1"
               >
-                {isSubmitting ? (
+                {isLoading ? (
                   <span className="flex items-center gap-2">
                     <CgSpinner className="h-3.5 w-3.5 animate-spin" />
                     Creating account...
@@ -385,7 +368,7 @@ export default function SignupPage() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => alert("Google signup simulated")}
+                onClick={() => toast("Google Sign up coming soon!", { icon: "🚀" })}
                 className="w-full h-8 text-xs bg-slate-950/40 border-slate-800 text-slate-200 hover:bg-slate-800 hover:text-white font-medium"
               >
                 <FaGoogle className="mr-2 h-3.5 w-3.5 text-rose-500" />
