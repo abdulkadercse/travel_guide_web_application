@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/shared/ThemeProvider";
 import { Toaster } from "react-hot-toast";
 import ReduxProvider from "@/components/providers/ReduxProvider";
+import { Footer, Navbar } from "@/components/shared";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,9 +37,11 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ReduxProvider>
-          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+            <Navbar />
             {children}
             <Toaster position="top-center" reverseOrder={false} />
+            <Footer />
           </ThemeProvider>
         </ReduxProvider>
       </body>
