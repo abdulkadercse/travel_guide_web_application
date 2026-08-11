@@ -5,3 +5,6 @@ export * from "./Container";
 export * from "./Navbar";
 export * from "./Footer";
 export * from "./ThemeProvider";
+export * from "./ImageUploader";
+export * from "./AvatarUploader";
+export * from "./ProtectedRoute";
