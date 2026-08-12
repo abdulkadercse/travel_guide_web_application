@@ -19,6 +19,15 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logout, selectCurrentUser } from "@/redux/features/auth/authSlice";
+import {
+  useGetDestinationsQuery,
+  useCreateDestinationMutation,
+  useDeleteDestinationMutation,
+} from "@/redux/features/destination/destinationApi";
+import {
+  useGetReservationsQuery,
+  useUpdateReservationStatusMutation,
+} from "@/redux/features/reservation/reservationApi";
 import { useTheme } from "next-themes";
 import {
   FaCompass,
@@ -44,11 +53,17 @@ export default function AdminDashboardPage() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // Data states
-  const [destinations, setDestinations] = useState<any[]>([]);
-  const [reservations, setReservations] = useState<any[]>([]);
-  const [loadingDestinations, setLoadingDestinations] = useState(true);
-  const [loadingReservations, setLoadingReservations] = useState(true);
+  // Data comes from the Express API through RTK Query
+  const { data: destinationsResponse, isLoading: loadingDestinations } =
+    useGetDestinationsQuery(undefined);
+  const { data: reservationsResponse, isLoading: loadingReservations } =
+    useGetReservationsQuery(undefined);
+  const [createDestination] = useCreateDestinationMutation();
+  const [deleteDestinationMutation] = useDeleteDestinationMutation();
+  const [updateReservationStatus] = useUpdateReservationStatusMutation();
+
+  const destinations: any[] = destinationsResponse?.data ?? [];
+  const reservations: any[] = reservationsResponse?.data ?? [];
 
   // New Destination Form state
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -65,39 +80,10 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     setMounted(true);
-    fetchDestinations();
-    fetchReservations();
   }, []);
 
-  const fetchDestinations = async () => {
-    setLoadingDestinations(true);
-    try {
-      const res = await fetch("/api/destinations");
-      const data = await res.json();
-      if (data.success) {
-        setDestinations(data.data || []);
-      }
-    } catch (err) {
-      console.error("Fetch destinations error:", err);
-    } finally {
-      setLoadingDestinations(false);
-    }
-  };
-
-  const fetchReservations = async () => {
-    setLoadingReservations(true);
-    try {
-      const res = await fetch("/api/reservations");
-      const data = await res.json();
-      if (data.success) {
-        setReservations(data.data || []);
-      }
-    } catch (err) {
-      console.error("Fetch reservations error:", err);
-    } finally {
-      setLoadingReservations(false);
-    }
-  };
+  const errorMessage = (err: unknown, fallback: string) =>
+    (err as { data?: { message?: string } })?.data?.message || fallback;
 
   const handleCreateDestination = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,19 +96,10 @@ export default function AdminDashboardPage() {
     const toastId = toast.loading("Saving destination...");
 
     try {
-      const res = await fetch("/api/destinations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...newDest,
-          price: Number(newDest.price),
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Failed to create destination");
-      }
+      await createDestination({
+        ...newDest,
+        price: Number(newDest.price),
+      }).unwrap();
 
       toast.success("Destination added successfully!", { id: toastId });
       setDialogOpen(false);
@@ -135,9 +112,8 @@ export default function AdminDashboardPage() {
         coverImage: "",
         price: 1500,
       });
-      fetchDestinations();
-    } catch (err: any) {
-      toast.error(err.message || "Failed to create destination", { id: toastId });
+    } catch (err: unknown) {
+      toast.error(errorMessage(err, "Failed to create destination"), { id: toastId });
     } finally {
       setSubmittingDest(false);
     }
@@ -147,35 +123,19 @@ export default function AdminDashboardPage() {
     if (!confirm("Are you sure you want to delete this destination?")) return;
 
     try {
-      const res = await fetch(`/api/destinations/${id}`, { method: "DELETE" });
-      const data = await res.json();
-      if (data.success) {
-        toast.success("Destination deleted");
-        fetchDestinations();
-      } else {
-        toast.error(data.message || "Delete failed");
-      }
-    } catch (err) {
-      toast.error("Error deleting destination");
+      await deleteDestinationMutation(id).unwrap();
+      toast.success("Destination deleted");
+    } catch (err: unknown) {
+      toast.error(errorMessage(err, "Error deleting destination"));
     }
   };
 
   const handleUpdateReservationStatus = async (id: string, status: string) => {
     try {
-      const res = await fetch("/api/reservations", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, status }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        toast.success(`Reservation ${status.toLowerCase()}`);
-        fetchReservations();
-      } else {
-        toast.error(data.message || "Update failed");
-      }
-    } catch (err) {
-      toast.error("Failed to update status");
+      await updateReservationStatus({ id, status }).unwrap();
+      toast.success(`Reservation ${status.toLowerCase()}`);
+    } catch (err: unknown) {
+      toast.error(errorMessage(err, "Failed to update status"));
     }
   };
 

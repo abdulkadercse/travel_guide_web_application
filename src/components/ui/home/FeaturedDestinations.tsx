@@ -10,6 +10,12 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAppSelector } from "@/redux/hooks";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import {
+  useGetFavoritesQuery,
+  useAddFavoriteMutation,
+  useRemoveFavoriteMutation,
+} from "@/redux/features/favorite/favoriteApi";
+import { useCreateReservationMutation } from "@/redux/features/reservation/reservationApi";
 import { FaMapMarkerAlt, FaStar, FaHeart } from "react-icons/fa";
 
 const categories = [
@@ -107,18 +113,17 @@ export function FeaturedDestinations() {
   const [bookingDates, setBookingDates] = useState({ start: "", end: "" });
   const [bookingLoading, setBookingLoading] = useState(false);
 
+  // The server derives the user from the token, so no userId is sent.
+  const { data: favoritesResponse } = useGetFavoritesQuery(undefined, { skip: !user });
+  const [addFavorite] = useAddFavoriteMutation();
+  const [removeFavorite] = useRemoveFavoriteMutation();
+  const [createReservation] = useCreateReservationMutation();
+
   useEffect(() => {
-    if (user?.id) {
-      fetch(`/api/favorites?userId=${user.id}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) {
-            setFavoriteIds(data.data.map((f: any) => f.destinationId));
-          }
-        })
-        .catch(() => {});
+    if (favoritesResponse?.data) {
+      setFavoriteIds(favoritesResponse.data.map((f: any) => f.destinationId));
     }
-  }, [user]);
+  }, [favoritesResponse]);
 
   const handleToggleFavorite = async (destinationId: string) => {
     if (!user) {
@@ -130,23 +135,19 @@ export function FeaturedDestinations() {
     if (isFav) {
       setFavoriteIds(favoriteIds.filter((id) => id !== destinationId));
       try {
-        await fetch(`/api/favorites?userId=${user.id}&destinationId=${destinationId}`, {
-          method: "DELETE",
-        });
+        await removeFavorite(destinationId).unwrap();
         toast.success("Removed from saved favorites");
       } catch {
+        setFavoriteIds((ids) => [...ids, destinationId]);
         toast.error("Failed to remove favorite");
       }
     } else {
       setFavoriteIds([...favoriteIds, destinationId]);
       try {
-        await fetch("/api/favorites", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: user.id, destinationId }),
-        });
+        await addFavorite(destinationId).unwrap();
         toast.success("Saved to favorites!");
       } catch {
+        setFavoriteIds((ids) => ids.filter((id) => id !== destinationId));
         toast.error("Failed to save favorite");
       }
     }
@@ -172,28 +173,19 @@ export function FeaturedDestinations() {
     const toastId = toast.loading("Submitting booking request...");
 
     try {
-      const res = await fetch("/api/reservations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user.id,
-          destinationId: selectedItem?.id,
-          startDate: bookingDates.start,
-          endDate: bookingDates.end,
-          totalCost: selectedItem?.price || 2500,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Failed to submit booking");
-      }
+      await createReservation({
+        destinationId: selectedItem?.id,
+        startDate: bookingDates.start,
+        endDate: bookingDates.end,
+        totalCost: selectedItem?.price || 2500,
+      }).unwrap();
 
       toast.success("Reservation request submitted successfully!", { id: toastId });
       setBookingModalOpen(false);
       setBookingDates({ start: "", end: "" });
-    } catch (err: any) {
-      toast.error(err.message || "Booking failed", { id: toastId });
+    } catch (err: unknown) {
+      const message = (err as { data?: { message?: string } })?.data?.message || "Booking failed";
+      toast.error(message, { id: toastId });
     } finally {
       setBookingLoading(false);
     }

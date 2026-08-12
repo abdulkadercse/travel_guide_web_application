@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { FaCamera, FaSpinner } from "react-icons/fa";
 import { Avatar } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { useUploadImageMutation } from "@/redux/features/upload/uploadApi";
 
 interface AvatarUploaderProps {
   src?: string | null;
@@ -26,6 +27,7 @@ export function AvatarUploader({
   const [loading, setLoading] = useState(false);
   const [avatarSrc, setAvatarSrc] = useState<string | null | undefined>(src);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadImage] = useUploadImageMutation();
 
   // Dynamic avatar dimension sizing
   const sizeClasses = {
@@ -57,27 +59,16 @@ export function AvatarUploader({
     const toastId = toast.loading("Uploading avatar...");
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("folder", "user_avatars");
+      const result = await uploadImage({ file, folder: "user_avatars" }).unwrap();
+      const url = result.data.url;
 
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Failed to upload avatar");
-      }
-
-      setAvatarSrc(data.url);
-      onUploadSuccess(data.url);
+      setAvatarSrc(url);
+      onUploadSuccess(url);
       toast.success("Avatar updated successfully!", { id: toastId });
-    } catch (err: any) {
-      console.error("Avatar upload error:", err);
-      toast.error(err.message || "Avatar upload failed", { id: toastId });
+    } catch (err: unknown) {
+      const message =
+        (err as { data?: { message?: string } })?.data?.message || "Avatar upload failed";
+      toast.error(message, { id: toastId });
       setAvatarSrc(src); // Revert to original src on error
     } finally {
       setLoading(false);

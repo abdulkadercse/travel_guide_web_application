@@ -17,6 +17,11 @@ import {
 } from "@/components/ui/table";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logout, selectCurrentUser } from "@/redux/features/auth/authSlice";
+import {
+  useGetAllUsersQuery,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
+} from "@/redux/features/user/userApi";
 import { useTheme } from "next-themes";
 import {
   FaUsers,
@@ -42,34 +47,26 @@ export default function AllUsersPage() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  const [users, setUsers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("ALL");
   const [statusFilter, setStatusFilter] = useState("ALL");
 
+  const {
+    data: usersResponse,
+    isLoading: loading,
+    refetch: refetchUsers,
+  } = useGetAllUsersQuery(undefined);
+  const [updateUser] = useUpdateUserMutation();
+  const [deleteUserMutation] = useDeleteUserMutation();
+
+  const users: any[] = usersResponse?.data ?? [];
+
   useEffect(() => {
     setMounted(true);
-    fetchUsers();
   }, []);
 
-  const fetchUsers = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/users");
-      const data = await res.json();
-      if (data.success) {
-        setUsers(data.data || []);
-      } else {
-        toast.error(data.message || "Failed to load users");
-      }
-    } catch (err) {
-      console.error("Fetch users error:", err);
-      toast.error("Error fetching users list");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const errorMessage = (err: unknown, fallback: string) =>
+    (err as { data?: { message?: string } })?.data?.message || fallback;
 
   const handleToggleBlockUser = async (userId: string, currentStatus: string) => {
     const newStatus = currentStatus === "BLOCKED" ? "ACTIVE" : "BLOCKED";
@@ -80,41 +77,22 @@ export default function AllUsersPage() {
     const toastId = toast.loading(`Updating user status to ${newStatus}...`);
 
     try {
-      const res = await fetch(`/api/users/${userId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
+      await updateUser({ id: userId, status: newStatus }).unwrap();
+      toast.success(`User ${newStatus === "BLOCKED" ? "blocked" : "activated"} successfully`, {
+        id: toastId,
       });
-
-      const data = await res.json();
-      if (res.ok && data.success) {
-        toast.success(`User ${newStatus === "BLOCKED" ? "blocked" : "activated"} successfully`, { id: toastId });
-        fetchUsers();
-      } else {
-        throw new Error(data.message || "Failed to update status");
-      }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to update user status", { id: toastId });
+    } catch (err: unknown) {
+      toast.error(errorMessage(err, "Failed to update user status"), { id: toastId });
     }
   };
 
   const handleChangeRole = async (userId: string, newRole: string) => {
     const toastId = toast.loading(`Updating role to ${newRole}...`);
     try {
-      const res = await fetch(`/api/users/${userId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role: newRole }),
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        toast.success(`User role updated to ${newRole}`, { id: toastId });
-        fetchUsers();
-      } else {
-        throw new Error(data.message || "Failed to change role");
-      }
-    } catch (err: any) {
-      toast.error(err.message || "Role change failed", { id: toastId });
+      await updateUser({ id: userId, role: newRole }).unwrap();
+      toast.success(`User role updated to ${newRole}`, { id: toastId });
+    } catch (err: unknown) {
+      toast.error(errorMessage(err, "Role change failed"), { id: toastId });
     }
   };
 
@@ -123,18 +101,10 @@ export default function AllUsersPage() {
 
     const toastId = toast.loading("Deleting user...");
     try {
-      const res = await fetch(`/api/users/${userId}`, {
-        method: "DELETE",
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        toast.success("User deleted permanently", { id: toastId });
-        fetchUsers();
-      } else {
-        throw new Error(data.message || "Failed to delete user");
-      }
-    } catch (err: any) {
-      toast.error(err.message || "User deletion failed", { id: toastId });
+      await deleteUserMutation(userId).unwrap();
+      toast.success("User deleted permanently", { id: toastId });
+    } catch (err: unknown) {
+      toast.error(errorMessage(err, "User deletion failed"), { id: toastId });
     }
   };
 
@@ -293,7 +263,7 @@ export default function AllUsersPage() {
                   <option value="INACTIVE">Inactive</option>
                 </select>
 
-                <Button variant="outline" size="sm" onClick={fetchUsers} className="rounded-xl h-10">
+                <Button variant="outline" size="sm" onClick={() => refetchUsers()} className="rounded-xl h-10">
                   Refresh
                 </Button>
               </div>

@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAppSelector } from "@/redux/hooks";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import { useCreateReservationMutation } from "@/redux/features/reservation/reservationApi";
 import { FaHotel, FaStar, FaMapMarkerAlt } from "react-icons/fa";
 
 const hotelsList = [
@@ -48,6 +49,7 @@ export function FeaturedHotels() {
   const [selectedHotel, setSelectedHotel] = useState<any>(null);
   const [bookingDates, setBookingDates] = useState({ start: "", end: "" });
   const [bookingLoading, setBookingLoading] = useState(false);
+  const [createReservation] = useCreateReservationMutation();
 
   const handleOpenBooking = (hotel: any) => {
     setSelectedHotel(hotel);
@@ -69,28 +71,20 @@ export function FeaturedHotels() {
     const toastId = toast.loading("Submitting hotel reservation...");
 
     try {
-      const res = await fetch("/api/reservations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user.id,
-          hotelId: selectedHotel?.id,
-          startDate: bookingDates.start,
-          endDate: bookingDates.end,
-          totalCost: selectedHotel?.price || 5000,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Failed to submit reservation");
-      }
+      await createReservation({
+        hotelId: selectedHotel?.id,
+        startDate: bookingDates.start,
+        endDate: bookingDates.end,
+        totalCost: selectedHotel?.price || 5000,
+      }).unwrap();
 
       toast.success("Hotel reservation request submitted!", { id: toastId });
       setBookingModalOpen(false);
       setBookingDates({ start: "", end: "" });
-    } catch (err: any) {
-      toast.error(err.message || "Hotel booking failed", { id: toastId });
+    } catch (err: unknown) {
+      const message =
+        (err as { data?: { message?: string } })?.data?.message || "Hotel booking failed";
+      toast.error(message, { id: toastId });
     } finally {
       setBookingLoading(false);
     }

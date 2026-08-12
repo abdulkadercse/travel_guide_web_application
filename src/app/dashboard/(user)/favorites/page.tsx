@@ -10,6 +10,11 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logout, selectCurrentUser } from "@/redux/features/auth/authSlice";
+import {
+  useGetFavoritesQuery,
+  useRemoveFavoriteMutation,
+} from "@/redux/features/favorite/favoriteApi";
+import { useCreateReservationMutation } from "@/redux/features/reservation/reservationApi";
 import { useTheme } from "next-themes";
 import {
   FaCompass,
@@ -31,9 +36,16 @@ export default function UserFavoritesPage() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  const [favorites, setFavorites] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // The server scopes favorites to the logged-in user from the token.
+  const { data: favoritesResponse, isLoading: loading } = useGetFavoritesQuery(undefined, {
+    skip: !user,
+  });
+  const [removeFavorite] = useRemoveFavoriteMutation();
+  const [createReservation] = useCreateReservationMutation();
+
+  const favorites: any[] = favoritesResponse?.data ?? [];
 
   // Booking Modal State
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
@@ -43,41 +55,17 @@ export default function UserFavoritesPage() {
 
   useEffect(() => {
     setMounted(true);
-    if (user?.id) {
-      fetchFavorites();
-    }
-  }, [user]);
+  }, []);
 
-  const fetchFavorites = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/favorites?userId=${user?.id}`);
-      const data = await res.json();
-      if (data.success) {
-        setFavorites(data.data || []);
-      }
-    } catch (err) {
-      console.error("Fetch favorites error:", err);
-      toast.error("Failed to load favorites");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const errorMessage = (err: unknown, fallback: string) =>
+    (err as { data?: { message?: string } })?.data?.message || fallback;
 
   const handleRemoveFavorite = async (destinationId: string) => {
     try {
-      const res = await fetch(`/api/favorites?userId=${user?.id}&destinationId=${destinationId}`, {
-        method: "DELETE",
-      });
-      const data = await res.json();
-      if (data.success) {
-        toast.success("Removed from favorites");
-        fetchFavorites();
-      } else {
-        toast.error(data.message || "Failed to remove favorite");
-      }
-    } catch (err) {
-      toast.error("Error removing favorite");
+      await removeFavorite(destinationId).unwrap();
+      toast.success("Removed from favorites");
+    } catch (err: unknown) {
+      toast.error(errorMessage(err, "Error removing favorite"));
     }
   };
 
@@ -98,28 +86,18 @@ export default function UserFavoritesPage() {
     const toastId = toast.loading("Submitting booking request...");
 
     try {
-      const res = await fetch("/api/reservations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user.id,
-          destinationId: selectedDest.id,
-          startDate: bookingDates.start,
-          endDate: bookingDates.end,
-          totalCost: selectedDest.price || 2500,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Booking failed");
-      }
+      await createReservation({
+        destinationId: selectedDest.id,
+        startDate: bookingDates.start,
+        endDate: bookingDates.end,
+        totalCost: selectedDest.price || 2500,
+      }).unwrap();
 
       toast.success("Reservation request submitted!", { id: toastId });
       setBookingModalOpen(false);
       setBookingDates({ start: "", end: "" });
-    } catch (err: any) {
-      toast.error(err.message || "Failed to submit booking", { id: toastId });
+    } catch (err: unknown) {
+      toast.error(errorMessage(err, "Failed to submit booking"), { id: toastId });
     } finally {
       setBookingLoading(false);
     }

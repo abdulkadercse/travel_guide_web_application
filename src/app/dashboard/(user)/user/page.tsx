@@ -19,6 +19,15 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logout, selectCurrentUser, setUser } from "@/redux/features/auth/authSlice";
+import {
+  useGetFavoritesQuery,
+  useRemoveFavoriteMutation,
+} from "@/redux/features/favorite/favoriteApi";
+import { useGetReservationsQuery } from "@/redux/features/reservation/reservationApi";
+import {
+  useGetTripPlansQuery,
+  useCreateTripPlanMutation,
+} from "@/redux/features/tripPlan/tripPlanApi";
 import { useTheme } from "next-themes";
 import {
   FaCompass,
@@ -42,13 +51,23 @@ export default function UserDashboardPage() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // Data states
-  const [myReservations, setMyReservations] = useState<any[]>([]);
-  const [myTripPlans, setMyTripPlans] = useState<any[]>([]);
-  const [myFavorites, setMyFavorites] = useState<any[]>([]);
-  const [loadingReservations, setLoadingReservations] = useState(true);
-  const [loadingTripPlans, setLoadingTripPlans] = useState(true);
-  const [loadingFavorites, setLoadingFavorites] = useState(true);
+  // All three lists are scoped to the logged-in user by the server, from the token.
+  const { data: reservationsResponse, isLoading: loadingReservations } = useGetReservationsQuery(
+    undefined,
+    { skip: !user }
+  );
+  const { data: tripPlansResponse, isLoading: loadingTripPlans } = useGetTripPlansQuery(undefined, {
+    skip: !user,
+  });
+  const { data: favoritesResponse, isLoading: loadingFavorites } = useGetFavoritesQuery(undefined, {
+    skip: !user,
+  });
+  const [removeFavorite] = useRemoveFavoriteMutation();
+  const [createTripPlan] = useCreateTripPlanMutation();
+
+  const myReservations: any[] = reservationsResponse?.data ?? [];
+  const myTripPlans: any[] = tripPlansResponse?.data ?? [];
+  const myFavorites: any[] = favoritesResponse?.data ?? [];
 
   // Trip Plan Modal State
   const [planDialogOpen, setPlanDialogOpen] = useState(false);
@@ -63,72 +82,17 @@ export default function UserDashboardPage() {
 
   useEffect(() => {
     setMounted(true);
-    if (user?.id) {
-      fetchUserReservations();
-      fetchUserTripPlans();
-      fetchUserFavorites();
-    }
-  }, [user]);
+  }, []);
 
-  const fetchUserReservations = async () => {
-    setLoadingReservations(true);
-    try {
-      const res = await fetch(`/api/reservations?userId=${user?.id}`);
-      const data = await res.json();
-      if (data.success) {
-        setMyReservations(data.data || []);
-      }
-    } catch (err) {
-      console.error("Fetch user reservations error:", err);
-    } finally {
-      setLoadingReservations(false);
-    }
-  };
-
-  const fetchUserTripPlans = async () => {
-    setLoadingTripPlans(true);
-    try {
-      const res = await fetch(`/api/trip-plans?userId=${user?.id}`);
-      const data = await res.json();
-      if (data.success) {
-        setMyTripPlans(data.data || []);
-      }
-    } catch (err) {
-      console.error("Fetch user trip plans error:", err);
-    } finally {
-      setLoadingTripPlans(false);
-    }
-  };
-
-  const fetchUserFavorites = async () => {
-    setLoadingFavorites(true);
-    try {
-      const res = await fetch(`/api/favorites?userId=${user?.id}`);
-      const data = await res.json();
-      if (data.success) {
-        setMyFavorites(data.data || []);
-      }
-    } catch (err) {
-      console.error("Fetch user favorites error:", err);
-    } finally {
-      setLoadingFavorites(false);
-    }
-  };
+  const errorMessage = (err: unknown, fallback: string) =>
+    (err as { data?: { message?: string } })?.data?.message || fallback;
 
   const handleRemoveFavorite = async (destinationId: string) => {
     try {
-      const res = await fetch(`/api/favorites?userId=${user?.id}&destinationId=${destinationId}`, {
-        method: "DELETE",
-      });
-      const data = await res.json();
-      if (data.success) {
-        toast.success("Removed from saved favorites");
-        fetchUserFavorites();
-      } else {
-        toast.error(data.message || "Failed to remove");
-      }
-    } catch (err) {
-      toast.error("Error removing favorite");
+      await removeFavorite(destinationId).unwrap();
+      toast.success("Removed from saved favorites");
+    } catch (err: unknown) {
+      toast.error(errorMessage(err, "Error removing favorite"));
     }
   };
 
@@ -149,20 +113,10 @@ export default function UserDashboardPage() {
     const toastId = toast.loading("Creating trip plan...");
 
     try {
-      const res = await fetch("/api/trip-plans", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...newPlan,
-          userId: user.id,
-          totalBudget: Number(newPlan.totalBudget),
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Failed to create trip plan");
-      }
+      await createTripPlan({
+        ...newPlan,
+        totalBudget: Number(newPlan.totalBudget),
+      }).unwrap();
 
       toast.success("Trip plan created successfully!", { id: toastId });
       setPlanDialogOpen(false);
@@ -173,9 +127,8 @@ export default function UserDashboardPage() {
         totalBudget: 5000,
         notes: "",
       });
-      fetchUserTripPlans();
-    } catch (err: any) {
-      toast.error(err.message || "Failed to create trip plan", { id: toastId });
+    } catch (err: unknown) {
+      toast.error(errorMessage(err, "Failed to create trip plan"), { id: toastId });
     } finally {
       setSubmittingPlan(false);
     }

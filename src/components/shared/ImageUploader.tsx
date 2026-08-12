@@ -5,6 +5,7 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import { FaCloudUploadAlt, FaTrashAlt, FaSpinner, FaImage } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
+import { useUploadImageMutation } from "@/redux/features/upload/uploadApi";
 
 interface ImageUploaderProps {
   value?: string;
@@ -26,6 +27,7 @@ export function ImageUploader({
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState<string | undefined>(value);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadImage] = useUploadImageMutation();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -49,27 +51,16 @@ export function ImageUploader({
     const toastId = toast.loading("Uploading image to Cloudinary...");
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("folder", folder);
+      const result = await uploadImage({ file, folder }).unwrap();
+      const url = result.data.url;
 
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Failed to upload image");
-      }
-
-      setPreview(data.url);
-      onChange(data.url);
+      setPreview(url);
+      onChange(url);
       toast.success("Image uploaded successfully!", { id: toastId });
-    } catch (err: any) {
-      console.error("Upload error:", err);
-      toast.error(err.message || "Image upload failed", { id: toastId });
+    } catch (err: unknown) {
+      const message =
+        (err as { data?: { message?: string } })?.data?.message || "Image upload failed";
+      toast.error(message, { id: toastId });
       setPreview(value);
     } finally {
       setLoading(false);
