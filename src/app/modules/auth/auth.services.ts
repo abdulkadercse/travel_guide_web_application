@@ -48,7 +48,6 @@ const loginUserDB = async (payload: ILoginUser): Promise<ILoginUserResponse> => 
       email: isUserExist.email,
       phone: isUserExist.phone,
       address: isUserExist.address,
-      companyName: isUserExist.companyName,
       avatar: isUserExist.avatar,
       role: isUserExist.role as any,
       status: isUserExist.status as any,

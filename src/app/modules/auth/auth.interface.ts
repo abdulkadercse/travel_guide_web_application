@@ -14,7 +14,6 @@ export interface ILoginUserResponse {
     email: string;
     phone?: string | null;
     address?: string | null;
-    companyName?: string | null;
     avatar?: string | null;
     role: UserRole;
     status: UserStatus;

@@ -182,7 +182,7 @@ export default function UserDashboardPage() {
   };
 
   return (
-    <ProtectedRoute allowedRoles={["USER", "GUIDE", "COMPANY", "ADMIN", "SUPER_ADMIN"]}>
+    <ProtectedRoute allowedRoles={["USER", "ADMIN", "SUPER_ADMIN"]}>
       <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300 font-sans selection:bg-indigo-500 selection:text-white">
         {/* User Navbar */}
         <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-background/80 border-b border-border">

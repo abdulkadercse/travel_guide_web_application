@@ -1,7 +1,5 @@
 export enum UserRole {
   USER = 'USER',
-  GUIDE = 'GUIDE',
-  COMPANY = 'COMPANY',
   SUPER_ADMIN = 'SUPER_ADMIN',
   ADMIN = 'ADMIN',
 }
@@ -19,7 +17,6 @@ export interface IUser {
   phone?: string | null;
   password?: string;
   address?: string | null;
-  companyName?: string | null;
   avatar?: string | null;
   role: UserRole;
   status: UserStatus;
@@ -34,7 +31,6 @@ export interface ICreateUser {
   phone?: string;
   password: string;
   address?: string;
-  companyName?: string;
   avatar?: string;
   role?: UserRole;
 }
@@ -45,7 +41,6 @@ export interface IUpdateUser {
   phone?: string;
   password?: string;
   address?: string;
-  companyName?: string;
   avatar?: string;
   role?: UserRole;
   status?: UserStatus;

@@ -90,26 +90,39 @@ Travla BD follows a decoupled **Three-Tier Software Architecture**:
 
 ## 📁 Repository Structure
 
+The repository holds two packages: the Next.js frontend at the root and the Express API in `server/`.
+
 ```
 travla/
-├── prisma/                 # Prisma DB schema & migration files
-├── public/                 # Static assets & images
-├── src/
-│   ├── app/                # Next.js App Router (pages & layouts)
-│   │   ├── (commonLayout)/ # Main public layout (Home, About, etc.)
-│   │   ├── login/          # Login page
-│   │   ├── signup/         # Signup page
-│   │   ├── demo/           # Tour packages component showcase
-│   │   └── not-found.tsx   # Custom 404 page
-│   ├── components/         # Reusable React components
-│   │   ├── providers/      # Redux & theme context providers
-│   │   ├── shared/         # Shared UI (Navbar, Footer, Container, Form controls)
-│   │   └── ui/             # Core UI components (Buttons, Cards, Sliders)
-│   ├── redux/              # Redux slices, hooks & store configuration
-│   └── types/              # TypeScript interfaces & types
-├── .env.example            # Environment variables template
-├── .gitignore              # Git ignore rules
-└── README.md               # Project documentation
+├── server/                     # Application Server Layer (Node.js + Express + TypeScript)
+│   ├── prisma/
+│   │   ├── schema.prisma       # Database Layer schema (PostgreSQL + Prisma)
+│   │   └── seed.ts             # Demo data seeder
+│   ├── src/
+│   │   ├── app.ts              # Express app, CORS, /api/v1 mount, error handlers
+│   │   ├── server.ts           # Bootstrap, DB connect, graceful shutdown
+│   │   ├── config/             # Typed environment loader
+│   │   ├── routes/             # Root router, one entry per feature module
+│   │   ├── middlewares/        # auth, validateRequest, globalErrorHandler, notFound
+│   │   ├── shared/             # prisma client, ApiError, catchAsync, sendResponse, pick
+│   │   ├── utils/              # jwtHelpers, cloudinary
+│   │   └── modules/            # Feature modules (interface/validation/services/controller/route)
+│   └── .env.example            # Backend environment template
+├── public/                     # Static assets & images
+├── src/                        # User Interface Layer (Next.js frontend only)
+│   ├── app/                    # App Router pages & layouts
+│   │   ├── (commonLayout)/     # Public layout (Home, About, etc.)
+│   │   ├── dashboard/          # Role-based dashboards, (admin) and (user) groups
+│   │   ├── login/  signup/     # Auth pages
+│   │   └── not-found.tsx       # Custom 404 page
+│   ├── components/
+│   │   ├── providers/          # Redux & theme context providers
+│   │   ├── shared/             # Navbar, Footer, Container, form controls, uploaders
+│   │   └── ui/                 # shadcn primitives & section components
+│   ├── redux/                  # Store, RTK Query baseApi, feature APIs & slices
+│   ├── lib/  utils/  types/    # Frontend helpers and shared types
+├── .env.example                # Frontend environment template
+└── README.md                   # Project documentation
 ```
 
 ---
@@ -130,38 +143,57 @@ Make sure you have the following installed:
    cd travel_guide_web_application
    ```
 
-2. **Install Dependencies**:
+2. **Install Dependencies** (both packages):
    ```bash
-   npm install
+   npm install            # frontend, from the repo root
+   cd server && npm install && cd ..
    ```
 
 3. **Configure Environment Variables**:
-   Create a `.env` file in the root directory using `.env.example` as a reference:
+
+   Backend secrets — database, JWT, Cloudinary — live in `server/.env`:
    ```bash
-   cp .env.example .env
+   cp server/.env.example server/.env
    ```
-   Fill in your PostgreSQL database credentials and JWT secret keys:
+
+   Frontend keys live in `.env.local` at the repo root:
+   ```bash
+   cp .env.example .env.local
+   ```
    ```env
-   DATABASE_URL="postgres://username:password@localhost:5432/travla_db"
-   JWT_SECRET="your_jwt_secret_key"
-   JWT_EXPIRES_IN="7d"
-   JWT_REFRESH_SECRET="your_jwt_refresh_secret_key"
-   JWT_REFRESH_EXPIRES_IN="30d"
-   BCRYPT_SALT_ROUNDS="12"
+   NEXT_PUBLIC_API_URL=http://localhost:5001/api/v1
+   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="your-cloudinary-cloud-name"
    ```
 
-4. **Initialize Database with Prisma**:
-   ```bash
-   npx prisma db push
-   # or
-   npx prisma migrate dev
-   ```
+   The frontend never receives a database URL or a secret key — only the Express server does.
 
-5. **Run Development Server**:
-   ```bash
-   npm run dev
-   ```
-   Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
+### Database setup
+
+All database commands are run **from the `server/` directory**, because the schema belongs to the Application Server Layer.
+
+```bash
+cd server
+npx prisma migrate dev --name init   # create the database schema
+npx prisma generate                  # regenerate the typed Prisma client
+npm run seed                         # load demo users, destinations, hotels, restaurants, transport
+```
+
+`npm run seed` prints the demo account credentials when it finishes.
+
+### Running the project
+
+The frontend and the API are two separate processes — open two terminals.
+
+```bash
+# Terminal 1 — Application Server Layer
+cd server
+npm run dev            # http://localhost:5001  (API base: /api/v1)
+
+# Terminal 2 — User Interface Layer
+npm run dev            # http://localhost:3000
+```
+
+Check that the API is alive at [http://localhost:5001/health](http://localhost:5001/health), then open [http://localhost:3000](http://localhost:3000).
 
 ---
 

@@ -12,8 +12,6 @@ datasource db {
 
 enum UserRole {
   USER
-  GUIDE
-  COMPANY
   SUPER_ADMIN
   ADMIN
 }
@@ -39,17 +37,16 @@ enum ReservationStatus {
 }
 
 model User {
-  id          String     @id @default(cuid())
-  name        String
-  email       String     @unique
-  phone       String?    @unique
-  password    String
-  address     String?
-  companyName String?
-  avatar      String?
-  role        UserRole   @default(USER)
-  status      UserStatus @default(ACTIVE)
-  isVerified  Boolean    @default(false)
+  id         String     @id @default(cuid())
+  name       String
+  email      String     @unique
+  phone      String?    @unique
+  password   String
+  address    String?
+  avatar     String?
+  role       UserRole   @default(USER)
+  status     UserStatus @default(ACTIVE)
+  isVerified Boolean    @default(false)
 
   reviews      Review[]
   reservations Reservation[]
@@ -118,7 +115,8 @@ model Restaurant {
   coverImage  String
   images      String[]
 
-  reviews Review[]
+  reviews      Review[]
+  reservations Reservation[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -216,6 +214,8 @@ model Reservation {
   destination   Destination?      @relation(fields: [destinationId], references: [id], onDelete: SetNull)
   hotelId       String?
   hotel         Hotel?            @relation(fields: [hotelId], references: [id], onDelete: SetNull)
+  restaurantId  String?
+  restaurant    Restaurant?       @relation(fields: [restaurantId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -18,7 +18,6 @@ const createUserValidationSchema = z.object({
 
   address: z.string().optional(),
 
-  companyName: z.string().optional(),
 
   avatar: z.string().url('Avatar must be a valid URL').optional(),
 
@@ -31,7 +30,6 @@ const updateUserValidationSchema = z.object({
   phone: z.string().optional(),
   password: z.string().min(6).optional(),
   address: z.string().optional(),
-  companyName: z.string().optional(),
   avatar: z.string().url().optional(),
   role: z.nativeEnum(UserRole).optional(),
   status: z.nativeEnum(UserStatus).optional(),

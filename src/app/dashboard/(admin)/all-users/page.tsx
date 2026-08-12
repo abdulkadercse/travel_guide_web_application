@@ -280,8 +280,6 @@ export default function AllUsersPage() {
                   <option value="USER">User</option>
                   <option value="ADMIN">Admin</option>
                   <option value="SUPER_ADMIN">Super Admin</option>
-                  <option value="GUIDE">Guide</option>
-                  <option value="COMPANY">Company</option>
                 </select>
 
                 <select
@@ -362,8 +360,6 @@ export default function AllUsersPage() {
                             <option value="USER">USER</option>
                             <option value="ADMIN">ADMIN</option>
                             <option value="SUPER_ADMIN">SUPER ADMIN</option>
-                            <option value="GUIDE">GUIDE</option>
-                            <option value="COMPANY">COMPANY</option>
                           </select>
                         </TableCell>
 
