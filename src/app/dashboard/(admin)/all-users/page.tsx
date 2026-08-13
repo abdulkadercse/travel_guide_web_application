@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { ProtectedRoute, Container } from "@/components/shared";
@@ -29,8 +29,6 @@ import {
   FaTrashAlt,
   FaBan,
   FaCheckCircle,
-  FaShieldAlt,
-  FaUserCog,
   FaSpinner,
   FaArrowLeft,
   FaSun,

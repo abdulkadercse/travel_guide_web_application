@@ -7,6 +7,7 @@ import FeaturedDestinations from "@/components/ui/home/FeaturedDestinations";
 import WhyChooseUs from "@/components/ui/home/WhyChooseUs";
 import FeaturedHotels from "@/components/ui/home/FeaturedHotels";
 import TransitRoutes from "@/components/ui/home/TransitRoutes";
+import TrustSection from "@/components/ui/home/TrustSection";
 import Reviews from "@/components/ui/home/Reviews";
 import FAQSection from "@/components/ui/home/FAQSection";
 import CtaBanner from "@/components/ui/home/CtaBanner";
@@ -19,10 +20,11 @@ export default function Home() {
       <HeroSection />
       <StatsBanner />
       <FeaturedDestinations />
-      <WhyChooseUs />
       <FeaturedHotels />
       <TransitRoutes />
+      <TrustSection />
       <Reviews />
+      <WhyChooseUs />
       <FAQSection />
       <CtaBanner />
     </main>

@@ -41,14 +41,18 @@ export const authSlice = createSlice({
       state,
       action: PayloadAction<{
         user: IUserPayload;
-        token: string;
+        token?: string;
       }>
     ) => {
       const { user, token } = action.payload;
       state.user = user;
-      state.token = token;
+      if (token) {
+        state.token = token;
+      }
       if (typeof window !== 'undefined') {
-        localStorage.setItem('accessToken', token);
+        if (token) {
+          localStorage.setItem('accessToken', token);
+        }
         localStorage.setItem('user', JSON.stringify(user));
       }
     },

@@ -61,6 +61,8 @@ export function Navbar() {
     { name: "Stays", href: "/#stays" },
     { name: "Getting around", href: "/#transport" },
     { name: "About", href: "/about" },
+    { name: "Our Team", href: "/our-team" },
+    { name: "Contact", href: "/contact" },
   ];
 
   const dashboardHref =

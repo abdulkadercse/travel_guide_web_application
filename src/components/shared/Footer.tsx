@@ -31,6 +31,8 @@ const planLinks = [
 
 const companyLinks = [
   { label: "About us", href: "/about" },
+  { label: "Our Team", href: "/our-team" },
+  { label: "Contact us", href: "/contact" },
   { label: "Traveller reviews", href: "/#reviews" },
   { label: "Common questions", href: "/#faq" },
   { label: "Create an account", href: "/signup" },
