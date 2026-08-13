@@ -2,20 +2,28 @@
 
 import React, { useState } from "react";
 import { Container } from "@/components/shared";
-import { FaChevronDown } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa6";
 
 const faqs = [
   {
-    question: "How do I book a tour or hotel on Travla BD?",
-    answer: "Simply browse through our destinations or tour packages, click 'Book Tour', select your dates, and confirm your reservation.",
+    question: "How do I request a booking?",
+    answer:
+      "Open any destination, hotel or restaurant, pick your dates and send a reservation request. It arrives as pending, and you can follow its status from your dashboard until the host confirms it.",
   },
   {
-    question: "Can I customize my trip schedule?",
-    answer: "Yes! Use our User Dashboard 'Trip Planner' tool to add multiple destinations, calculate estimated budget, and save trip notes.",
+    question: "Can I build my own itinerary?",
+    answer:
+      "Yes. The trip planner in your dashboard lets you create a plan, add as many destinations as you like, set a visit date and notes for each one, and track the estimated cost against your budget.",
   },
   {
-    question: "Are local guides verified for safety?",
-    answer: "100% yes. All registered guides and transport operators undergo strict identity verification before listing.",
+    question: "Are the listings verified?",
+    answer:
+      "Every hotel, restaurant and transport operator is reviewed by an administrator before it appears on the site, and reviews can only be written by registered travellers.",
+  },
+  {
+    question: "Does it cost anything to use?",
+    answer:
+      "Creating an account, browsing, saving favourites and planning trips are all free. You only pay the operator directly once a reservation is confirmed.",
   },
 ];
 
@@ -23,42 +31,43 @@ export function FAQSection() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
-    <section className="w-full">
-      <Container className="max-w-3xl space-y-8">
-        <div className="text-center space-y-2">
-          <h2 className="text-3xl font-black tracking-tight">Frequently Asked Questions</h2>
-          <p className="text-xs text-muted-foreground">
-            Everything you need to know about planning trips with Travla BD
-          </p>
+    <section id="faq" className="section">
+      <Container className="max-w-3xl">
+        <div className="max-w-xl space-y-3">
+          <p className="eyebrow">Questions</p>
+          <h2 className="heading">Before you book</h2>
         </div>
 
-        <div className="space-y-3">
-          {faqs.map((faq, idx) => (
-            <div
-              key={idx}
-              className="rounded-2xl border border-border bg-card overflow-hidden transition-all"
-            >
-              <button
-                type="button"
-                onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                className="w-full p-4 text-left font-bold text-sm flex items-center justify-between hover:text-indigo-400 transition-colors"
-              >
-                <span>{faq.question}</span>
-                <FaChevronDown
-                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
-                    openFaq === idx ? "rotate-180 text-indigo-400" : ""
-                  }`}
-                />
-              </button>
+        <dl className="mt-10 divide-y divide-border border-y border-border">
+          {faqs.map((faq, idx) => {
+            const isOpen = openFaq === idx;
+            return (
+              <div key={faq.question}>
+                <dt>
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : idx)}
+                    aria-expanded={isOpen}
+                    className="flex w-full items-center justify-between gap-6 py-5 text-left transition-colors hover:text-primary"
+                  >
+                    <span className="text-base font-medium">{faq.question}</span>
+                    <FaPlus
+                      className={`h-3 w-3 shrink-0 text-muted-foreground transition-transform duration-200 ${
+                        isOpen ? "rotate-45" : ""
+                      }`}
+                    />
+                  </button>
+                </dt>
 
-              {openFaq === idx && (
-                <div className="px-4 pb-4 text-xs text-muted-foreground leading-relaxed border-t border-border/50 pt-3">
-                  {faq.answer}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+                {isOpen && (
+                  <dd className="max-w-2xl pb-6 text-sm leading-relaxed text-muted-foreground">
+                    {faq.answer}
+                  </dd>
+                )}
+              </div>
+            );
+          })}
+        </dl>
       </Container>
     </section>
   );

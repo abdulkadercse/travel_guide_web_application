@@ -20,7 +20,7 @@ const hotelsList = [
     location: "Kolatoli Beach, Cox's Bazar",
     price: 7500,
     rating: 4.9,
-    image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80",
+    image: "/images/coxs-bazar.jpg",
     amenities: ["Ocean View", "Infinity Pool", "Free WiFi", "Breakfast Included"],
   },
   {
@@ -29,7 +29,7 @@ const hotelsList = [
     location: "Sreemangal, Sylhet",
     price: 9200,
     rating: 4.9,
-    image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=600&q=80",
+    image: "/images/bandarban.jpg",
     amenities: ["Golf Course", "Spa Center", "3 Swimming Pools", "Multi-Cuisine"],
   },
   {
@@ -38,7 +38,7 @@ const hotelsList = [
     location: "Bandarban",
     price: 5800,
     rating: 4.8,
-    image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=600&q=80",
+    image: "/images/sylhet.jpg",
     amenities: ["Cloud View Balcony", "Hills Trekking", "Restaurant"],
   },
 ];
@@ -91,92 +91,104 @@ export function FeaturedHotels() {
   };
 
   return (
-    <section className="w-full">
-      <Container className="space-y-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-black tracking-tight flex items-center gap-2">
-              <FaHotel className="text-indigo-500 h-6 w-6" />
-              Featured Hotels & Resorts
-            </h2>
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              Stay comfortably at top-rated resorts across Bangladesh
+    <section id="stays" className="section">
+      <Container className="space-y-9">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="max-w-xl space-y-4">
+            <p className="eyebrow">Where to stay</p>
+            <h2 className="heading">Rooms with a view worth waking up to</h2>
+            <p className="text-lg leading-relaxed text-muted-foreground">
+              Beachfront resorts, hillside lodges and city hotels, all rated by people who stayed
+              there.
             </p>
           </div>
-          <Button variant="ghost" className="text-indigo-400 font-semibold" asChild>
-            <Link href="/demo">Browse Hotels &rarr;</Link>
+
+          <Button variant="outline" asChild className="self-start sm:self-auto">
+            <Link href="/demo">Browse all stays</Link>
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {hotelsList.map((hotel) => (
-            <div
-              key={hotel.id}
-              className="rounded-3xl overflow-hidden bg-card border border-border shadow-md hover:shadow-xl transition-all duration-300 flex flex-col"
-            >
-              <div className="relative h-48 w-full bg-slate-900">
-                <Image src={hotel.image} alt={hotel.name} fill className="object-cover" />
-                <div className="absolute top-3 right-3 bg-slate-950/80 backdrop-blur-md px-2.5 py-1 rounded-full text-xs text-amber-400 font-bold flex items-center gap-1">
-                  <FaStar className="h-3 w-3" />
-                  <span>{hotel.rating}</span>
-                </div>
+            <article key={hotel.id} className="surface-interactive group flex flex-col overflow-hidden">
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
+                <Image
+                  src={hotel.image}
+                  alt={hotel.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-stone-950/50 via-transparent to-transparent" />
+
+                <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 text-sm font-medium text-white">
+                  <FaStar className="h-3.5 w-3.5 text-highlight" />
+                  {hotel.rating}
+                </span>
               </div>
-              <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
-                <div>
-                  <h3 className="font-extrabold text-lg leading-snug">{hotel.name}</h3>
-                  <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                    <FaMapMarkerAlt className="h-3 w-3 text-indigo-500 shrink-0" />
-                    {hotel.location}
-                  </p>
-                  <div className="flex flex-wrap gap-1.5 mt-3">
-                    {hotel.amenities.map((a, i) => (
-                      <span
-                        key={i}
-                        className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20"
-                      >
-                        {a}
-                      </span>
-                    ))}
-                  </div>
+
+              <div className="flex flex-1 flex-col p-5">
+                <h3 className="text-lg font-semibold leading-snug transition-colors group-hover:text-primary">
+                  {hotel.name}
+                </h3>
+
+                <p className="mt-1.5 flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <FaMapMarkerAlt className="h-3 w-3 shrink-0" />
+                  {hotel.location}
+                </p>
+
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {hotel.amenities.map((a: string) => (
+                    <span
+                      key={a}
+                      className="rounded-md bg-secondary px-2 py-1 text-xs text-muted-foreground"
+                    >
+                      {a}
+                    </span>
+                  ))}
                 </div>
-                <div className="pt-2 border-t border-border flex items-center justify-between">
-                  <span className="text-base font-black text-indigo-400">
-                    ৳{hotel.price} <span className="text-xs font-normal text-muted-foreground">/ night</span>
-                  </span>
-                  <Button
-                    size="sm"
-                    onClick={() => handleOpenBooking(hotel)}
-                    className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full"
-                  >
-                    Book Stay
+
+                <div className="mt-auto flex items-end justify-between pt-5">
+                  <p>
+                    <span className="text-xl font-semibold tracking-tight">
+                      ৳{hotel.price.toLocaleString()}
+                    </span>
+                    <span className="text-sm text-muted-foreground"> / night</span>
+                  </p>
+
+                  <Button size="sm" onClick={() => handleOpenBooking(hotel)}>
+                    Reserve
                   </Button>
                 </div>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       </Container>
 
       {/* Hotel Reservation Modal */}
       <Dialog open={bookingModalOpen} onOpenChange={setBookingModalOpen}>
-        <DialogContent className="max-w-md bg-card border-border">
+        <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold">
-              Book Stay: {selectedHotel?.name}
-            </DialogTitle>
+            <DialogTitle>Request a stay</DialogTitle>
           </DialogHeader>
 
-          <form onSubmit={handleConfirmBooking} className="space-y-4 pt-2">
-            <div className="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-xs space-y-1">
-              <p className="font-bold text-indigo-400">Hotel Details:</p>
-              <p>Location: {selectedHotel?.location}</p>
-              <p>Nightly Rate: ৳{selectedHotel?.price} / night</p>
+          <form onSubmit={handleConfirmBooking} className="space-y-5 pt-1">
+            <div className="rounded-lg border border-border bg-secondary/50 p-4 text-sm">
+              <p className="font-medium">{selectedHotel?.name}</p>
+              <p className="mt-0.5 text-muted-foreground">{selectedHotel?.location}</p>
+              <p className="mt-2 text-muted-foreground">
+                ৳{(selectedHotel?.price || 5000).toLocaleString()} per night
+              </p>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1">
-                <label className="text-xs font-semibold">Check-In Date</label>
+              <div className="space-y-1.5">
+                <label htmlFor="hotel-in" className="text-sm text-muted-foreground">
+                  Check in
+                </label>
                 <Input
+                  id="hotel-in"
                   type="date"
                   value={bookingDates.start}
                   onChange={(e) => setBookingDates({ ...bookingDates, start: e.target.value })}
@@ -184,9 +196,12 @@ export function FeaturedHotels() {
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-semibold">Check-Out Date</label>
+              <div className="space-y-1.5">
+                <label htmlFor="hotel-out" className="text-sm text-muted-foreground">
+                  Check out
+                </label>
                 <Input
+                  id="hotel-out"
                   type="date"
                   value={bookingDates.end}
                   onChange={(e) => setBookingDates({ ...bookingDates, end: e.target.value })}
@@ -195,12 +210,12 @@ export function FeaturedHotels() {
               </div>
             </div>
 
-            <div className="pt-2 flex justify-end gap-2">
+            <div className="flex justify-end gap-2">
               <Button type="button" variant="outline" onClick={() => setBookingModalOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={bookingLoading} className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold">
-                Confirm Reservation
+              <Button type="submit" disabled={bookingLoading}>
+                {bookingLoading ? "Sending..." : "Send request"}
               </Button>
             </div>
           </form>

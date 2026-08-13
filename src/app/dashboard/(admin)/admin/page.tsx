@@ -410,7 +410,8 @@ export default function AdminDashboardPage() {
                         <TableRow key={item.id}>
                           <TableCell>
                             <div className="relative h-12 w-16 rounded-lg overflow-hidden bg-slate-900 border">
-                              <Image src={item.coverImage} alt={item.title} fill className="object-cover" />
+                              <Image src={item.coverImage} alt={item.title} fill
+                    sizes="64px" className="object-cover" />
                             </div>
                           </TableCell>
                           <TableCell className="font-bold text-foreground">

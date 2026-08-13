@@ -3,44 +3,26 @@
 import React from "react";
 import Container from "@/components/shared/Container";
 
+const stats = [
+  { value: "50+", label: "Destinations" },
+  { value: "10k+", label: "Travellers" },
+  { value: "100+", label: "Verified stays" },
+  { value: "4.9", label: "Average rating" },
+];
+
 export function StatsBanner() {
   return (
-    <section className="w-full">
+    <section className="pt-12 sm:pt-14">
       <Container>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-indigo-900/40 via-purple-900/30 to-slate-900/40 border border-indigo-500/20 backdrop-blur-xl shadow-xl">
-          <div className="text-center space-y-1">
-            <h3 className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
-              50+
-            </h3>
-            <p className="text-xs sm:text-sm font-semibold text-muted-foreground">
-              Tourist Destinations
-            </p>
-          </div>
-          <div className="text-center space-y-1">
-            <h3 className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              10k+
-            </h3>
-            <p className="text-xs sm:text-sm font-semibold text-muted-foreground">
-              Happy Travelers
-            </p>
-          </div>
-          <div className="text-center space-y-1">
-            <h3 className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-              100+
-            </h3>
-            <p className="text-xs sm:text-sm font-semibold text-muted-foreground">
-              Verified Hotels
-            </p>
-          </div>
-          <div className="text-center space-y-1">
-            <h3 className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
-              4.9 ⭐
-            </h3>
-            <p className="text-xs sm:text-sm font-semibold text-muted-foreground">
-              Average Rating
-            </p>
-          </div>
-        </div>
+        <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-4">
+          {stats.map((stat) => (
+            <div key={stat.label} className="bg-card px-6 py-7 text-center">
+              <dt className="sr-only">{stat.label}</dt>
+              <dd className="text-3xl font-semibold tracking-tight sm:text-4xl">{stat.value}</dd>
+              <p className="mt-1.5 text-sm text-muted-foreground">{stat.label}</p>
+            </div>
+          ))}
+        </dl>
       </Container>
     </section>
   );

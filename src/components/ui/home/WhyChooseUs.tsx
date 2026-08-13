@@ -2,64 +2,53 @@
 
 import React from "react";
 import Container from "@/components/shared/Container";
-import { FaShieldAlt, FaRoute, FaCheckCircle, FaHeadset } from "react-icons/fa";
+import { FaShieldHalved, FaRoute, FaCircleCheck, FaHeadset } from "react-icons/fa6";
+
+const features = [
+  {
+    Icon: FaShieldHalved,
+    title: "Verified listings",
+    body: "Every hotel, restaurant and transport operator on Travla is checked before it is published.",
+  },
+  {
+    Icon: FaRoute,
+    title: "Trip planner",
+    body: "Build an itinerary day by day, add notes to each stop and keep an eye on the budget.",
+  },
+  {
+    Icon: FaCircleCheck,
+    title: "Reservation requests",
+    body: "Send a request and follow its status — pending, confirmed or completed — from your dashboard.",
+  },
+  {
+    Icon: FaHeadset,
+    title: "Support that answers",
+    body: "A travel desk you can reach at any hour, before you leave and while you are on the road.",
+  },
+];
 
 export function WhyChooseUs() {
   return (
-    <section className="w-full bg-slate-950/50 py-16 border-y border-border/50">
+    <section className="section border-y border-border bg-secondary/40">
       <Container className="space-y-12">
-        <div className="text-center max-w-2xl mx-auto space-y-3">
-          <span className="text-xs font-extrabold uppercase tracking-widest px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 inline-block">
-            Why Travla BD
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-black tracking-tight">
-            Smart & Safe Travel Planning
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            We combine destination discovery, hotel bookings, transportation guides, and custom trip planning into a single platform.
+        <div className="max-w-xl space-y-3">
+          <p className="eyebrow">Why Travla</p>
+          <h2 className="heading">Everything a trip needs, in one place</h2>
+          <p className="text-lg leading-relaxed text-muted-foreground">
+            Discovery, stays, transport and planning stop being four different tabs.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="p-6 rounded-3xl bg-card border border-border shadow-md space-y-3 hover:border-indigo-500/40 transition-all">
-            <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
-              <FaShieldAlt className="h-6 w-6" />
+        <div className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          {features.map(({ Icon, title, body }) => (
+            <div key={title} className="space-y-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-soft text-primary">
+                <Icon className="h-4 w-4" />
+              </span>
+              <h3 className="text-base">{title}</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">{body}</p>
             </div>
-            <h3 className="font-bold text-lg">Verified Safety</h3>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              All local guides, hotels, and transport operators undergo strict identity verification.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-3xl bg-card border border-border shadow-md space-y-3 hover:border-indigo-500/40 transition-all">
-            <div className="h-12 w-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
-              <FaRoute className="h-6 w-6" />
-            </div>
-            <h3 className="font-bold text-lg">Smart Trip Planner</h3>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Easily build custom itineraries, track budget estimates, and save schedule notes.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-3xl bg-card border border-border shadow-md space-y-3 hover:border-indigo-500/40 transition-all">
-            <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-              <FaCheckCircle className="h-6 w-6" />
-            </div>
-            <h3 className="font-bold text-lg">Instant Confirmation</h3>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Submit hotel and tour reservation requests with real-time status updates on your dashboard.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-3xl bg-card border border-border shadow-md space-y-3 hover:border-indigo-500/40 transition-all">
-            <div className="h-12 w-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-              <FaHeadset className="h-6 w-6" />
-            </div>
-            <h3 className="font-bold text-lg">24/7 Travel Support</h3>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Our dedicated travel support team is available round-the-clock to assist your journey.
-            </p>
-          </div>
+          ))}
         </div>
       </Container>
     </section>

@@ -13,23 +13,18 @@ import CtaBanner from "@/components/ui/home/CtaBanner";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300 font-sans selection:bg-indigo-500 selection:text-white overflow-x-hidden">
- 
-
-      {/* Main Home Sections */}
-      <main className="flex-1 w-full space-y-16 sm:space-y-24 pb-16">
-        <HeroSection />
-        <StatsBanner />
-        <FeaturedDestinations />
-        <WhyChooseUs />
-        <FeaturedHotels />
-        <TransitRoutes />
-        <Reviews />
-        <FAQSection />
-        <CtaBanner />
-      </main>
-
-
-    </div>
+    // Sections own their own vertical rhythm through the .section utility,
+    // so the page itself only sets the flow.
+    <main className="flex-1 overflow-x-hidden">
+      <HeroSection />
+      <StatsBanner />
+      <FeaturedDestinations />
+      <WhyChooseUs />
+      <FeaturedHotels />
+      <TransitRoutes />
+      <Reviews />
+      <FAQSection />
+      <CtaBanner />
+    </main>
   );
 }

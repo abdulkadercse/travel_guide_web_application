@@ -13,9 +13,10 @@ export function ThemeProvider({
     setMounted(true);
   }, []);
 
-  return (
-    <NextThemesProvider {...props} enableSystem={false}>
-      {children}
-    </NextThemesProvider>
-  );
+  // Avoid a flash of the wrong theme before next-themes reads storage.
+  if (!mounted) {
+    return <>{children}</>;
+  }
+
+  return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }

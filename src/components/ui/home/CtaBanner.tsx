@@ -2,40 +2,45 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Container from "@/components/shared/Container";
 import { Button } from "@/components/ui/button";
 
 export function CtaBanner() {
   return (
-    <section className="w-full">
+    <section className="pb-20 sm:pb-24">
       <Container>
-        <div className="relative rounded-3xl p-8 sm:p-12 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-800 text-white overflow-hidden shadow-2xl text-center space-y-6">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="space-y-2 relative z-10 max-w-2xl mx-auto">
-            <h2 className="text-3xl sm:text-5xl font-black tracking-tight">
-              Ready to Discover Bangladesh?
-            </h2>
-            <p className="text-indigo-100 text-sm sm:text-base">
-              Join thousands of happy travelers today. Book tour packages or create your custom trip itinerary.
-            </p>
-          </div>
+        <div className="relative overflow-hidden rounded-2xl border border-border">
+          <Image
+            src="/images/bg-travel.jpg"
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-stone-950/60" />
 
-          <div className="flex flex-wrap items-center justify-center gap-4 relative z-10">
-            <Button
-              size="lg"
-              className="bg-white text-indigo-900 hover:bg-slate-100 rounded-full font-extrabold px-8 shadow-xl"
-              asChild
-            >
-              <Link href="/signup">Get Started Free</Link>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white/40 text-white hover:bg-white/10 rounded-full font-semibold px-8"
-              asChild
-            >
-              <Link href="/demo">View Tour Packages</Link>
-            </Button>
+          <div className="relative px-6 py-16 text-center sm:px-12 sm:py-20">
+            <div className="mx-auto max-w-xl space-y-4">
+              <h2 className="heading text-white">Where are you going next?</h2>
+              <p className="text-base leading-relaxed text-white/80">
+                Create a free account to save the places you like and start planning the trip.
+              </p>
+            </div>
+
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Button size="lg" asChild className="bg-white text-stone-900 hover:bg-white/90">
+                <Link href="/signup">Create an account</Link>
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                asChild
+                className="border-white/40 bg-transparent text-white hover:bg-white/10 hover:text-white"
+              >
+                <Link href="/#destinations">Browse destinations</Link>
+              </Button>
+            </div>
           </div>
         </div>
       </Container>

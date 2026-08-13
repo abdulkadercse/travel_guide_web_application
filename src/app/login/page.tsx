@@ -5,31 +5,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Link from "next/link";
+import Image from "next/image";
 import toast from "react-hot-toast";
 import { useLoginMutation } from "@/redux/features/auth/authApi";
 import { useAppDispatch } from "@/redux/hooks";
 import { setUser } from "@/redux/features/auth/authSlice";
-import {
-  GlassCard,
-  GlassCardHeader,
-  GlassCardTitle,
-  GlassCardDescription,
-  GlassCardAction,
-  GlassCardContent,
-  GlassCardFooter,
-} from "@/components/ui/glass-card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import {
-  FaEye,
-  FaEyeSlash,
-  FaEnvelope,
-  FaLock,
-  FaGoogle,
-  FaExclamationCircle,
-  FaCompass
-} from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaCompass } from "react-icons/fa6";
 import { CgSpinner } from "react-icons/cg";
 
 const loginSchema = z.object({
@@ -41,7 +25,6 @@ const loginSchema = z.object({
     .string()
     .min(1, { message: "Password is required" })
     .min(6, { message: "Password must be at least 6 characters" }),
-  rememberMe: z.boolean().optional(),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -58,21 +41,14 @@ export default function LoginPage() {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     mode: "onChange",
-    defaultValues: {
-      email: "",
-      password: "",
-      rememberMe: false,
-    },
+    defaultValues: { email: "", password: "" },
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    const toastId = toast.loading("Logging in...");
+    const toastId = toast.loading("Signing you in...");
 
     try {
-      const res = await login({
-        email: data.email,
-        password: data.password,
-      }).unwrap();
+      const res = await login({ email: data.email, password: data.password }).unwrap();
 
       if (res?.success && res?.data) {
         const { accessToken, refreshToken, user } = res.data;
@@ -82,166 +58,133 @@ export default function LoginPage() {
         localStorage.setItem("user", JSON.stringify(user));
 
         dispatch(setUser({ user, token: accessToken }));
+        toast.success(`Welcome back, ${user.name.split(" ")[0]}`, { id: toastId });
 
-        toast.success("Login successful! Welcome back.", { id: toastId });
-
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 1000);
+        const isAdmin = user.role === "ADMIN" || user.role === "SUPER_ADMIN";
+        window.location.href = isAdmin ? "/dashboard/admin" : "/dashboard/user";
       }
-    } catch (err: any) {
-      const errorMessage = err?.data?.message || err?.message || "Invalid credentials. Please try again.";
-      toast.error(errorMessage, { id: toastId });
+    } catch (err: unknown) {
+      const message =
+        (err as { data?: { message?: string } })?.data?.message ||
+        "Invalid credentials. Please try again.";
+      toast.error(message, { id: toastId });
     }
   };
 
   return (
-    <div className="bg-[url('/images/bg-travel.jpg')] bg-cover bg-center w-full min-h-screen flex items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-indigo-500 selection:text-white">
-      {/* Background Dark Overlay Filter */}
-      <div className="absolute inset-0 bg-slate-950/65 backdrop-blur-[2px]" />
+    <div className="grid min-h-screen lg:grid-cols-2">
+      {/* Form side */}
+      <div className="flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16">
+        <div className="mx-auto w-full max-w-sm">
+          <Link href="/" className="inline-flex items-center gap-2.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <FaCompass className="h-4 w-4" />
+            </span>
+            <span className="text-lg font-semibold tracking-tight">
+              Travla<span className="text-primary">BD</span>
+            </span>
+          </Link>
 
-      <GlassCard className="w-full max-w-md relative z-10 shadow-2xl border-white/15 bg-slate-900/60 backdrop-blur-xl">
-        {/* Top Highlight line */}
-        <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
-
-        <GlassCardHeader>
-          <div className="flex items-center gap-2 mb-2">
-            <FaCompass className="h-6 w-6 text-indigo-400 animate-pulse" />
-            <span className="text-xl font-bold tracking-wider text-white">Travla</span>
+          <div className="mt-10 space-y-2">
+            <h1 className="text-2xl sm:text-3xl">Welcome back</h1>
+            <p className="text-sm text-muted-foreground">
+              Sign in to pick up where you left off.
+            </p>
           </div>
-          <GlassCardTitle className="text-2xl font-bold">Login to your account</GlassCardTitle>
-          <GlassCardDescription className="text-slate-300">
-            Enter your email below to login to your account
-          </GlassCardDescription>
-          <GlassCardAction>
-            <Button variant="link" className="text-indigo-400 hover:text-indigo-300 p-0" asChild>
-              <Link href="/signup">Sign Up</Link>
-            </Button>
-          </GlassCardAction>
-        </GlassCardHeader>
 
-        <GlassCardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-            <div className="flex flex-col gap-4">
-              {/* Email Field */}
-              <div className="grid gap-1.5">
-                <Label htmlFor="email" className="text-slate-200 font-semibold">Email</Label>
-                <div className="relative">
-                  <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="m@example.com"
-                    autoComplete="email"
-                    {...register("email")}
-                    className={`pl-9 bg-slate-950/60 text-white placeholder:text-slate-400 border-slate-800 focus-visible:ring-indigo-500 ${
-                      errors.email ? "border-rose-500 focus-visible:ring-rose-500" : ""
-                    }`}
-                  />
-                </div>
-                {errors.email && (
-                  <p className="text-xs text-rose-400 flex items-center gap-1 mt-0.5">
-                    <FaExclamationCircle className="h-3 w-3" />
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Password Field */}
-              <div className="grid gap-1.5">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-slate-200 font-semibold">Password</Label>
-                  <a
-                    href="#forgot-password"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      toast("Forgot password functionality coming soon!", { icon: "ℹ️" });
-                    }}
-                    className="text-xs text-indigo-400 underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <div className="relative">
-                  <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="••••••••••••"
-                    autoComplete="current-password"
-                    {...register("password")}
-                    className={`pl-9 pr-10 bg-slate-950/60 text-white placeholder:text-slate-400 border-slate-800 focus-visible:ring-indigo-500 ${
-                      errors.password ? "border-rose-500 focus-visible:ring-rose-500" : ""
-                    }`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 focus:outline-none"
-                  >
-                    {showPassword ? <FaEyeSlash className="h-4 w-4" /> : <FaEye className="h-4 w-4" />}
-                  </button>
-                </div>
-                {errors.password && (
-                  <p className="text-xs text-rose-400 flex items-center gap-1 mt-0.5">
-                    <FaExclamationCircle className="h-3 w-3" />
-                    {errors.password.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Remember Me */}
-              <div className="flex items-center gap-2 pt-1">
-                <input
-                  id="rememberMe"
-                  type="checkbox"
-                  {...register("rememberMe")}
-                  className="rounded border-slate-700 bg-slate-950 text-indigo-600 focus:ring-indigo-500"
-                />
-                <Label htmlFor="rememberMe" className="text-xs text-slate-300 cursor-pointer">
-                  Remember me for 30 days
-                </Label>
-              </div>
+          <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5" noValidate>
+            <div className="space-y-1.5">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                autoComplete="email"
+                aria-invalid={Boolean(errors.email)}
+                {...register("email")}
+                className={errors.email ? "border-destructive focus-visible:ring-destructive" : ""}
+              />
+              {errors.email && (
+                <p className="text-xs text-destructive">{errors.email.message}</p>
+              )}
             </div>
 
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-gradient-to-r from-indigo-500 via-indigo-600 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-semibold shadow-lg shadow-indigo-500/20"
-            >
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Password</Label>
+                <button
+                  type="button"
+                  onClick={() => toast("Password reset is coming in the next release.")}
+                  className="text-xs text-muted-foreground underline-offset-4 hover:text-primary hover:underline"
+                >
+                  Forgot password?
+                </button>
+              </div>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                  aria-invalid={Boolean(errors.password)}
+                  {...register("password")}
+                  className={`pr-10 ${
+                    errors.password ? "border-destructive focus-visible:ring-destructive" : ""
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {showPassword ? <FaEyeSlash className="h-3.5 w-3.5" /> : <FaEye className="h-3.5 w-3.5" />}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-xs text-destructive">{errors.password.message}</p>
+              )}
+            </div>
+
+            <Button type="submit" disabled={isLoading} className="w-full">
               {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <CgSpinner className="h-4 w-4 animate-spin" />
-                  Logging in...
-                </span>
+                <>
+                  <CgSpinner className="mr-2 h-4 w-4 animate-spin" />
+                  Signing in
+                </>
               ) : (
-                "Login"
+                "Sign in"
               )}
             </Button>
           </form>
-        </GlassCardContent>
 
-        <GlassCardFooter className="flex-col gap-3">
-          <div className="relative w-full my-1">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-800" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-slate-900 px-2 text-slate-400 font-medium">Or continue with</span>
-            </div>
-          </div>
+          <p className="mt-8 text-sm text-muted-foreground">
+            New to Travla?{" "}
+            <Link href="/signup" className="text-primary underline-offset-4 hover:underline">
+              Create an account
+            </Link>
+          </p>
+        </div>
+      </div>
 
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => toast("Google Login coming soon!", { icon: "🚀" })}
-            className="w-full bg-slate-950/40 border-slate-800 text-white hover:bg-slate-800/60 font-medium"
-          >
-            <FaGoogle className="mr-2 h-4 w-4 text-rose-500" />
-            Login with Google
-          </Button>
-        </GlassCardFooter>
-      </GlassCard>
+      {/* Image side */}
+      <div className="relative hidden lg:block">
+        <Image
+          src="/images/bg-travel.jpg"
+          alt=""
+          fill
+          sizes="50vw"
+          priority
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-stone-950/20 to-transparent" />
+        <blockquote className="absolute inset-x-0 bottom-0 p-12">
+          <p className="max-w-md text-2xl leading-snug text-white">
+            Sixty-four districts, one country worth crossing slowly.
+          </p>
+          <footer className="mt-3 text-sm text-white/70">Travla BD</footer>
+        </blockquote>
+      </div>
     </div>
   );
 }

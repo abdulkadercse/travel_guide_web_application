@@ -4,97 +4,93 @@ import React from "react";
 import Link from "next/link";
 import Container from "@/components/shared/Container";
 import { Button } from "@/components/ui/button";
-import { FaBus, FaTrain, FaPlane, FaCar } from "react-icons/fa";
+import { FaBus, FaTrain, FaPlane, FaCar, FaClock } from "react-icons/fa6";
 
 const transportationRoutes = [
   {
-    type: "BUS",
     icon: FaBus,
     operator: "Green Line Paribahan",
-    route: "Dhaka ➔ Cox's Bazar",
-    duration: "9 hours",
+    from: "Dhaka",
+    to: "Cox's Bazar",
+    duration: "9h 00m",
     price: 1500,
-    tag: "AC Scania Sleeper",
+    tag: "AC sleeper",
   },
   {
-    type: "TRAIN",
     icon: FaTrain,
-    operator: "Bangladesh Railway",
-    route: "Dhaka ➔ Sylhet (Parabat Express)",
-    duration: "6.5 hours",
+    operator: "Parabat Express",
+    from: "Dhaka",
+    to: "Sylhet",
+    duration: "6h 30m",
     price: 650,
-    tag: "Snigdha AC Chair",
+    tag: "Snigdha AC",
   },
   {
-    type: "FLIGHT",
     icon: FaPlane,
     operator: "US-Bangla Airlines",
-    route: "Dhaka ➔ Cox's Bazar Airport",
-    duration: "55 mins",
+    from: "Dhaka",
+    to: "Cox's Bazar",
+    duration: "55m",
     price: 4200,
-    tag: "Direct Flight",
+    tag: "Direct",
   },
   {
-    type: "CAR",
     icon: FaCar,
-    operator: "Travla Private Car Rental",
-    route: "Chittagong ➔ Bandarban Hills",
-    duration: "2.5 hours",
+    operator: "Travla Car Rental",
+    from: "Chittagong",
+    to: "Bandarban",
+    duration: "2h 30m",
     price: 3500,
-    tag: "Chauffeur Included",
+    tag: "With driver",
   },
 ];
 
 export function TransitRoutes() {
   return (
-    <section className="w-full bg-slate-950/30 py-12 border-y border-border/40">
-      <Container className="space-y-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-black tracking-tight flex items-center gap-2">
-              <FaBus className="text-indigo-500 h-6 w-6" />
-              Popular Transit & Travel Routes
-            </h2>
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              Compare inter-city buses, express trains, flights, and car rentals across Bangladesh
+    <section id="transport" className="section border-y border-border bg-secondary/40">
+      <Container className="space-y-9">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="max-w-xl space-y-3">
+            <p className="eyebrow">Getting around</p>
+            <h2 className="heading">Buses, trains, flights and cars</h2>
+            <p className="text-lg leading-relaxed text-muted-foreground">
+              Compare operators, travel time and fares before you commit to a route.
             </p>
           </div>
-          <Button variant="ghost" className="text-indigo-400 font-semibold" asChild>
-            <Link href="/demo">View All Routes &rarr;</Link>
+
+          <Button variant="ghost" size="sm" asChild className="self-start sm:self-auto">
+            <Link href="/demo">See all routes →</Link>
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {transportationRoutes.map((route, idx) => {
-            const IconComponent = route.icon;
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {transportationRoutes.map((route) => {
+            const Icon = route.icon;
             return (
               <div
-                key={idx}
-                className="p-5 rounded-2xl bg-card border border-border shadow-sm flex flex-col justify-between space-y-4 hover:border-indigo-500/40 transition-all"
+                key={`${route.operator}-${route.to}`}
+                className="surface-interactive flex flex-col p-5"
               >
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase tracking-wider">
-                      {route.tag}
-                    </span>
-                    <div className="h-8 w-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
-                      <IconComponent className="h-4 w-4" />
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="font-extrabold text-base leading-snug">{route.route}</h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">{route.operator}</p>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-soft text-primary">
+                    <Icon className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground">
+                    {route.tag}
+                  </span>
                 </div>
 
-                <div className="pt-2 border-t border-border flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground font-semibold">
-                    ⏱️ {route.duration}
+                <h3 className="mt-4 text-base leading-snug">
+                  {route.from} <span className="text-muted-foreground">→</span> {route.to}
+                </h3>
+                <p className="mt-1 text-sm text-muted-foreground">{route.operator}</p>
+
+                <div className="mt-5 flex items-center justify-between border-t border-border pt-4 text-sm">
+                  <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                    <FaClock className="h-3 w-3" />
+                    {route.duration}
                   </span>
-                  <span className="text-base font-black text-emerald-400">
-                    ৳{route.price}
-                  </span>
+                  <span className="font-medium">৳{route.price.toLocaleString()}</span>
                 </div>
               </div>
             );

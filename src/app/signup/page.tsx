@@ -5,56 +5,18 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import Image from "next/image";
 import toast from "react-hot-toast";
 import { useCreateUserMutation } from "@/redux/features/user/userApi";
-import { ImageSlider } from "@/components/ui/image-slider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  FaUser,
-  FaPhone,
-  FaEnvelope,
-  FaMapMarkerAlt,
-  FaLock,
-  FaEye,
-  FaEyeSlash,
-  FaCompass,
-  FaGoogle
-} from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaCompass } from "react-icons/fa6";
 import { CgSpinner } from "react-icons/cg";
 
-// Localized images of Bangladesh Travel Spots saved in public/images
-const bdTravelImages = [
-  {
-    url: "/images/paharpur.jpg",
-    title: "Sompura Mahavihara",
-    location: "Paharpur, Naogaon",
-  },
-  {
-    url: "/images/coxs-bazar.jpg",
-    title: "Cox's Bazar Sea Beach",
-    location: "Cox's Bazar, Bangladesh",
-  },
-  {
-    url: "/images/bandarban.jpg",
-    title: "Nilgiri Mountain Range",
-    location: "Bandarban",
-  },
-  {
-    url: "/images/sylhet.jpg",
-    title: "Lush Green Tea Gardens",
-    location: "Sylhet",
-  },
-];
-
-// Zod schema with password matching validation
 const signupSchema = z
   .object({
-    name: z
-      .string()
-      .min(2, { message: "Full name must be at least 2 characters" }),
+    name: z.string().min(2, { message: "Full name must be at least 2 characters" }),
     phone: z
       .string()
       .min(7, { message: "Please enter a valid phone number" })
@@ -63,18 +25,10 @@ const signupSchema = z
       .string()
       .min(1, { message: "Email is required" })
       .email({ message: "Please enter a valid email" }),
-    address: z
-      .string()
-      .min(4, { message: "Address must be at least 4 characters" }),
-    password: z
-      .string()
-      .min(6, { message: "Password must be at least 6 characters" }),
-    confirmPassword: z
-      .string()
-      .min(1, { message: "Please confirm password" }),
-    terms: z.boolean().refine((val) => val === true, {
-      message: "You must accept terms",
-    }),
+    address: z.string().min(4, { message: "Address must be at least 4 characters" }),
+    password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+    confirmPassword: z.string().min(1, { message: "Please confirm your password" }),
+    terms: z.boolean().refine((v) => v, { message: "You must accept the terms to continue" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -85,7 +39,6 @@ type SignupFormData = z.infer<typeof signupSchema>;
 
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [createUser, { isLoading }] = useCreateUserMutation();
 
   const {
@@ -119,265 +72,194 @@ export default function SignupPage() {
       }).unwrap();
 
       if (res?.success) {
-        toast.success("Account created successfully! Redirecting to login...", { id: toastId });
-
-        setTimeout(() => {
-          window.location.href = "/login";
-        }, 1500);
+        toast.success("Account created. You can sign in now.", { id: toastId });
+        window.location.href = "/login";
       }
-    } catch (err: any) {
-      const errorMessage = err?.data?.message || err?.message || "Registration failed. Please try again.";
-      toast.error(errorMessage, { id: toastId });
+    } catch (err: unknown) {
+      const message =
+        (err as { data?: { message?: string } })?.data?.message ||
+        "Registration failed. Please try again.";
+      toast.error(message, { id: toastId });
     }
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.08,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 15, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: "spring" as const,
-        stiffness: 120,
-        damping: 14,
-      },
-    },
-  };
-
   return (
-    <div className="bg-[url('/images/bg-travel.jpg')] bg-cover bg-center w-full min-h-screen flex items-center justify-center p-3 sm:p-6 font-sans relative overflow-hidden selection:bg-indigo-500 selection:text-white">
-      {/* Background Dark Overlay Filter */}
-      <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-[2px]" />
+    <div className="grid min-h-screen lg:grid-cols-2">
+      {/* Image side */}
+      <div className="relative hidden lg:block">
+        <Image
+          src="/images/bandarban.jpg"
+          alt=""
+          fill
+          sizes="50vw"
+          priority
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-stone-950/20 to-transparent" />
+        <blockquote className="absolute inset-x-0 bottom-0 p-12">
+          <p className="max-w-md text-2xl leading-snug text-white">
+            Save the places you love. Plan the trip once, take it as many times as you like.
+          </p>
+          <footer className="mt-3 text-sm text-white/70">Nilgiri, Bandarban</footer>
+        </blockquote>
+      </div>
 
-      <motion.div
-        className="w-full max-w-5xl bg-slate-900/70 backdrop-blur-xl border border-white/15 rounded-2xl overflow-hidden shadow-2xl shadow-black/80 grid grid-cols-1 lg:grid-cols-12 min-h-[640px] relative z-10"
-        initial={{ opacity: 0, scale: 0.97 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-      >
-        {/* Top Highlight border line */}
-        <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+      {/* Form side */}
+      <div className="flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16">
+        <div className="mx-auto w-full max-w-md">
+          <Link href="/" className="inline-flex items-center gap-2.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <FaCompass className="h-4 w-4" />
+            </span>
+            <span className="text-lg font-semibold tracking-tight">
+              Travla<span className="text-primary">BD</span>
+            </span>
+          </Link>
 
-        {/* Left Side: Bangladesh Travel Spots Image Slider (5 Cols on LG) */}
-        <div className="hidden lg:block lg:col-span-5 relative overflow-hidden">
-          <ImageSlider images={bdTravelImages} interval={4500} />
-          {/* Top Logo Badge */}
-          <div className="absolute top-6 left-6 z-20 flex items-center gap-2 bg-slate-950/70 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15 shadow-lg">
-            <FaCompass className="h-4 w-4 text-emerald-400 animate-pulse" />
-            <span className="text-sm font-bold tracking-wide text-white">Travla BD</span>
+          <div className="mt-10 space-y-2">
+            <h1 className="text-2xl sm:text-3xl">Create your account</h1>
+            <p className="text-sm text-muted-foreground">
+              Free, and it takes less than a minute.
+            </p>
           </div>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5" noValidate>
+            <Field
+              id="name"
+              label="Full name"
+              placeholder="Abdul Kader"
+              autoComplete="name"
+              error={errors.name?.message}
+              {...register("name")}
+            />
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Field
+                id="email"
+                label="Email"
+                type="email"
+                placeholder="you@example.com"
+                autoComplete="email"
+                error={errors.email?.message}
+                {...register("email")}
+              />
+              <Field
+                id="phone"
+                label="Phone"
+                placeholder="01700000000"
+                autoComplete="tel"
+                error={errors.phone?.message}
+                {...register("phone")}
+              />
+            </div>
+
+            <Field
+              id="address"
+              label="Address"
+              placeholder="Dhaka, Bangladesh"
+              autoComplete="street-address"
+              error={errors.address?.message}
+              {...register("address")}
+            />
+
+            <div className="space-y-1.5">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="At least 6 characters"
+                  autoComplete="new-password"
+                  aria-invalid={Boolean(errors.password)}
+                  {...register("password")}
+                  className={`pr-10 ${
+                    errors.password ? "border-destructive focus-visible:ring-destructive" : ""
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {showPassword ? (
+                    <FaEyeSlash className="h-3.5 w-3.5" />
+                  ) : (
+                    <FaEye className="h-3.5 w-3.5" />
+                  )}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-xs text-destructive">{errors.password.message}</p>
+              )}
+            </div>
+
+            <Field
+              id="confirmPassword"
+              label="Confirm password"
+              type="password"
+              placeholder="Repeat your password"
+              autoComplete="new-password"
+              error={errors.confirmPassword?.message}
+              {...register("confirmPassword")}
+            />
+
+            <div className="space-y-1.5">
+              <div className="flex items-start gap-2.5">
+                <input
+                  id="terms"
+                  type="checkbox"
+                  {...register("terms")}
+                  className="mt-0.5 h-4 w-4 rounded border-input text-primary focus-visible:ring-2 focus-visible:ring-ring"
+                />
+                <Label htmlFor="terms" className="cursor-pointer text-sm font-normal leading-snug text-muted-foreground">
+                  I agree to the terms of service and privacy policy.
+                </Label>
+              </div>
+              {errors.terms && <p className="text-xs text-destructive">{errors.terms.message}</p>}
+            </div>
+
+            <Button type="submit" disabled={isLoading} className="w-full">
+              {isLoading ? (
+                <>
+                  <CgSpinner className="mr-2 h-4 w-4 animate-spin" />
+                  Creating account
+                </>
+              ) : (
+                "Create account"
+              )}
+            </Button>
+          </form>
+
+          <p className="mt-8 text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link href="/login" className="text-primary underline-offset-4 hover:underline">
+              Sign in
+            </Link>
+          </p>
         </div>
-
-        {/* Right Side: Sign Up Form (7 Cols on LG) */}
-        <div className="lg:col-span-7 w-full flex flex-col justify-center p-5 sm:p-8">
-          <motion.div
-            className="w-full max-w-lg mx-auto"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            {/* Header */}
-            <motion.div variants={itemVariants} className="mb-4">
-              <div className="flex items-center justify-between">
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                  Create Account
-                </h1>
-                <span className="text-xs text-slate-400">
-                  Already a member?{" "}
-                  <Link href="/login" className="text-indigo-400 font-semibold hover:underline">
-                    Log in
-                  </Link>
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 mt-1">
-                Explore Bangladesh&apos;s finest travel destinations with Travla
-              </p>
-            </motion.div>
-
-            {/* Form */}
-            <motion.form variants={itemVariants} onSubmit={handleSubmit(onSubmit)} className="space-y-3" noValidate>
-              
-              {/* Grid: Name & Phone */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <div className="space-y-1">
-                  <Label htmlFor="name" className="text-xs text-slate-300 font-semibold">Full Name</Label>
-                  <div className="relative">
-                    <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
-                    <Input
-                      id="name"
-                      type="text"
-                      placeholder="John Doe"
-                      {...register("name")}
-                      className={`h-8 text-xs pl-8 bg-slate-950/60 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:ring-indigo-500 ${errors.name ? "border-rose-500" : ""}`}
-                    />
-                  </div>
-                  {errors.name && <p className="text-[10px] text-rose-400 mt-0.5">{errors.name.message}</p>}
-                </div>
-
-                <div className="space-y-1">
-                  <Label htmlFor="phone" className="text-xs text-slate-300 font-semibold">Phone Number</Label>
-                  <div className="relative">
-                    <FaPhone className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
-                    <Input
-                      id="phone"
-                      type="tel"
-                      placeholder="+880 1700-000000"
-                      {...register("phone")}
-                      className={`h-8 text-xs pl-8 bg-slate-950/60 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:ring-indigo-500 ${errors.phone ? "border-rose-500" : ""}`}
-                    />
-                  </div>
-                  {errors.phone && <p className="text-[10px] text-rose-400 mt-0.5">{errors.phone.message}</p>}
-                </div>
-              </div>
-
-              {/* Grid: Email & Address */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <div className="space-y-1">
-                  <Label htmlFor="email" className="text-xs text-slate-300 font-semibold">Email Address</Label>
-                  <div className="relative">
-                    <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="name@example.com"
-                      {...register("email")}
-                      className={`h-8 text-xs pl-8 bg-slate-950/60 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:ring-indigo-500 ${errors.email ? "border-rose-500" : ""}`}
-                    />
-                  </div>
-                  {errors.email && <p className="text-[10px] text-rose-400 mt-0.5">{errors.email.message}</p>}
-                </div>
-
-                <div className="space-y-1">
-                  <Label htmlFor="address" className="text-xs text-slate-300 font-semibold">Address</Label>
-                  <div className="relative">
-                    <FaMapMarkerAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
-                    <Input
-                      id="address"
-                      type="text"
-                      placeholder="Dhaka, Bangladesh"
-                      {...register("address")}
-                      className={`h-8 text-xs pl-8 bg-slate-950/60 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:ring-indigo-500 ${errors.address ? "border-rose-500" : ""}`}
-                    />
-                  </div>
-                  {errors.address && <p className="text-[10px] text-rose-400 mt-0.5">{errors.address.message}</p>}
-                </div>
-              </div>
-
-              {/* Grid: Password & Confirm Password */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <div className="space-y-1">
-                  <Label htmlFor="password" className="text-xs text-slate-300 font-semibold">Password</Label>
-                  <div className="relative">
-                    <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
-                    <Input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="••••••••"
-                      {...register("password")}
-                      className={`h-8 text-xs pl-8 pr-8 bg-slate-950/60 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:ring-indigo-500 ${errors.password ? "border-rose-500" : ""}`}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs"
-                    >
-                      {showPassword ? <FaEyeSlash /> : <FaEye />}
-                    </button>
-                  </div>
-                  {errors.password && <p className="text-[10px] text-rose-400 mt-0.5">{errors.password.message}</p>}
-                </div>
-
-                <div className="space-y-1">
-                  <Label htmlFor="confirmPassword" className="text-xs text-slate-300 font-semibold">Confirm Password</Label>
-                  <div className="relative">
-                    <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
-                    <Input
-                      id="confirmPassword"
-                      type={showConfirmPassword ? "text" : "password"}
-                      placeholder="••••••••"
-                      {...register("confirmPassword")}
-                      className={`h-8 text-xs pl-8 pr-8 bg-slate-950/60 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:ring-indigo-500 ${errors.confirmPassword ? "border-rose-500" : ""}`}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs"
-                    >
-                      {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-                    </button>
-                  </div>
-                  {errors.confirmPassword && <p className="text-[10px] text-rose-400 mt-0.5">{errors.confirmPassword.message}</p>}
-                </div>
-              </div>
-
-              {/* Terms Checkbox */}
-              <div className="pt-1">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    {...register("terms")}
-                    className="h-3.5 w-3.5 rounded border-slate-800 bg-slate-950 text-indigo-500 focus:ring-indigo-500/20"
-                  />
-                  <span className="text-[11px] text-slate-400">
-                    I agree to the <a href="#terms" onClick={(e) => e.preventDefault()} className="text-indigo-400 hover:underline">Terms & Conditions</a>
-                  </span>
-                </label>
-                {errors.terms && <p className="text-[10px] text-rose-400 mt-0.5">{errors.terms.message}</p>}
-              </div>
-
-              {/* Submit Button */}
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="w-full h-9 text-xs bg-gradient-to-r from-indigo-500 via-indigo-600 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-semibold shadow-lg shadow-indigo-500/20 transition-all mt-1"
-              >
-                {isLoading ? (
-                  <span className="flex items-center gap-2">
-                    <CgSpinner className="h-3.5 w-3.5 animate-spin" />
-                    Creating account...
-                  </span>
-                ) : (
-                  "Create Account"
-                )}
-              </Button>
-            </motion.form>
-
-            {/* Divider */}
-            <motion.div variants={itemVariants} className="relative my-3">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-slate-800" />
-              </div>
-              <div className="relative flex justify-center text-[10px] uppercase tracking-wider">
-                <span className="bg-slate-900 px-2 text-slate-500 font-medium">Or continue with</span>
-              </div>
-            </motion.div>
-
-            {/* Google Signup Button at Bottom */}
-            <motion.div variants={itemVariants}>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => toast("Google Sign up coming soon!", { icon: "🚀" })}
-                className="w-full h-8 text-xs bg-slate-950/40 border-slate-800 text-slate-200 hover:bg-slate-800 hover:text-white font-medium"
-              >
-                <FaGoogle className="mr-2 h-3.5 w-3.5 text-rose-500" />
-                Sign up with Google
-              </Button>
-            </motion.div>
-          </motion.div>
-        </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
+
+/** A labelled input with inline error text — keeps the long form readable. */
+const Field = React.forwardRef<
+  HTMLInputElement,
+  React.ComponentProps<typeof Input> & { id: string; label: string; error?: string }
+>(({ id, label, error, className, ...props }, ref) => (
+  <div className="space-y-1.5">
+    <Label htmlFor={id}>{label}</Label>
+    <Input
+      id={id}
+      ref={ref}
+      aria-invalid={Boolean(error)}
+      className={`${error ? "border-destructive focus-visible:ring-destructive" : ""} ${
+        className ?? ""
+      }`}
+      {...props}
+    />
+    {error && <p className="text-xs text-destructive">{error}</p>}
+  </div>
+));
+Field.displayName = "Field";

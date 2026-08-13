@@ -18,13 +18,14 @@ import {
 import { useCreateReservationMutation } from "@/redux/features/reservation/reservationApi";
 import { FaMapMarkerAlt, FaStar, FaHeart } from "react-icons/fa";
 
+// Short labels so the filter row stays on a single line beside the heading.
 const categories = [
-  { id: "all", label: "All Spots" },
-  { id: "beach", label: "Sea Beaches" },
-  { id: "heritage", label: "Heritage & History" },
-  { id: "mountain", label: "Cloud Mountains" },
-  { id: "tea", label: "Tea Gardens" },
-  { id: "forest", label: "Forest & Wildlife" },
+  { id: "all", label: "All" },
+  { id: "beach", label: "Beaches" },
+  { id: "heritage", label: "Heritage" },
+  { id: "mountain", label: "Hills" },
+  { id: "tea", label: "Tea gardens" },
+  { id: "forest", label: "Wildlife" },
 ];
 
 const featuredDestinations = [
@@ -37,7 +38,7 @@ const featuredDestinations = [
     rating: 4.9,
     reviewsCount: 342,
     price: 2500,
-    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+    image: "/images/coxs-bazar.jpg",
     tag: "World's Longest Beach",
   },
   {
@@ -49,7 +50,7 @@ const featuredDestinations = [
     rating: 4.8,
     reviewsCount: 189,
     price: 1800,
-    image: "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?auto=format&fit=crop&w=800&q=80",
+    image: "/images/paharpur.jpg",
     tag: "UNESCO World Heritage",
   },
   {
@@ -61,7 +62,7 @@ const featuredDestinations = [
     rating: 4.9,
     reviewsCount: 421,
     price: 3200,
-    image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80",
+    image: "/images/bandarban.jpg",
     tag: "High Altitude Clouds",
   },
   {
@@ -73,7 +74,7 @@ const featuredDestinations = [
     rating: 4.7,
     reviewsCount: 265,
     price: 2100,
-    image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80",
+    image: "/images/sylhet.jpg",
     tag: "Lush Green Hills",
   },
   {
@@ -85,7 +86,7 @@ const featuredDestinations = [
     rating: 4.9,
     reviewsCount: 512,
     price: 4500,
-    image: "https://images.unsplash.com/photo-1511497584788-876761465586?auto=format&fit=crop&w=800&q=80",
+    image: "/images/bg-travel.jpg",
     tag: "Royal Bengal Tigers",
   },
   {
@@ -97,7 +98,7 @@ const featuredDestinations = [
     rating: 4.9,
     reviewsCount: 610,
     price: 3500,
-    image: "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=800&q=80",
+    image: "/images/coxs-bazar.jpg",
     tag: "Crystal Clear Water",
   },
 ];
@@ -196,31 +197,28 @@ export function FeaturedDestinations() {
   );
 
   return (
-    <section className="w-full">
-      <Container className="space-y-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div className="space-y-2">
-            <span className="text-xs font-extrabold uppercase tracking-widest px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 inline-block">
-              Discover Bangladesh
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight">
-              Top Handpicked Destinations
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Explore breathtaking sea beaches, historical heritage sites, tea gardens & hill resorts
+    <section id="destinations" className="section">
+      <Container className="space-y-9">
+        <div className="flex flex-col gap-7 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-xl space-y-4">
+            <p className="eyebrow">Discover Bangladesh</p>
+            <h2 className="heading">Places worth the journey</h2>
+            <p className="text-lg leading-relaxed text-muted-foreground">
+              Sea beaches, heritage sites, tea gardens and hill tracks — handpicked and rated by
+              travellers.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap gap-2">
             {categories.map((c) => (
               <button
                 key={c.id}
                 type="button"
                 onClick={() => setSelectedCategory(c.id)}
-                className={`px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300 ${
+                className={`rounded-full border px-3.5 py-1.5 text-sm transition-all ${
                   selectedCategory === c.id
-                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30"
-                    : "bg-card text-muted-foreground border border-border hover:border-indigo-500/50 hover:text-foreground"
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground"
                 }`}
               >
                 {c.label}
@@ -229,106 +227,114 @@ export function FeaturedDestinations() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence mode="popLayout">
-            {filteredDestinations.map((item) => (
-              <motion.div
-                key={item.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                className="group relative rounded-3xl overflow-hidden bg-card border border-border shadow-lg hover:shadow-2xl hover:border-indigo-500/50 transition-all duration-300 flex flex-col"
-              >
-                <div className="relative h-56 w-full overflow-hidden bg-slate-900">
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute top-3 left-3 bg-slate-950/80 backdrop-blur-md px-3 py-1 rounded-full text-[11px] text-white font-bold border border-white/10">
-                    {item.tag}
-                  </div>
-                  <div className="absolute top-3 right-3 flex items-center gap-2">
+            {filteredDestinations.map((item) => {
+              const isFavorite = favoriteIds.includes(item.id);
+
+              return (
+                <motion.article
+                  key={item.id}
+                  layout
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 8 }}
+                  transition={{ duration: 0.22 }}
+                  className="surface-interactive group flex flex-col overflow-hidden"
+                >
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+
+                    {/* Scrim so the badges stay legible on any photo. */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-stone-950/55 via-transparent to-stone-950/25" />
+
+                    <span className="chip-glass absolute left-3 top-3 px-2.5 py-1 text-xs font-medium">
+                      {item.tag}
+                    </span>
+
                     <button
                       type="button"
                       onClick={() => handleToggleFavorite(item.id)}
-                      className={`h-8 w-8 rounded-full backdrop-blur-md flex items-center justify-center transition-all ${
-                        favoriteIds.includes(item.id)
-                          ? "bg-rose-600 text-white shadow-lg shadow-rose-600/40"
-                          : "bg-slate-950/80 text-slate-300 hover:text-rose-400 border border-white/10"
+                      aria-pressed={isFavorite}
+                      aria-label={isFavorite ? "Remove from saved" : "Save this destination"}
+                      className={`absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full backdrop-blur-md transition-all ${
+                        isFavorite
+                          ? "bg-white text-rose-500"
+                          : "bg-stone-950/35 text-white hover:scale-110 hover:bg-white hover:text-rose-500"
                       }`}
-                      title={favoriteIds.includes(item.id) ? "Remove from favorites" : "Save to favorites"}
+                      style={{ border: "1px solid oklch(1 0 0 / 0.22)" }}
                     >
                       <FaHeart className="h-3.5 w-3.5" />
                     </button>
-                    <div className="bg-slate-950/80 backdrop-blur-md px-2.5 py-1 rounded-full text-xs text-amber-400 font-bold flex items-center gap-1 border border-white/10">
-                      <FaStar className="h-3 w-3" />
-                      <span>{item.rating}</span>
-                      <span className="text-slate-400 text-[10px]">({item.reviewsCount})</span>
-                    </div>
-                  </div>
-                </div>
 
-                <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                  <div className="space-y-1.5">
-                    <h3 className="font-extrabold text-xl leading-snug group-hover:text-indigo-400 transition-colors">
+                    <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 text-sm font-medium text-white">
+                      <FaStar className="h-3.5 w-3.5 text-highlight" />
+                      {item.rating}
+                      <span className="font-normal text-white/70">({item.reviewsCount})</span>
+                    </span>
+                  </div>
+
+                  <div className="flex flex-1 flex-col p-5">
+                    <h3 className="text-lg font-semibold leading-snug transition-colors group-hover:text-primary">
                       {item.title}
                     </h3>
-                    <p className="text-xs text-muted-foreground flex items-center gap-1">
-                      <FaMapMarkerAlt className="h-3.5 w-3.5 text-indigo-500 shrink-0" />
-                      {item.location} ({item.district})
+
+                    <p className="mt-1.5 flex items-center gap-1.5 text-sm text-muted-foreground">
+                      <FaMapMarkerAlt className="h-3 w-3 shrink-0" />
+                      {item.location}
                     </p>
-                  </div>
 
-                  <div className="pt-2 border-t border-border flex items-center justify-between">
-                    <div>
-                      <span className="text-[10px] uppercase font-semibold text-muted-foreground block">
-                        Starting From
-                      </span>
-                      <span className="text-lg font-black text-indigo-400">
-                        ৳{item.price}{" "}
-                        <span className="text-xs font-normal text-muted-foreground">/ person</span>
-                      </span>
+                    <div className="mt-auto flex items-end justify-between pt-5">
+                      <p>
+                        <span className="text-xl font-semibold tracking-tight">
+                          ৳{item.price.toLocaleString()}
+                        </span>
+                        <span className="text-sm text-muted-foreground"> / person</span>
+                      </p>
+
+                      <Button size="sm" onClick={() => handleOpenBooking(item)}>
+                        Reserve
+                      </Button>
                     </div>
-
-                    <Button
-                      size="sm"
-                      onClick={() => handleOpenBooking(item)}
-                      className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full px-5 font-semibold shadow-md shadow-indigo-600/20"
-                    >
-                      Book Tour
-                    </Button>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.article>
+              );
+            })}
           </AnimatePresence>
         </div>
       </Container>
 
       {/* Booking Dialog Modal */}
       <Dialog open={bookingModalOpen} onOpenChange={setBookingModalOpen}>
-        <DialogContent className="max-w-md bg-card border-border">
+        <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold">
-              Book Tour / Stay: {selectedItem?.title}
-            </DialogTitle>
+            <DialogTitle>Request a reservation</DialogTitle>
           </DialogHeader>
 
-          <form onSubmit={handleConfirmBooking} className="space-y-4 pt-2">
-            <div className="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-xs space-y-1">
-              <p className="font-bold text-indigo-400">Destination Details:</p>
-              <p>Location: {selectedItem?.location || selectedItem?.district}</p>
-              <p>Price: ৳{selectedItem?.price || 2500} / person</p>
+          <form onSubmit={handleConfirmBooking} className="space-y-5 pt-1">
+            <div className="rounded-lg border border-border bg-secondary/50 p-4 text-sm">
+              <p className="font-medium">{selectedItem?.title}</p>
+              <p className="mt-0.5 text-muted-foreground">
+                {selectedItem?.location || selectedItem?.district}
+              </p>
+              <p className="mt-2 text-muted-foreground">
+                ৳{(selectedItem?.price || 2500).toLocaleString()} per person
+              </p>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1">
-                <label className="text-xs font-semibold">Start Date</label>
+              <div className="space-y-1.5">
+                <label htmlFor="dest-start" className="text-sm text-muted-foreground">
+                  Start date
+                </label>
                 <Input
+                  id="dest-start"
                   type="date"
                   value={bookingDates.start}
                   onChange={(e) => setBookingDates({ ...bookingDates, start: e.target.value })}
@@ -336,9 +342,12 @@ export function FeaturedDestinations() {
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-semibold">End Date</label>
+              <div className="space-y-1.5">
+                <label htmlFor="dest-end" className="text-sm text-muted-foreground">
+                  End date
+                </label>
                 <Input
+                  id="dest-end"
                   type="date"
                   value={bookingDates.end}
                   onChange={(e) => setBookingDates({ ...bookingDates, end: e.target.value })}
@@ -347,12 +356,12 @@ export function FeaturedDestinations() {
               </div>
             </div>
 
-            <div className="pt-2 flex justify-end gap-2">
+            <div className="flex justify-end gap-2">
               <Button type="button" variant="outline" onClick={() => setBookingModalOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={bookingLoading} className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold">
-                Confirm Booking
+              <Button type="submit" disabled={bookingLoading}>
+                {bookingLoading ? "Sending..." : "Send request"}
               </Button>
             </div>
           </form>

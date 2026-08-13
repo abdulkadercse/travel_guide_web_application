@@ -254,6 +254,7 @@ export default function UserDashboardPage() {
                               src={fav.destination.coverImage}
                               alt={fav.destination.title}
                               fill
+                    sizes="(max-width: 640px) 100vw, 33vw"
                               className="object-cover"
                             />
                           </div>

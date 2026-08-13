@@ -37,7 +37,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ReduxProvider>
-          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
             <Navbar />
             {children}
             <Toaster position="top-center" reverseOrder={false} />
