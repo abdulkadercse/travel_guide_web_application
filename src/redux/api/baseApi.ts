@@ -1,10 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-/**
- * All data flows through the Express Application Server Layer (SRS 7.2).
- * The frontend never talks to the database directly.
- */
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001/api/v1';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
 
 export const baseApi = createApi({
   reducerPath: 'baseApi',
