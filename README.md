@@ -88,6 +88,20 @@ Travla BD follows a decoupled **Three-Tier Software Architecture**:
 
 ---
 
+## 📌 Development Guidelines & Best Practices
+
+To ensure codebase consistency, maintainability, and clear understanding for all developers:
+
+1. **Mandatory Redux Usage for Dashboard**:
+   - All state management, authentication flows, data fetching, mutations, and caching across the **Dashboard** (`/dashboard`, `/dashboard/admin`, `/dashboard/user`) **MUST use Redux Toolkit and RTK Query** (`src/redux/api/baseApi.ts` and feature slices/endpoints).
+   - Bypassing Redux or doing raw `fetch` calls inside Dashboard components is strictly prohibited.
+
+2. **Folder Structure Maintenance**:
+   - The established folder structure (`src/app/`, `src/components/`, `src/redux/`, `src/server/`, `prisma/`) **MUST be strictly maintained**.
+   - All new feature components, services, and API endpoints must adhere strictly to their respective folders so any developer reading the code can easily navigate and understand the application architecture.
+
+---
+
 ## 📁 Repository Structure
 
 The repository holds two packages: the Next.js frontend at the root and the Express API in `server/`.
