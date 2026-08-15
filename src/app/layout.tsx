@@ -17,8 +17,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Travla - Explore Bangladesh",
-  description: "Discover Cox's Bazar, Paharpur, Bandarban, and Sylhet with Travla",
+  title: "Travla BD - Explore Bangladesh",
+  description: "Discover Cox's Bazar, Paharpur, Bandarban, and Sylhet with Travla BD",
+  icons: {
+    icon: "/favicon.jpg",
+    shortcut: "/favicon.jpg",
+    apple: "/favicon.jpg",
+  },
 };
 
 export default function RootLayout({
@@ -37,11 +42,9 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ReduxProvider>
-          <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-            <Navbar />
+          <ThemeProvider attribute="class" defaultTheme="light">
             {children}
             <Toaster position="top-center" reverseOrder={false} />
-            <Footer />
           </ThemeProvider>
         </ReduxProvider>
       </body>

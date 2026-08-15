@@ -56,6 +56,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([role, status])
+  @@index([createdAt])
   @@map("users")
 }
 
@@ -80,6 +82,12 @@ model Destination {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([district])
+  @@index([category])
+  @@index([isFeatured])
+  @@index([rating])
+  @@index([price])
+  @@index([district, category])
   @@map("destinations")
 }
 
@@ -101,6 +109,9 @@ model Hotel {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([location])
+  @@index([pricePerNight])
+  @@index([rating])
   @@map("hotels")
 }
 
@@ -121,6 +132,9 @@ model Restaurant {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([location])
+  @@index([cuisineType])
+  @@index([rating])
   @@map("restaurants")
 }
 
@@ -137,6 +151,9 @@ model Transportation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([type])
+  @@index([routeFrom, routeTo])
+  @@index([estimatedCost])
   @@map("transportations")
 }
 
@@ -155,6 +172,8 @@ model TripPlan {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([userId])
+  @@index([startDate, endDate])
   @@map("trip_plans")
 }
 
@@ -167,6 +186,8 @@ model TripPlanItem {
   visitDate     DateTime?
   notes         String?
 
+  @@index([tripPlanId])
+  @@index([destinationId])
   @@map("trip_plan_items")
 }
 
@@ -186,6 +207,11 @@ model Review {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([userId])
+  @@index([destinationId])
+  @@index([hotelId])
+  @@index([restaurantId])
+  @@index([rating])
   @@map("reviews")
 }
 
@@ -199,6 +225,8 @@ model Favorite {
   createdAt DateTime @default(now())
 
   @@unique([userId, destinationId])
+  @@index([userId])
+  @@index([destinationId])
   @@map("favorites")
 }
 
@@ -220,5 +248,11 @@ model Reservation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([userId])
+  @@index([status])
+  @@index([destinationId])
+  @@index([hotelId])
+  @@index([restaurantId])
+  @@index([startDate, endDate])
   @@map("reservations")
 }

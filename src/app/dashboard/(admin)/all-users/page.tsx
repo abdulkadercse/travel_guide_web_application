@@ -124,57 +124,7 @@ export default function AllUsersPage() {
   const adminCount = users.filter((u) => u.role === "ADMIN" || u.role === "SUPER_ADMIN").length;
 
   return (
-    <ProtectedRoute allowedRoles={["ADMIN", "SUPER_ADMIN"]}>
-      <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300 font-sans selection:bg-indigo-500 selection:text-white">
-        {/* Header Navigation */}
-        <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-background/80 border-b border-border">
-          <Container>
-            <div className="h-16 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Button variant="ghost" size="sm" asChild className="rounded-full">
-                  <Link href="/dashboard/admin">
-                    <FaArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Dashboard
-                  </Link>
-                </Button>
-                <div className="h-4 w-px bg-border" />
-                <span className="text-lg font-extrabold tracking-tight flex items-center gap-2">
-                  <FaUsers className="text-indigo-500 h-5 w-5" /> All Users Management
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="rounded-full h-9 w-9"
-                >
-                  {mounted && theme === "dark" ? (
-                    <FaSun className="h-4 w-4 text-amber-400" />
-                  ) : (
-                    <FaMoon className="h-4 w-4 text-slate-700" />
-                  )}
-                </Button>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    dispatch(logout());
-                    toast.success("Logged out successfully");
-                  }}
-                  className="rounded-full text-rose-400 hover:text-rose-300 border-border"
-                >
-                  <FaSignOutAlt className="mr-1 h-3.5 w-3.5" /> Sign Out
-                </Button>
-              </div>
-            </div>
-          </Container>
-        </header>
-
-        {/* Body Container */}
-        <main className="flex-1 py-8">
-          <Container className="space-y-8">
+    <div className="space-y-8">
             {/* Top Summary Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="p-5 rounded-2xl bg-card border border-border shadow-sm flex items-center justify-between">
@@ -394,9 +344,6 @@ export default function AllUsersPage() {
                 </Table>
               )}
             </div>
-          </Container>
-        </main>
-      </div>
-    </ProtectedRoute>
+    </div>
   );
 }

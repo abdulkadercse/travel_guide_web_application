@@ -6,9 +6,22 @@ import { sendResponse, sendError } from "@/lib/response";
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
+    const rawSearchTerm = searchParams.get("searchTerm");
+    const rawLocation = searchParams.get("location");
+
+    const cleanSearchTerm =
+      rawSearchTerm && rawSearchTerm !== "undefined" && rawSearchTerm !== "null" && rawSearchTerm.trim() !== ""
+        ? rawSearchTerm.trim()
+        : undefined;
+
+    const cleanLocation =
+      rawLocation && rawLocation !== "undefined" && rawLocation !== "null" && rawLocation !== "ALL" && rawLocation.trim() !== ""
+        ? rawLocation.trim()
+        : undefined;
+
     const filters = {
-      searchTerm: searchParams.get("searchTerm") || undefined,
-      location: searchParams.get("location") || undefined,
+      searchTerm: cleanSearchTerm,
+      location: cleanLocation,
     };
 
     const result = await hotelService.getAllHotelsDB(filters);

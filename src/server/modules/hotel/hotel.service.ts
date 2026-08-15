@@ -7,12 +7,27 @@ const getAllHotelsDB = async (filters: IHotelFilter) => {
   const { location, searchTerm } = filters;
   const whereClause: Prisma.HotelWhereInput = {};
 
-  const term = searchTerm || location;
-  if (term) {
-    whereClause.OR = [
-      { name: { contains: term, mode: "insensitive" } },
-      { location: { contains: term, mode: "insensitive" } },
-    ];
+  const cleanLocation = location && location !== "undefined" && location !== "null" && location !== "ALL" ? location : undefined;
+  const cleanSearch = searchTerm && searchTerm !== "undefined" && searchTerm !== "null" ? searchTerm : undefined;
+
+  const conditions: Prisma.HotelWhereInput[] = [];
+
+  if (cleanLocation) {
+    conditions.push({ location: { contains: cleanLocation, mode: "insensitive" } });
+  }
+
+  if (cleanSearch) {
+    conditions.push({
+      OR: [
+        { name: { contains: cleanSearch, mode: "insensitive" } },
+        { location: { contains: cleanSearch, mode: "insensitive" } },
+        { description: { contains: cleanSearch, mode: "insensitive" } },
+      ],
+    });
+  }
+
+  if (conditions.length > 0) {
+    whereClause.AND = conditions;
   }
 
   return prisma.hotel.findMany({

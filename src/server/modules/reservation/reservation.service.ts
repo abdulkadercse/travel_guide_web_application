@@ -43,17 +43,19 @@ const createReservationDB = async (data: ICreateReservationInput) => {
     throw new ApiError(400, "End date cannot be before the start date");
   }
 
+  const reservationData: any = {
+    user: { connect: { id: data.userId } },
+    destination: data.destinationId ? { connect: { id: data.destinationId } } : undefined,
+    hotel: data.hotelId ? { connect: { id: data.hotelId } } : undefined,
+    restaurant: data.restaurantId ? { connect: { id: data.restaurantId } } : undefined,
+    startDate,
+    endDate,
+    totalCost: data.totalCost,
+    status: ReservationStatus.PENDING,
+  };
+
   return prisma.reservation.create({
-    data: {
-      user: { connect: { id: data.userId } },
-      destination: data.destinationId ? { connect: { id: data.destinationId } } : undefined,
-      hotel: data.hotelId ? { connect: { id: data.hotelId } } : undefined,
-      restaurant: data.restaurantId ? { connect: { id: data.restaurantId } } : undefined,
-      startDate,
-      endDate,
-      totalCost: data.totalCost,
-      status: ReservationStatus.PENDING,
-    },
+    data: reservationData,
     include: reservationInclude,
   });
 };

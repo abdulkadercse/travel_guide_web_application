@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { FaEye, FaEyeSlash, FaCompass } from "react-icons/fa6";
-import { CgSpinner } from "react-icons/cg";
+import { FaSpinner } from "react-icons/fa";
 
 const loginSchema = z.object({
   email: z
@@ -37,7 +37,8 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    setValue,
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     mode: "onChange",
@@ -146,17 +147,57 @@ export default function LoginPage() {
               )}
             </div>
 
-            <Button type="submit" disabled={isLoading} className="w-full">
-              {isLoading ? (
-                <>
-                  <CgSpinner className="mr-2 h-4 w-4 animate-spin" />
-                  Signing in
-                </>
-              ) : (
-                "Sign in"
-              )}
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full font-bold h-11 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/20"
+            >
+              {isSubmitting ? <FaSpinner className="animate-spin" /> : "Sign in"}
             </Button>
           </form>
+
+          {/* Quick 1-Click Demo Login Box */}
+          <div className="mt-6 p-4 rounded-2xl bg-muted/40 border border-border/80 space-y-3">
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
+              <span>⚡ Quick Demo Logins</span>
+              <span className="text-[10px] text-indigo-400 font-mono">Pass: Password123!</span>
+            </p>
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setValue("email", "superadmin@travla.com");
+                  setValue("password", "Password123!");
+                }}
+                className="p-2 rounded-xl bg-card border border-border text-center hover:border-indigo-500 hover:text-indigo-400 transition-all cursor-pointer shadow-xs"
+              >
+                <p className="text-[11px] font-black text-foreground">Super Admin</p>
+                <p className="text-[9px] text-muted-foreground">superadmin</p>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setValue("email", "admin@travla.com");
+                  setValue("password", "Password123!");
+                }}
+                className="p-2 rounded-xl bg-card border border-border text-center hover:border-indigo-500 hover:text-indigo-400 transition-all cursor-pointer shadow-xs"
+              >
+                <p className="text-[11px] font-black text-foreground">Admin</p>
+                <p className="text-[9px] text-muted-foreground">admin</p>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setValue("email", "ayman@travla.com");
+                  setValue("password", "Password123!");
+                }}
+                className="p-2 rounded-xl bg-card border border-border text-center hover:border-indigo-500 hover:text-indigo-400 transition-all cursor-pointer shadow-xs"
+              >
+                <p className="text-[11px] font-black text-foreground">Traveler</p>
+                <p className="text-[9px] text-muted-foreground">ayman</p>
+              </button>
+            </div>
+          </div>
 
           <p className="mt-8 text-sm text-muted-foreground">
             New to Travla?{" "}

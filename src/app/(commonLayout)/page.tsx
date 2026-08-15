@@ -4,28 +4,20 @@ import React from "react";
 import HeroSection from "@/components/ui/home/HeroSection";
 import StatsBanner from "@/components/ui/home/StatsBanner";
 import FeaturedDestinations from "@/components/ui/home/FeaturedDestinations";
-import WhyChooseUs from "@/components/ui/home/WhyChooseUs";
 import FeaturedHotels from "@/components/ui/home/FeaturedHotels";
 import TransitRoutes from "@/components/ui/home/TransitRoutes";
-import TrustSection from "@/components/ui/home/TrustSection";
 import Reviews from "@/components/ui/home/Reviews";
-import FAQSection from "@/components/ui/home/FAQSection";
 import CtaBanner from "@/components/ui/home/CtaBanner";
 
 export default function Home() {
   return (
-    // Sections own their own vertical rhythm through the .section utility,
-    // so the page itself only sets the flow.
-    <main className="flex-1 overflow-x-hidden">
+    <main className="flex-1 overflow-x-hidden space-y-4">
       <HeroSection />
       <StatsBanner />
       <FeaturedDestinations />
       <FeaturedHotels />
       <TransitRoutes />
-      <TrustSection />
       <Reviews />
-      <WhyChooseUs />
-      <FAQSection />
       <CtaBanner />
     </main>
   );

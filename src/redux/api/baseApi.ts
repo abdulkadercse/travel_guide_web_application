@@ -23,6 +23,7 @@ export const baseApi = createApi({
     'User',
     'Destination',
     'Hotel',
+    'Restaurant',
     'Transportation',
     'Review',
     'Favorite',

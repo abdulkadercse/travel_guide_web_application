@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { HomeSlider } from "@/components/ui/home/slider";
 import Container from "@/components/shared/Container";
 import { Button } from "@/components/ui/button";
@@ -20,13 +21,18 @@ export function HeroSection({
 }: {
   onSearch?: (query: string, category: string) => void;
 }) {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [when, setWhen] = useState("");
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch?.(searchQuery, selectedCategory);
+    if (searchQuery.trim()) {
+      router.push(`/destinations?searchTerm=${encodeURIComponent(searchQuery)}`);
+    } else {
+      router.push("/destinations");
+    }
   };
 
   return (

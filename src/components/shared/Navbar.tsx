@@ -57,11 +57,11 @@ export function Navbar() {
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Destinations", href: "/#destinations" },
-    { name: "Stays", href: "/#stays" },
-    { name: "Getting around", href: "/#transport" },
+    { name: "Destinations", href: "/destinations" },
+    { name: "Hotels & Stays", href: "/hotels" },
+    { name: "Restaurants", href: "/restaurants" },
+    { name: "Transportation", href: "/transportation" },
     { name: "About", href: "/about" },
-    { name: "Our Team", href: "/our-team" },
     { name: "Contact", href: "/contact" },
   ];
 
