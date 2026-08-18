@@ -1,24 +1,24 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { ProtectedRoute } from "@/components/shared";
+import {
+  ProtectedRoute,
+  DashboardThemeToggle,
+  DashboardUserMenu,
+} from "@/components/shared";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logout, selectCurrentUser } from "@/redux/features/auth/authSlice";
-import { useTheme } from "next-themes";
 import {
   FaCompass,
   FaUser,
   FaHeart,
   FaShieldAlt,
   FaUsers,
-  FaSignOutAlt,
-  FaSun,
-  FaMoon,
   FaGlobe,
   FaBars,
   FaTimes,
@@ -40,13 +40,7 @@ export default function DashboardLayout({
   const user = useAppSelector(selectCurrentUser);
   const pathname = usePathname();
   const router = useRouter();
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -227,37 +221,6 @@ export default function DashboardLayout({
               <FaGlobe className="h-3.5 w-3.5 text-primary" />
               <span>Back to Main Site</span>
             </Link>
-
-            <div className="flex items-center justify-between px-3 py-1">
-              <span className="text-xs font-semibold text-muted-foreground">
-                Theme
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="h-7 rounded-full px-2.5 text-xs font-semibold"
-              >
-                {mounted && theme === "dark" ? (
-                  <span className="flex items-center gap-1 text-amber-400">
-                    <FaSun className="h-2.5 w-2.5" /> Dark
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-1 text-muted-foreground">
-                    <FaMoon className="h-2.5 w-2.5" /> Light
-                  </span>
-                )}
-              </Button>
-            </div>
-
-            <Button
-              variant="ghost"
-              onClick={handleLogout}
-              className="w-full justify-start gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 cursor-pointer"
-            >
-              <FaSignOutAlt className="h-3.5 w-3.5" />
-              <span>Sign Out</span>
-            </Button>
           </div>
         </aside>
 
@@ -285,20 +248,9 @@ export default function DashboardLayout({
               </Link>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Avatar
-                src={user?.avatar}
-                fallback={user?.name}
-                className="h-8 w-8"
-              />
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleLogout}
-                className="text-rose-400"
-              >
-                <FaSignOutAlt className="h-4 w-4" />
-              </Button>
+            <div className="flex items-center gap-1.5">
+              <DashboardThemeToggle />
+              <DashboardUserMenu />
             </div>
           </header>
 
@@ -377,18 +329,10 @@ export default function DashboardLayout({
               </span>
             </div>
 
-            <div className="flex items-center gap-4">
-              <span className="text-xs font-medium text-muted-foreground">
-                Role: <strong className="text-primary">{user?.role}</strong>
-              </span>
+            <div className="flex items-center gap-2">
+              <DashboardThemeToggle />
               <div className="h-4 w-px bg-border" />
-              <Button
-                size="sm"
-                variant="outline"
-                className="rounded-full text-xs font-medium"
-                asChild>
-                <Link href="/">Main Website &rarr;</Link>
-              </Button>
+              <DashboardUserMenu />
             </div>
           </header>
 

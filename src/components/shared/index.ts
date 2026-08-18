@@ -11,3 +11,4 @@ export * from "./ProtectedRoute";
 export * from "./DatePicker";
 export * from "./ReservationModal";
 export * from "./AddToTripPlanModal";
+export * from "./DashboardTopControls";
