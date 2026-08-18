@@ -71,7 +71,7 @@ interface TeamMember {
 const teamMembers: TeamMember[] = [
   {
     name: "Tanvir Ahmed",
-    id: "41420101277",
+    id: "42240101277",
     role: "Full Stack Developer",
     image: "/teams/174376225.jpeg",
     initials: "TA",
@@ -80,26 +80,26 @@ const teamMembers: TeamMember[] = [
   },
   {
     name: "Md. Mamun Islam",
-    id: "41420101282",
+    id: "42240101282",
     role: "Backend & System Architect",
-    image: null,
+    image: "/teams/mamun.jpg",
     initials: "MI",
     color: "from-primary/20 to-primary/20 text-primary dark:text-primary",
   },
   {
     name: "Md. Abdul Kader",
-    id: "41420101284",
+    id: "42240101284",
     role: "Frontend & UI/UX Engineer",
-    image: null,
+    image: "/teams/kader.jpg",
     initials: "AK",
     color:
       "from-primary/20 to-primary/20 text-primary dark:text-primary",
   },
   {
     name: "Md. Nahid Hasan",
-    id: "41420101285",
+    id: "42240101285",
     role: "Database & QA Engineer",
-    image: null,
+    image: "/teams/nahid.jpg",
     initials: "NH",
     color:
       "from-amber-500/20 to-orange-500/20 text-amber-600 dark:text-amber-300",
