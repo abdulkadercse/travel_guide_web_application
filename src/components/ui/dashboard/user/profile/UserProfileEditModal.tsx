@@ -109,9 +109,9 @@ export function UserProfileEditModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-lg rounded-3xl p-6 bg-card border-border shadow-2xl">
+      <DialogContent className="sm:max-w-lg rounded-2xl p-6 bg-card border-border shadow-2xl">
         <DialogHeader className="border-b border-border/80 pb-4">
-          <DialogTitle className="text-lg font-bold text-foreground flex items-center gap-2">
+          <DialogTitle className="text-lg font-medium text-foreground flex items-center gap-2">
             <FaUserPen className="h-4 w-4 text-primary" />
             <span>Edit Profile</span>
           </DialogTitle>
@@ -129,7 +129,7 @@ export function UserProfileEditModal({
               size="lg"
               onUploadSuccess={handleAvatarSuccess}
             />
-            <span className="text-[11px] text-muted-foreground text-center">
+            <span className="text-xs text-muted-foreground text-center">
               Click the camera icon to upload a photo (Max 5MB)
             </span>
           </div>

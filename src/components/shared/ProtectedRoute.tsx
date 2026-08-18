@@ -53,9 +53,9 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
   if (!mounted || !token || !user) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground space-y-4">
-        <FaSpinner className="h-10 w-10 text-indigo-500 animate-spin" />
+        <FaSpinner className="h-10 w-10 text-primary animate-spin" />
         <p className="text-sm font-semibold text-muted-foreground animate-pulse flex items-center gap-2">
-          <FaShieldAlt className="text-indigo-500" />
+          <FaShieldAlt className="text-primary" />
           Verifying security permissions...
         </p>
       </div>

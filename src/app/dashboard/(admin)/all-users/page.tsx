@@ -129,22 +129,22 @@ export default function AllUsersPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="p-5 rounded-2xl bg-card border border-border shadow-sm flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  <p className="text-xs font-semibold text-muted-foreground">
                     Total Users
                   </p>
-                  <h3 className="text-2xl font-black text-foreground mt-1">{users.length}</h3>
+                  <h3 className="text-2xl font-semibold text-foreground mt-1">{users.length}</h3>
                 </div>
-                <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500">
+                <div className="h-12 w-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
                   <FaUsers className="h-6 w-6" />
                 </div>
               </div>
 
               <div className="p-5 rounded-2xl bg-card border border-border shadow-sm flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  <p className="text-xs font-semibold text-muted-foreground">
                     Active Accounts
                   </p>
-                  <h3 className="text-2xl font-black text-emerald-400 mt-1">{activeCount}</h3>
+                  <h3 className="text-2xl font-semibold text-emerald-400 mt-1">{activeCount}</h3>
                 </div>
                 <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                   <FaCheckCircle className="h-6 w-6" />
@@ -153,10 +153,10 @@ export default function AllUsersPage() {
 
               <div className="p-5 rounded-2xl bg-card border border-border shadow-sm flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  <p className="text-xs font-semibold text-muted-foreground">
                     Blocked Users
                   </p>
-                  <h3 className="text-2xl font-black text-rose-400 mt-1">{blockedCount}</h3>
+                  <h3 className="text-2xl font-semibold text-rose-400 mt-1">{blockedCount}</h3>
                 </div>
                 <div className="h-12 w-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
                   <FaBan className="h-6 w-6" />
@@ -165,10 +165,10 @@ export default function AllUsersPage() {
 
               <div className="p-5 rounded-2xl bg-card border border-border shadow-sm flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  <p className="text-xs font-semibold text-muted-foreground">
                     Admins & Staff
                   </p>
-                  <h3 className="text-2xl font-black text-amber-400 mt-1">{adminCount}</h3>
+                  <h3 className="text-2xl font-semibold text-amber-400 mt-1">{adminCount}</h3>
                 </div>
                 <div className="h-12 w-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
                   <FaUserShield className="h-6 w-6" />
@@ -221,7 +221,7 @@ export default function AllUsersPage() {
             <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm">
               {loading ? (
                 <div className="py-16 flex justify-center text-muted-foreground">
-                  <FaSpinner className="h-8 w-8 animate-spin text-indigo-500" />
+                  <FaSpinner className="h-8 w-8 animate-spin text-primary" />
                 </div>
               ) : filteredUsers.length === 0 ? (
                 <div className="py-16 text-center text-muted-foreground text-sm">
@@ -245,8 +245,8 @@ export default function AllUsersPage() {
                           <div className="flex items-center gap-3">
                             <Avatar src={u.avatar} fallback={u.name} className="h-10 w-10 shrink-0" />
                             <div>
-                              <p className="font-bold text-foreground leading-snug">{u.name}</p>
-                              <p className="text-[10px] text-muted-foreground">
+                              <p className="font-medium text-foreground leading-snug">{u.name}</p>
+                              <p className="text-xs text-muted-foreground">
                                 Joined {new Date(u.createdAt).toLocaleDateString()}
                               </p>
                             </div>
@@ -256,7 +256,7 @@ export default function AllUsersPage() {
                         <TableCell>
                           <div className="space-y-0.5 text-xs text-muted-foreground">
                             <p className="flex items-center gap-1">
-                              <FaEnvelope className="h-3 w-3 text-indigo-500 shrink-0" />
+                              <FaEnvelope className="h-3 w-3 text-primary shrink-0" />
                               <span>{u.email}</span>
                             </p>
                             {u.phone && (
@@ -273,7 +273,7 @@ export default function AllUsersPage() {
                             value={u.role}
                             onChange={(e) => handleChangeRole(u.id, e.target.value)}
                             disabled={u.id === currentUser?.id}
-                            className="h-8 rounded-lg bg-background border border-input px-2 text-xs font-bold uppercase tracking-wider text-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:opacity-50"
+                            className="h-8 rounded-lg bg-background border border-input px-2 text-xs font-medium text-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50"
                           >
                             <option value="USER">USER</option>
                             <option value="ADMIN">ADMIN</option>
@@ -283,7 +283,7 @@ export default function AllUsersPage() {
 
                         <TableCell>
                           <span
-                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider inline-flex items-center gap-1 ${
+                            className={`px-2.5 py-0.5 rounded-full text-xs font-medium inline-flex items-center gap-1 ${
                               u.status === "ACTIVE"
                                 ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
                                 : u.status === "BLOCKED"

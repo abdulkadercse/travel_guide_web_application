@@ -31,7 +31,7 @@ const supportTeamData: SupportRep[] = [
     description: "Get pricing, custom trip itineraries, and 64 district recommendations.",
     avatar: "/teams/174376225.jpeg",
     initials: "TA",
-    color: "from-teal-500/20 to-emerald-500/20 text-teal-600 dark:text-teal-300",
+    color: "from-primary/20 to-emerald-500/20 text-primary dark:text-primary",
     whatsapp: "https://wa.me/8801700000000",
     email: "mailto:tanvir@travlabd.com",
     phone: "tel:+8801700000000",
@@ -43,7 +43,7 @@ const supportTeamData: SupportRep[] = [
     description: "Check verified room availability, pricing, amenities & stay details.",
     avatar: null,
     initials: "MI",
-    color: "from-blue-500/20 to-cyan-500/20 text-blue-600 dark:text-blue-300",
+    color: "from-primary/20 to-primary/20 text-primary dark:text-primary",
     whatsapp: "https://wa.me/8801800000000",
     email: "mailto:mamun@travlabd.com",
     phone: "tel:+8801800000000",
@@ -55,7 +55,7 @@ const supportTeamData: SupportRep[] = [
     description: "Track reservations, bus/train schedule status and on-the-road assistance.",
     avatar: null,
     initials: "AK",
-    color: "from-indigo-500/20 to-violet-500/20 text-indigo-600 dark:text-indigo-300",
+    color: "from-primary/20 to-primary/20 text-primary dark:text-primary",
     whatsapp: "https://wa.me/8801900000000",
     email: "mailto:kader@travlabd.com",
     phone: "tel:+8801900000000",
@@ -146,7 +146,7 @@ export function SupportTeam() {
                 {/* Email Button */}
                 <a
                   href={rep.email}
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-sky-500 text-white shadow-2xs transition-transform hover:scale-110 hover:bg-sky-600"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-2xs transition-transform hover:scale-110 hover:bg-primary-hover"
                   title={`Email ${rep.name}`}
                 >
                   <FaEnvelope className="h-3.5 w-3.5" />
@@ -155,7 +155,7 @@ export function SupportTeam() {
                 {/* Phone Call Button */}
                 <a
                   href={rep.phone}
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-800 dark:bg-slate-700 text-white shadow-2xs transition-transform hover:scale-110 hover:bg-slate-900"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground text-background shadow-2xs transition-transform hover:scale-110 hover:bg-foreground/85"
                   title={`Call ${rep.name}`}
                 >
                   <FaPhone className="h-3.5 w-3.5" />

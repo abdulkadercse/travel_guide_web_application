@@ -98,7 +98,7 @@ export default function UserReviewsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-5">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2.5">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight flex items-center gap-2.5">
               <div className="h-10 w-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 shrink-0">
                 <FaComments className="h-5 w-5" />
               </div>
@@ -116,9 +116,9 @@ export default function UserReviewsPage() {
             <FaSpinner className="h-8 w-8 animate-spin text-amber-500" />
           </div>
         ) : reviews.length === 0 ? (
-          <div className="py-20 text-center rounded-3xl border border-dashed border-border bg-card/40 space-y-3">
+          <div className="py-20 text-center rounded-2xl border border-dashed border-border bg-card/40 space-y-3">
             <FaComments className="h-12 w-12 text-muted-foreground/30 mx-auto" />
-            <h3 className="text-lg font-bold text-foreground">No reviews posted yet</h3>
+            <h3 className="text-lg font-medium text-foreground">No reviews posted yet</h3>
             <p className="text-xs text-muted-foreground max-w-sm mx-auto">
               Visit any destination, hotel, or restaurant page to leave your rating and experience!
             </p>
@@ -128,23 +128,23 @@ export default function UserReviewsPage() {
             {reviews.map((rev) => (
               <div
                 key={rev.id}
-                className="p-5 rounded-3xl bg-card border border-border space-y-4 hover:border-amber-500/30 transition-all shadow-sm flex flex-col justify-between"
+                className="p-5 rounded-2xl bg-card border border-border space-y-4 hover:border-amber-500/30 transition-all shadow-sm flex flex-col justify-between"
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1 text-amber-400 font-black text-sm">
+                    <div className="flex items-center gap-1 text-amber-400 font-semibold text-sm">
                       {Array.from({ length: 5 }).map((_, idx) => (
                         <FaStar
                           key={idx}
                           className={`h-3.5 w-3.5 ${
-                            idx < rev.rating ? "fill-amber-400" : "text-slate-600"
+                            idx < rev.rating ? "fill-amber-400" : "text-muted-foreground/40"
                           }`}
                         />
                       ))}
                       <span className="ml-1 text-xs">{rev.rating}.0</span>
                     </div>
 
-                    <span className="text-[11px] font-mono text-muted-foreground">
+                    <span className="text-xs font-mono text-muted-foreground">
                       {new Date(rev.createdAt).toLocaleDateString()}
                     </span>
                   </div>
@@ -162,7 +162,7 @@ export default function UserReviewsPage() {
                     size="sm"
                     variant="ghost"
                     onClick={() => handleOpenEdit(rev)}
-                    className="h-8 px-2.5 text-xs text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 rounded-xl font-bold gap-1"
+                    className="h-8 px-2.5 text-xs text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 rounded-xl font-medium gap-1"
                   >
                     <FaEdit className="h-3 w-3" /> Edit
                   </Button>
@@ -170,7 +170,7 @@ export default function UserReviewsPage() {
                     size="sm"
                     variant="ghost"
                     onClick={() => handleDelete(rev.id)}
-                    className="h-8 px-2.5 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-xl font-bold gap-1"
+                    className="h-8 px-2.5 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-xl font-medium gap-1"
                   >
                     <FaTrashAlt className="h-3 w-3" /> Delete
                   </Button>
@@ -185,7 +185,7 @@ export default function UserReviewsPage() {
           <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
             <DialogContent className="max-w-md bg-card border-border font-sans">
               <DialogHeader>
-                <DialogTitle className="text-lg font-bold">Edit Review</DialogTitle>
+                <DialogTitle className="text-lg font-medium">Edit Review</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleUpdate} className="space-y-4 pt-2">
                 <div className="space-y-1">
@@ -217,7 +217,7 @@ export default function UserReviewsPage() {
                   <Button type="button" variant="outline" onClick={() => setEditDialogOpen(false)}>
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={submitting} className="bg-amber-600 text-white font-bold">
+                  <Button type="submit" disabled={submitting}>
                     {submitting ? <FaSpinner className="animate-spin" /> : "Save Changes"}
                   </Button>
                 </div>

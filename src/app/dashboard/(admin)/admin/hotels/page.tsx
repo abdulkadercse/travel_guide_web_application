@@ -173,8 +173,8 @@ export default function AdminHotelsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-5">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2.5">
-              <div className="h-10 w-10 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 shrink-0">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight flex items-center gap-2.5">
+              <div className="h-10 w-10 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
                 <FaHotel className="h-5 w-5" />
               </div>
               Hotels & Resorts Control Panel
@@ -186,13 +186,13 @@ export default function AdminHotelsPage() {
 
           <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
             <DialogTrigger>
-              <Button className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full font-bold shadow-md shadow-indigo-600/20 gap-2 shrink-0">
+              <Button className="gap-2 shrink-0">
                 <FaPlus className="h-3.5 w-3.5" /> Add New Hotel
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
               <DialogHeader>
-                <DialogTitle className="text-lg font-bold">Add New Hotel / Resort</DialogTitle>
+                <DialogTitle className="text-lg font-medium">Add New Hotel / Resort</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleCreate} className="space-y-4 pt-2">
                 <div className="space-y-1">
@@ -267,7 +267,7 @@ export default function AdminHotelsPage() {
                   <Button type="button" variant="outline" onClick={() => setAddDialogOpen(false)}>
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={submitting} className="bg-indigo-600 text-white font-bold">
+                  <Button type="submit" disabled={submitting}>
                     {submitting ? <FaSpinner className="animate-spin" /> : "Save Hotel"}
                   </Button>
                 </div>
@@ -280,26 +280,26 @@ export default function AdminHotelsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase">Total Hotel Properties</p>
-              <h3 className="text-2xl font-black text-foreground mt-0.5">{hotels.length}</h3>
+              <p className="text-sm text-muted-foreground">Total Hotel Properties</p>
+              <h3 className="text-2xl font-semibold text-foreground mt-0.5">{hotels.length}</h3>
             </div>
-            <FaHotel className="h-6 w-6 text-indigo-500" />
+            <FaHotel className="h-6 w-6 text-primary" />
           </div>
 
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase">Locations</p>
-              <h3 className="text-2xl font-black text-indigo-400 mt-0.5">
+              <p className="text-sm text-muted-foreground">Locations</p>
+              <h3 className="text-2xl font-semibold text-primary mt-0.5">
                 {new Set(hotels.map((h) => h.location)).size} Cities
               </h3>
             </div>
-            <FaMapMarkerAlt className="h-6 w-6 text-indigo-400" />
+            <FaMapMarkerAlt className="h-6 w-6 text-primary" />
           </div>
 
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase">Avg Nightly Rate</p>
-              <h3 className="text-2xl font-black text-emerald-400 mt-0.5">
+              <p className="text-sm text-muted-foreground">Avg Nightly Rate</p>
+              <h3 className="text-2xl font-semibold text-emerald-400 mt-0.5">
                 ৳{hotels.length ? Math.round(hotels.reduce((sum, h) => sum + (h.pricePerNight || 0), 0) / hotels.length).toLocaleString() : 0}
               </h3>
             </div>
@@ -322,7 +322,7 @@ export default function AdminHotelsPage() {
           <select
             value={locationFilter}
             onChange={(e) => setLocationFilter(e.target.value)}
-            className="h-10 rounded-xl border bg-background px-3 text-xs font-bold"
+            className="h-10 rounded-xl border bg-background px-3 text-xs font-medium"
           >
             <option value="ALL">All Locations</option>
             <option value="Cox's Bazar">Cox's Bazar</option>
@@ -334,15 +334,15 @@ export default function AdminHotelsPage() {
         </div>
 
         {/* Table View */}
-        <div className="rounded-3xl border border-border bg-card overflow-hidden shadow-sm">
+        <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm">
           {isLoading ? (
             <div className="py-16 flex justify-center text-muted-foreground">
-              <FaSpinner className="h-8 w-8 animate-spin text-indigo-500" />
+              <FaSpinner className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : hotels.length === 0 ? (
             <div className="py-16 text-center text-muted-foreground space-y-2">
               <FaHotel className="h-10 w-10 text-muted-foreground/30 mx-auto" />
-              <p className="font-bold text-foreground">No hotel properties found</p>
+              <p className="font-medium text-foreground">No hotel properties found</p>
             </div>
           ) : (
             <Table>
@@ -361,31 +361,31 @@ export default function AdminHotelsPage() {
                 {hotels.map((item) => (
                   <TableRow key={item.id} className="hover:bg-muted/30 border-b border-border/60">
                     <TableCell>
-                      <div className="relative h-12 w-16 rounded-xl overflow-hidden bg-slate-900 border shrink-0">
+                      <div className="relative h-12 w-16 rounded-xl overflow-hidden bg-muted border shrink-0">
                         <Image src={item.coverImage || "https://images.unsplash.com/photo-1566073771259-6a8506099945"} alt={item.name} fill sizes="64px" className="object-cover" />
                       </div>
                     </TableCell>
                     <TableCell>
-                      <p className="font-bold text-foreground text-sm">{item.name}</p>
+                      <p className="font-medium text-foreground text-sm">{item.name}</p>
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground">
                       <span className="flex items-center gap-1">
-                        <FaMapMarkerAlt className="text-indigo-400 h-3 w-3" />
+                        <FaMapMarkerAlt className="text-primary h-3 w-3" />
                         {item.location}
                       </span>
                     </TableCell>
                     <TableCell className="text-xs font-mono text-muted-foreground">
                       <span className="flex items-center gap-1">
-                        <FaPhoneAlt className="text-indigo-400 h-3 w-3" />
+                        <FaPhoneAlt className="text-primary h-3 w-3" />
                         {item.contactPhone || "+8801700000000"}
                       </span>
                     </TableCell>
-                    <TableCell className="text-xs font-bold text-amber-400">
+                    <TableCell className="text-xs font-medium text-amber-400">
                       <span className="flex items-center gap-1">
                         <FaStar className="fill-amber-400 h-3 w-3" /> {item.rating || 4.9}
                       </span>
                     </TableCell>
-                    <TableCell className="font-black text-emerald-400 text-sm">
+                    <TableCell className="font-semibold text-emerald-400 text-sm">
                       ৳{(item.pricePerNight || 3500).toLocaleString()}
                     </TableCell>
                     <TableCell className="text-right">
@@ -394,7 +394,7 @@ export default function AdminHotelsPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleOpenEdit(item)}
-                          className="h-8 w-8 p-0 text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 rounded-lg"
+                          className="h-8 w-8 p-0 text-primary hover:text-primary hover:bg-primary/10 rounded-lg"
                           title="Edit Hotel"
                         >
                           <FaEdit className="h-3.5 w-3.5" />
@@ -422,7 +422,7 @@ export default function AdminHotelsPage() {
           <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
             <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
               <DialogHeader>
-                <DialogTitle className="text-lg font-bold">Edit Hotel / Resort</DialogTitle>
+                <DialogTitle className="text-lg font-medium">Edit Hotel / Resort</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleUpdate} className="space-y-4 pt-2">
                 <div>
@@ -495,7 +495,7 @@ export default function AdminHotelsPage() {
                   <Button type="button" variant="outline" onClick={() => setEditDialogOpen(false)}>
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={submitting} className="bg-indigo-600 text-white font-bold">
+                  <Button type="submit" disabled={submitting}>
                     {submitting ? <FaSpinner className="animate-spin" /> : "Save Changes"}
                   </Button>
                 </div>

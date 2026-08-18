@@ -80,8 +80,8 @@ export default function AdminReservationsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-5">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2.5">
-              <div className="h-10 w-10 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 shrink-0">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight flex items-center gap-2.5">
+              <div className="h-10 w-10 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
                 <FaCalendarCheck className="h-5 w-5" />
               </div>
               Reservations & Bookings Control
@@ -96,32 +96,32 @@ export default function AdminReservationsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase">Total Bookings</p>
-              <h3 className="text-2xl font-black text-foreground mt-0.5">{allReservations.length}</h3>
+              <p className="text-sm text-muted-foreground">Total Bookings</p>
+              <h3 className="text-2xl font-semibold text-foreground mt-0.5">{allReservations.length}</h3>
             </div>
-            <FaCalendarCheck className="h-6 w-6 text-indigo-500" />
+            <FaCalendarCheck className="h-6 w-6 text-primary" />
           </div>
 
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-amber-400 uppercase">Pending Requests</p>
-              <h3 className="text-2xl font-black text-amber-400 mt-0.5">{pendingCount}</h3>
+              <p className="text-sm text-muted-foreground">Pending Requests</p>
+              <h3 className="text-2xl font-semibold text-amber-400 mt-0.5">{pendingCount}</h3>
             </div>
             <FaClock className="h-6 w-6 text-amber-400" />
           </div>
 
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-emerald-400 uppercase">Confirmed</p>
-              <h3 className="text-2xl font-black text-emerald-400 mt-0.5">{confirmedCount}</h3>
+              <p className="text-sm text-muted-foreground">Confirmed</p>
+              <h3 className="text-2xl font-semibold text-emerald-400 mt-0.5">{confirmedCount}</h3>
             </div>
             <FaCheckCircle className="h-6 w-6 text-emerald-400" />
           </div>
 
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase">Revenue Processed</p>
-              <h3 className="text-2xl font-black text-emerald-400 mt-0.5">৳{totalRevenue.toLocaleString()}</h3>
+              <p className="text-sm text-muted-foreground">Revenue Processed</p>
+              <h3 className="text-2xl font-semibold text-emerald-400 mt-0.5">৳{totalRevenue.toLocaleString()}</h3>
             </div>
             <FaCoins className="h-6 w-6 text-emerald-500" />
           </div>
@@ -146,8 +146,8 @@ export default function AdminReservationsPage() {
                 variant={statusFilter === st ? "default" : "outline"}
                 size="sm"
                 onClick={() => setStatusFilter(st)}
-                className={`rounded-xl text-xs font-bold ${
-                  statusFilter === st ? "bg-indigo-600 text-white" : ""
+                className={`rounded-xl text-xs font-medium ${
+                  statusFilter === st ? "bg-primary text-primary-foreground" : ""
                 }`}
               >
                 {st}
@@ -157,15 +157,15 @@ export default function AdminReservationsPage() {
         </div>
 
         {/* Table View */}
-        <div className="rounded-3xl border border-border bg-card overflow-hidden shadow-sm">
+        <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm">
           {isLoading ? (
             <div className="py-16 flex justify-center text-muted-foreground">
-              <FaSpinner className="h-8 w-8 animate-spin text-indigo-500" />
+              <FaSpinner className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : filteredReservations.length === 0 ? (
             <div className="py-16 text-center text-muted-foreground space-y-2">
               <FaCalendarCheck className="h-10 w-10 text-muted-foreground/30 mx-auto" />
-              <p className="font-bold text-foreground">No reservations found</p>
+              <p className="font-medium text-foreground">No reservations found</p>
             </div>
           ) : (
             <Table>
@@ -189,7 +189,7 @@ export default function AdminReservationsPage() {
                     <TableRow key={item.id} className="hover:bg-muted/30 border-b border-border/60">
                       <TableCell>
                         <div className="flex items-center gap-2.5">
-                          <div className="relative h-9 w-9 rounded-full overflow-hidden bg-slate-800 border shrink-0">
+                          <div className="relative h-9 w-9 rounded-full overflow-hidden bg-muted border shrink-0">
                             <Image
                               src={item.user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100"}
                               alt={item.user?.name || "User"}
@@ -199,42 +199,42 @@ export default function AdminReservationsPage() {
                             />
                           </div>
                           <div>
-                            <p className="font-bold text-foreground text-xs leading-tight">{item.user?.name || "Customer"}</p>
-                            <p className="text-[11px] text-muted-foreground">{item.user?.email || ""}</p>
+                            <p className="font-medium text-foreground text-xs leading-tight">{item.user?.name || "Customer"}</p>
+                            <p className="text-xs text-muted-foreground">{item.user?.email || ""}</p>
                           </div>
                         </div>
                       </TableCell>
 
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <div className="h-7 w-7 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0 text-xs">
+                          <div className="h-7 w-7 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0 text-xs">
                             {targetType === "HOTEL" ? <FaHotel /> : targetType === "RESTAURANT" ? <FaUtensils /> : <FaGlobe />}
                           </div>
                           <div>
-                            <p className="font-bold text-foreground text-xs">{targetName}</p>
-                            {targetLocation && <p className="text-[10px] text-muted-foreground">{targetLocation}</p>}
+                            <p className="font-medium text-foreground text-xs">{targetName}</p>
+                            {targetLocation && <p className="text-xs text-muted-foreground">{targetLocation}</p>}
                           </div>
                         </div>
                       </TableCell>
 
                       <TableCell className="text-xs font-mono text-muted-foreground">
                         <div>{new Date(item.startDate).toLocaleDateString()}</div>
-                        <div className="text-[10px] text-muted-foreground/70">&rarr; {new Date(item.endDate).toLocaleDateString()}</div>
+                        <div className="text-xs text-muted-foreground/70">&rarr; {new Date(item.endDate).toLocaleDateString()}</div>
                       </TableCell>
 
-                      <TableCell className="font-black text-emerald-400 text-xs">
+                      <TableCell className="font-semibold text-emerald-400 text-xs">
                         ৳{(item.totalCost || 0).toLocaleString()}
                       </TableCell>
 
                       <TableCell>
                         <span
-                          className={`px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider rounded-full border ${
+                          className={`px-2.5 py-0.5 text-xs font-semibold rounded-full border ${
                             item.status === "CONFIRMED"
                               ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
                               : item.status === "CANCELLED"
                               ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
                               : item.status === "COMPLETED"
-                              ? "bg-sky-500/10 text-sky-400 border-sky-500/20"
+                              ? "bg-primary/10 text-primary border-primary/20"
                               : "bg-amber-500/10 text-amber-400 border-amber-500/20"
                           }`}
                         >
@@ -249,7 +249,7 @@ export default function AdminReservationsPage() {
                               <Button
                                 size="sm"
                                 onClick={() => handleStatusChange(item.id, "CONFIRMED")}
-                                className="h-8 px-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black gap-1 cursor-pointer shadow-xs"
+                                className="h-8 px-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold gap-1 cursor-pointer shadow-xs"
                               >
                                 <FaCheckCircle className="h-3 w-3" /> Accept
                               </Button>
@@ -257,7 +257,7 @@ export default function AdminReservationsPage() {
                                 size="sm"
                                 variant="outline"
                                 onClick={() => handleStatusChange(item.id, "CANCELLED")}
-                                className="h-8 px-2.5 text-rose-400 hover:bg-rose-500/15 border-rose-500/30 rounded-xl text-xs font-bold gap-1 cursor-pointer"
+                                className="h-8 px-2.5 text-rose-400 hover:bg-rose-500/15 border-rose-500/30 rounded-xl text-xs font-medium gap-1 cursor-pointer"
                               >
                                 <FaTimesCircle className="h-3 w-3" /> Reject
                               </Button>
@@ -269,7 +269,7 @@ export default function AdminReservationsPage() {
                                 size="sm"
                                 variant="outline"
                                 onClick={() => handleStatusChange(item.id, "COMPLETED")}
-                                className="h-8 px-3 text-sky-400 hover:bg-sky-500/10 border-sky-500/30 rounded-xl text-xs font-bold cursor-pointer"
+                                className="h-8 px-3 text-primary hover:bg-primary/10 border-primary/30 rounded-xl text-xs font-medium cursor-pointer"
                               >
                                 Mark Completed
                               </Button>
@@ -277,7 +277,7 @@ export default function AdminReservationsPage() {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleStatusChange(item.id, "CANCELLED")}
-                                className="h-8 px-2 text-rose-400 hover:bg-rose-500/10 rounded-xl text-xs font-bold cursor-pointer"
+                                className="h-8 px-2 text-rose-400 hover:bg-rose-500/10 rounded-xl text-xs font-medium cursor-pointer"
                                 title="Cancel this confirmed booking"
                               >
                                 Cancel
@@ -289,7 +289,7 @@ export default function AdminReservationsPage() {
                               size="sm"
                               variant="outline"
                               onClick={() => handleStatusChange(item.id, "CONFIRMED")}
-                              className="h-8 px-2.5 text-emerald-400 hover:bg-emerald-500/10 border-emerald-500/30 rounded-xl text-xs font-bold cursor-pointer"
+                              className="h-8 px-2.5 text-emerald-400 hover:bg-emerald-500/10 border-emerald-500/30 rounded-xl text-xs font-medium cursor-pointer"
                             >
                               Re-Accept
                             </Button>

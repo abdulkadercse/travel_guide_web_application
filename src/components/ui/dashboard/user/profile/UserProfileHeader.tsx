@@ -45,9 +45,9 @@ export function UserProfileHeader({
     : "Recently";
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-xs">
+    <div className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-xs">
       {/* Top Graphic Banner */}
-      <div className="relative h-36 sm:h-44 w-full bg-gradient-to-r from-teal-600 via-teal-700 to-slate-900 overflow-hidden">
+      <div className="relative h-36 sm:h-44 w-full bg-gradient-to-r from-primary via-primary-hover to-primary-hover overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(20,184,166,0.3),transparent_70%)]" />
         <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
       </div>
@@ -61,13 +61,13 @@ export function UserProfileHeader({
               <Avatar
                 src={user.avatar}
                 fallback={user.name}
-                className="h-full w-full text-2xl font-bold"
+                className="h-full w-full text-2xl font-medium"
               />
             </div>
 
             <div className="space-y-1">
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+                <h1 className="text-xl sm:text-2xl font-medium tracking-tight text-foreground">
                   {user.name}
                 </h1>
                 <span className="inline-flex items-center gap-1 rounded-md bg-primary-soft px-2 py-0.5 text-xs font-semibold text-primary">
@@ -108,34 +108,34 @@ export function UserProfileHeader({
           <div className="rounded-xl border border-border/80 bg-secondary/50 p-3 text-center sm:text-left transition-colors hover:bg-secondary/70">
             <div className="flex items-center justify-center sm:justify-between text-muted-foreground">
               <span className="text-xs font-medium hidden sm:inline">Saved Places</span>
-              <FaHeart className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />
+              <FaHeart className="h-3.5 w-3.5 text-rose-500 fill-rose-500" />
             </div>
-            <p className="text-xl sm:text-2xl font-bold text-foreground mt-1">
+            <p className="text-xl sm:text-2xl font-medium text-foreground mt-1">
               {stats.favoritesCount}
             </p>
-            <p className="text-[11px] text-muted-foreground sm:hidden">Favorites</p>
+            <p className="text-xs text-muted-foreground sm:hidden">Favorites</p>
           </div>
 
           <div className="rounded-xl border border-border/80 bg-secondary/50 p-3 text-center sm:text-left transition-colors hover:bg-secondary/70">
             <div className="flex items-center justify-center sm:justify-between text-muted-foreground">
               <span className="text-xs font-medium hidden sm:inline">Trip Plans</span>
-              <FaRoute className="h-3.5 w-3.5 text-teal-500" />
+              <FaRoute className="h-3.5 w-3.5 text-primary" />
             </div>
-            <p className="text-xl sm:text-2xl font-bold text-foreground mt-1">
+            <p className="text-xl sm:text-2xl font-medium text-foreground mt-1">
               {stats.tripPlansCount}
             </p>
-            <p className="text-[11px] text-muted-foreground sm:hidden">Trip Plans</p>
+            <p className="text-xs text-muted-foreground sm:hidden">Trip Plans</p>
           </div>
 
           <div className="rounded-xl border border-border/80 bg-secondary/50 p-3 text-center sm:text-left transition-colors hover:bg-secondary/70">
             <div className="flex items-center justify-center sm:justify-between text-muted-foreground">
               <span className="text-xs font-medium hidden sm:inline">Reservations</span>
-              <FaSuitcaseRolling className="h-3.5 w-3.5 text-indigo-500" />
+              <FaSuitcaseRolling className="h-3.5 w-3.5 text-primary" />
             </div>
-            <p className="text-xl sm:text-2xl font-bold text-foreground mt-1">
+            <p className="text-xl sm:text-2xl font-medium text-foreground mt-1">
               {stats.reservationsCount}
             </p>
-            <p className="text-[11px] text-muted-foreground sm:hidden">Bookings</p>
+            <p className="text-xs text-muted-foreground sm:hidden">Bookings</p>
           </div>
         </div>
       </div>

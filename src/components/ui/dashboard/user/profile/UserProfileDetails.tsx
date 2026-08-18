@@ -34,10 +34,10 @@ export function UserProfileDetails({ user, onOpenEdit }: UserProfileDetailsProps
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
       {/* Left Column: Personal Information */}
       <div className="lg:col-span-8 space-y-6">
-        <div className="rounded-3xl border border-border bg-card p-6 shadow-xs space-y-6">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-6">
           <div className="flex items-center justify-between border-b border-border/80 pb-4">
             <div>
-              <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+              <h2 className="text-lg font-medium text-foreground flex items-center gap-2">
                 <FaUser className="h-4 w-4 text-primary" />
                 <span>Personal Information</span>
               </h2>
@@ -99,19 +99,19 @@ export function UserProfileDetails({ user, onOpenEdit }: UserProfileDetailsProps
         </div>
 
         {/* Quick Travel Navigation Card */}
-        <div className="rounded-3xl border border-border bg-card p-6 shadow-xs space-y-4">
-          <h2 className="text-base font-bold text-foreground">Quick Shortcuts</h2>
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
+          <h2 className="text-base font-medium text-foreground">Quick Shortcuts</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <Link
               href="/dashboard/favorites"
               className="flex items-center gap-3 rounded-2xl border border-border/80 bg-secondary/40 p-3.5 transition-all hover:bg-secondary hover:border-primary/40 hover:-translate-y-0.5"
             >
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500">
-                <FaHeart className="h-4 w-4 fill-amber-500" />
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-500/10 text-rose-500">
+                <FaHeart className="h-4 w-4 fill-rose-500" />
               </span>
               <div>
-                <p className="text-xs font-bold text-foreground">My Favorites</p>
-                <p className="text-[11px] text-muted-foreground">Saved destinations</p>
+                <p className="text-xs font-medium text-foreground">My Favorites</p>
+                <p className="text-xs text-muted-foreground">Saved destinations</p>
               </div>
             </Link>
 
@@ -119,12 +119,12 @@ export function UserProfileDetails({ user, onOpenEdit }: UserProfileDetailsProps
               href="/dashboard/user"
               className="flex items-center gap-3 rounded-2xl border border-border/80 bg-secondary/40 p-3.5 transition-all hover:bg-secondary hover:border-primary/40 hover:-translate-y-0.5"
             >
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-500/10 text-primary">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <FaRoute className="h-4 w-4" />
               </span>
               <div>
-                <p className="text-xs font-bold text-foreground">Trip Planner</p>
-                <p className="text-[11px] text-muted-foreground">Manage itineraries</p>
+                <p className="text-xs font-medium text-foreground">Trip Planner</p>
+                <p className="text-xs text-muted-foreground">Manage itineraries</p>
               </div>
             </Link>
 
@@ -132,12 +132,12 @@ export function UserProfileDetails({ user, onOpenEdit }: UserProfileDetailsProps
               href="/#destinations"
               className="flex items-center gap-3 rounded-2xl border border-border/80 bg-secondary/40 p-3.5 transition-all hover:bg-secondary hover:border-primary/40 hover:-translate-y-0.5"
             >
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-500">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <FaCompass className="h-4 w-4" />
               </span>
               <div>
-                <p className="text-xs font-bold text-foreground">Explore Spots</p>
-                <p className="text-[11px] text-muted-foreground">Browse Bangladesh</p>
+                <p className="text-xs font-medium text-foreground">Explore Spots</p>
+                <p className="text-xs text-muted-foreground">Browse Bangladesh</p>
               </div>
             </Link>
           </div>
@@ -146,9 +146,9 @@ export function UserProfileDetails({ user, onOpenEdit }: UserProfileDetailsProps
 
       {/* Right Column: Account & Security */}
       <div className="lg:col-span-4 space-y-6">
-        <div className="rounded-3xl border border-border bg-card p-6 shadow-xs space-y-5">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-5">
           <div className="border-b border-border/80 pb-4">
-            <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+            <h2 className="text-base font-medium text-foreground flex items-center gap-2">
               <FaShieldHalved className="h-4 w-4 text-primary" />
               <span>Account Status</span>
             </h2>

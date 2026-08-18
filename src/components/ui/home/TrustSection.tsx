@@ -23,7 +23,7 @@ const trustPillars = [
     description:
       "Every hotel, restaurant, and transport route is administratively vetted before appearing on Travla BD. No fake photos, hidden fees, or scam markups.",
     highlight: "Zero Hidden Costs",
-    accentColor: "from-teal-500/20 to-emerald-500/20 border-teal-500/30 text-teal-600 dark:text-teal-400",
+    accentColor: "from-primary/20 to-emerald-500/20 border-primary/30 text-primary dark:text-primary",
   },
   {
     Icon: FaStar,
@@ -41,7 +41,7 @@ const trustPillars = [
     description:
       "Your personal profile, reservations, and custom trip itineraries are protected by bcrypt password hashing and cryptographic JSON Web Tokens.",
     highlight: "Encrypted & Safe",
-    accentColor: "from-blue-500/20 to-indigo-500/20 border-blue-500/30 text-blue-600 dark:text-blue-400",
+    accentColor: "from-primary/20 to-primary/20 border-primary/30 text-primary dark:text-primary",
   },
   {
     Icon: FaHeadset,
@@ -110,7 +110,7 @@ export function TrustSection() {
               className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-xs transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-xl"
             >
               {/* Top Accent Line */}
-              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary to-teal-400 opacity-80 transition-opacity group-hover:opacity-100" />
+              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary to-primary opacity-80 transition-opacity group-hover:opacity-100" />
 
               <div className="space-y-4">
                 {/* Header Icon + Tag */}

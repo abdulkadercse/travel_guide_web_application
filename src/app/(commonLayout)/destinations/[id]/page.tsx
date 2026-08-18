@@ -19,14 +19,17 @@ import {
   FaArrowLeft,
   FaMapMarkerAlt,
   FaStar,
-  FaCalendarCheck,
-  FaRoute,
   FaHeart,
   FaSpinner,
   FaCheckCircle,
   FaUser,
-  FaPaperPlane,
 } from "react-icons/fa";
+
+const highlights = [
+  { title: "Guided sightseeing", detail: "Expert local guide available" },
+  { title: "Scenic photography", detail: "Panoramic views and spots" },
+  { title: "Flexible booking", detail: "Instant confirmation" },
+];
 
 export default function DestinationDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -84,245 +87,223 @@ export default function DestinationDetailPage({ params }: { params: Promise<{ id
 
   if (isLoading) {
     return (
-      <div className="py-24 flex justify-center text-muted-foreground">
-        <FaSpinner className="h-8 w-8 animate-spin text-indigo-500" />
+      <div className="flex justify-center py-24 text-muted-foreground">
+        <FaSpinner className="h-6 w-6 animate-spin" />
       </div>
     );
   }
 
   if (!destination) {
     return (
-      <div className="py-24 text-center space-y-4">
-        <h2 className="text-xl font-bold">Destination Not Found</h2>
-        <Button variant="outline" className="rounded-full" asChild>
-          <Link href="/destinations">Back to Destinations</Link>
+      <div className="space-y-4 py-24 text-center">
+        <h2 className="text-xl font-semibold">Destination not found</h2>
+        <Button variant="outline" asChild>
+          <Link href="/destinations">Back to destinations</Link>
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground py-10 font-sans">
-      <Container className="space-y-8">
-        {/* Navigation Back Link */}
+    <div className="py-12 sm:py-16">
+      <Container className="space-y-12">
+        {/* Back / save */}
         <div className="flex items-center justify-between">
-          <Button variant="ghost" size="sm" className="rounded-full text-xs font-bold" asChild>
+          <Button variant="ghost" size="sm" asChild>
             <Link href="/destinations">
-              <FaArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Back to Destinations
+              <FaArrowLeft className="mr-2 h-3 w-3" /> All destinations
             </Link>
           </Button>
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleToggleFavorite}
-            className={`rounded-full text-xs font-bold gap-1.5 ${
-              isFavorited ? "text-rose-400 border-rose-500/30 bg-rose-500/10" : "text-muted-foreground"
-            }`}
-          >
-            <FaHeart className={`h-3.5 w-3.5 ${isFavorited ? "fill-rose-500 text-rose-500" : ""}`} />
-            {isFavorited ? "Saved in Favorites" : "Save Favorite"}
+          <Button variant="outline" size="sm" onClick={handleToggleFavorite}>
+            <FaHeart
+              className={`mr-2 h-3 w-3 ${isFavorited ? "fill-rose-500 text-rose-500" : ""}`}
+            />
+            {isFavorited ? "Saved" : "Save"}
           </Button>
         </div>
 
-        {/* Hero Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-          {/* Cover Gallery */}
-          <div className="relative h-80 sm:h-96 w-full rounded-3xl overflow-hidden border border-border bg-slate-900 shadow-lg">
+        {/* Hero */}
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border bg-muted">
             <Image
-              src={destination.coverImage || "https://images.unsplash.com/photo-1507525428034-b723cf961d3e"}
+              src={
+                destination.coverImage ||
+                "https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
+              }
               alt={destination.title}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
               priority
             />
-            <div className="absolute top-4 left-4 flex gap-2">
-              <span className="px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-black/60 backdrop-blur-md text-white border border-white/20">
+            {destination.category && (
+              <span className="chip-glass absolute left-4 top-4 px-2.5 py-1 text-xs font-medium">
                 {destination.category}
               </span>
-            </div>
+            )}
           </div>
 
-          {/* Details & Actions */}
           <div className="space-y-6">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-xs font-bold text-indigo-400">
-                <FaMapMarkerAlt className="h-4 w-4" />
-                <span>{destination.location}, {destination.district}</span>
-              </div>
+            <div className="space-y-3">
+              <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <FaMapMarkerAlt className="h-3 w-3 shrink-0" />
+                {destination.location}, {destination.district}
+              </p>
 
-              <h1 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight text-foreground">
-                {destination.title}
-              </h1>
+              <h1 className="heading">{destination.title}</h1>
 
-              <div className="flex items-center gap-3 pt-1">
-                <div className="flex items-center gap-1 text-amber-400 text-sm font-black bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
-                  <FaStar className="h-4 w-4 fill-amber-400" />
-                  <span>{destination.rating || 4.8}</span>
-                </div>
-                <span className="text-xs text-muted-foreground font-semibold">
-                  Verified Destination Experience
-                </span>
-              </div>
+              <p className="inline-flex items-center gap-1.5 text-sm">
+                <FaStar className="h-3.5 w-3.5 text-highlight" />
+                <span className="font-medium">{destination.rating || 4.8}</span>
+                <span className="text-muted-foreground">· Verified experience</span>
+              </p>
             </div>
 
-            <p className="text-sm text-muted-foreground leading-relaxed bg-card/60 p-4 rounded-2xl border border-border">
+            <p className="text-base leading-relaxed text-muted-foreground">
               {destination.description}
             </p>
 
-            {/* Price & Action Buttons */}
-            <div className="p-6 rounded-3xl bg-indigo-500/5 border border-indigo-500/20 space-y-4">
-              <div className="flex items-center justify-between">
+            <div className="surface space-y-5 p-5">
+              <p>
+                <span className="text-3xl font-semibold tracking-tight">
+                  ৳{(destination.price || 1500).toLocaleString()}
+                </span>
+                <span className="text-sm text-muted-foreground"> / person</span>
+              </p>
+
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={() => setResModalOpen(true)}>Reserve</Button>
+                <Button variant="outline" onClick={() => setTripPlanModalOpen(true)}>
+                  Add to trip plan
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Highlights */}
+        <section className="space-y-5">
+          <h2 className="text-xl font-semibold tracking-tight">What&apos;s included</h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {highlights.map((h) => (
+              <div key={h.title} className="surface flex items-start gap-3 p-5">
+                <FaCheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">Package Rate</span>
-                  <span className="text-3xl font-black text-emerald-400">৳{(destination.price || 1500).toLocaleString()}</span>
-                  <span className="text-xs text-muted-foreground ml-1">/ person</span>
+                  <p className="text-sm font-medium">{h.title}</p>
+                  <p className="mt-0.5 text-sm text-muted-foreground">{h.detail}</p>
                 </div>
               </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                <Button
-                  size="lg"
-                  onClick={() => setResModalOpen(true)}
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-extrabold gap-2 shadow-lg shadow-indigo-600/20"
-                >
-                  <FaCalendarCheck className="h-4 w-4" /> Reserve Package Now
-                </Button>
-
-                <Button
-                  size="lg"
-                  variant="outline"
-                  onClick={() => setTripPlanModalOpen(true)}
-                  className="rounded-2xl font-extrabold gap-2 border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/10"
-                >
-                  <FaRoute className="h-4 w-4" /> Add to Trip Plan
-                </Button>
-              </div>
-            </div>
+            ))}
           </div>
-        </div>
+        </section>
 
-        {/* Highlights Section */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-card border border-border space-y-4">
-          <h2 className="text-xl font-extrabold tracking-tight">Key Destination Highlights</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="p-4 rounded-2xl bg-muted/30 border border-border/60 flex items-center gap-3">
-              <FaCheckCircle className="h-5 w-5 text-emerald-400 shrink-0" />
-              <div>
-                <p className="text-xs font-bold">Guided Sightseeing</p>
-                <p className="text-[11px] text-muted-foreground">Expert local guide available</p>
-              </div>
-            </div>
-            <div className="p-4 rounded-2xl bg-muted/30 border border-border/60 flex items-center gap-3">
-              <FaCheckCircle className="h-5 w-5 text-emerald-400 shrink-0" />
-              <div>
-                <p className="text-xs font-bold">Scenic Photography</p>
-                <p className="text-[11px] text-muted-foreground">Panoramic views & spots</p>
-              </div>
-            </div>
-            <div className="p-4 rounded-2xl bg-muted/30 border border-border/60 flex items-center gap-3">
-              <FaCheckCircle className="h-5 w-5 text-emerald-400 shrink-0" />
-              <div>
-                <p className="text-xs font-bold">Flexible Booking</p>
-                <p className="text-[11px] text-muted-foreground">Instant confirmation</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Reviews */}
+        <section className="space-y-5">
+          <h2 className="text-xl font-semibold tracking-tight">Traveller reviews</h2>
 
-        {/* Review & Ratings Section */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-card border border-border space-y-6">
-          <h2 className="text-xl font-extrabold tracking-tight flex items-center gap-2">
-            <FaStar className="text-amber-400 h-5 w-5" /> Traveler Reviews & Feedback
-          </h2>
-
-          {/* Submit Review Form */}
-          <form onSubmit={handleReviewSubmit} className="space-y-4 p-5 rounded-2xl bg-muted/30 border border-border">
-            <h3 className="text-sm font-bold">Leave Your Review</h3>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold">Rating:</span>
+          <form onSubmit={handleReviewSubmit} className="surface space-y-4 p-5">
+            <div className="space-y-1.5">
+              <label htmlFor="dest-rating" className="text-sm text-muted-foreground">
+                Rating
+              </label>
               <select
+                id="dest-rating"
                 value={reviewRating}
                 onChange={(e) => setReviewRating(Number(e.target.value))}
-                className="h-8 rounded-lg border bg-background px-2 text-xs font-bold"
+                className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
               >
-                <option value={5}>⭐⭐⭐⭐⭐ (5/5 Exceptional)</option>
-                <option value={4}>⭐⭐⭐⭐ (4/5 Great)</option>
-                <option value={3}>⭐⭐⭐ (3/5 Average)</option>
-                <option value={2}>⭐⭐ (2/5 Poor)</option>
-                <option value={1}>⭐ (1/5 Terible)</option>
+                <option value={5}>5 — Exceptional</option>
+                <option value={4}>4 — Great</option>
+                <option value={3}>3 — Average</option>
+                <option value={2}>2 — Poor</option>
+                <option value={1}>1 — Terrible</option>
               </select>
             </div>
 
-            <textarea
-              placeholder="Share your travel experience, photos, or tips..."
-              value={reviewComment}
-              onChange={(e) => setReviewComment(e.target.value)}
-              rows={3}
-              className="w-full p-3 rounded-xl border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
-            />
+            <div className="space-y-1.5">
+              <label htmlFor="dest-comment" className="text-sm text-muted-foreground">
+                Your experience
+              </label>
+              <textarea
+                id="dest-comment"
+                placeholder="What was the trip like?"
+                value={reviewComment}
+                onChange={(e) => setReviewComment(e.target.value)}
+                rows={3}
+                className="w-full rounded-md border border-input bg-background p-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                required
+              />
+            </div>
 
-            <Button
-              type="submit"
-              disabled={submittingReview}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-full text-xs gap-1.5"
-            >
-              {submittingReview ? <FaSpinner className="animate-spin" /> : <><FaPaperPlane /> Post Review</>}
+            <Button type="submit" size="sm" disabled={submittingReview}>
+              {submittingReview ? "Posting…" : "Post review"}
             </Button>
           </form>
 
-          {/* Reviews List */}
-          {(!destination.reviews || destination.reviews.length === 0) ? (
-            <p className="text-xs text-muted-foreground italic">No reviews submitted yet. Be the first to share your experience!</p>
+          {!destination.reviews || destination.reviews.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No reviews yet — be the first to share your experience.
+            </p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {destination.reviews.map((rev: any) => (
-                <div key={rev.id} className="p-4 rounded-2xl bg-background border border-border/80 space-y-2">
+                <div key={rev.id} className="surface space-y-3 p-5">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="h-8 w-8 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-500 font-bold text-xs">
-                        <FaUser />
-                      </div>
-                      <span className="text-xs font-bold">{rev.user?.name || "Verified Traveler"}</span>
+                    <div className="flex items-center gap-2.5">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-soft text-primary">
+                        <FaUser className="h-3 w-3" />
+                      </span>
+                      <span className="text-sm font-medium">
+                        {rev.user?.name || "Verified traveller"}
+                      </span>
                     </div>
 
-                    <div className="flex items-center gap-1 text-amber-400 text-xs font-bold">
-                      <FaStar className="h-3 w-3 fill-amber-400" />
-                      <span>{rev.rating}/5</span>
-                    </div>
+                    <span className="inline-flex items-center gap-1.5 text-sm">
+                      <FaStar className="h-3.5 w-3.5 text-highlight" />
+                      {rev.rating}
+                    </span>
                   </div>
 
-                  <p className="text-xs text-muted-foreground leading-relaxed pl-10">{rev.comment}</p>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{rev.comment}</p>
                 </div>
               ))}
             </div>
           )}
-        </div>
+        </section>
 
-        {/* Related Suggestions */}
+        {/* Related */}
         {relatedDestinations.length > 0 && (
-          <div className="space-y-4 pt-4">
-            <h2 className="text-xl font-extrabold tracking-tight">You May Also Like</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <section className="space-y-5">
+            <h2 className="text-xl font-semibold tracking-tight">You may also like</h2>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
               {relatedDestinations.map((rel) => (
                 <Link
                   key={rel.id}
                   href={`/destinations/${rel.id}`}
-                  className="group p-4 rounded-3xl bg-card border border-border hover:border-indigo-500/50 transition-all space-y-3"
+                  className="surface-interactive group flex flex-col overflow-hidden"
                 >
-                  <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-900">
-                    <Image src={rel.coverImage} alt={rel.title} fill sizes="300px" className="object-cover group-hover:scale-105 transition-transform" />
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
+                    <Image
+                      src={rel.coverImage}
+                      alt={rel.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 33vw"
+                      className="object-cover transition-transform duration-700 group-hover:"
+                    />
                   </div>
-                  <div>
-                    <h3 className="font-bold text-sm group-hover:text-indigo-400 transition-colors">{rel.title}</h3>
-                    <p className="text-xs text-muted-foreground">{rel.district} &bull; ৳{rel.price?.toLocaleString() || 1500}</p>
+                  <div className="p-5">
+                    <h3 className="text-base font-semibold leading-snug transition-colors group-hover:text-primary">
+                      {rel.title}
+                    </h3>
+                    <p className="mt-1.5 text-sm text-muted-foreground">
+                      {rel.district} · ৳{rel.price?.toLocaleString() || 1500}
+                    </p>
                   </div>
                 </Link>
               ))}
             </div>
-          </div>
+          </section>
         )}
       </Container>
 

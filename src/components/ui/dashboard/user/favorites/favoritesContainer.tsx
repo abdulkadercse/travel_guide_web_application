@@ -141,11 +141,11 @@ export function FavoritesContainer() {
         {/* Page Header */}
         <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between border-b border-border/80 pb-6">
           <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
-              <FaHeart className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />
+            <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary">
+              <FaHeart className="h-3.5 w-3.5 text-rose-500 fill-rose-500" />
               <span>Saved Places</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight text-foreground">
               My Favorites
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground">
@@ -156,11 +156,11 @@ export function FavoritesContainer() {
           {favorites.length > 0 && (
             <div className="text-xs sm:text-sm font-medium text-muted-foreground">
               Showing{" "}
-              <span className="font-bold text-foreground">
+              <span className="font-medium text-foreground">
                 {filteredFavorites.length}
               </span>{" "}
               of{" "}
-              <span className="font-bold text-foreground">
+              <span className="font-medium text-foreground">
                 {favorites.length}
               </span>{" "}
               favorites
@@ -193,12 +193,12 @@ export function FavoritesContainer() {
 
         {/* Empty State: No favorites saved yet */}
         {!isLoading && favorites.length === 0 && (
-          <div className="rounded-3xl border border-border bg-card p-8 sm:p-12 text-center shadow-xs max-w-2xl mx-auto space-y-4">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-400/10 text-amber-500">
-              <FaRegHeart className="h-8 w-8 text-amber-500" />
+          <div className="rounded-2xl border border-border bg-card p-8 sm:p-12 text-center shadow-xs max-w-2xl mx-auto space-y-4">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-400/10 text-rose-500">
+              <FaRegHeart className="h-8 w-8 text-rose-500" />
             </div>
             <div className="space-y-1.5">
-              <h2 className="text-xl font-bold tracking-tight text-foreground">
+              <h2 className="text-xl font-medium tracking-tight text-foreground">
                 No saved favorites yet
               </h2>
               <p className="text-sm text-muted-foreground max-w-md mx-auto">

@@ -158,8 +158,8 @@ export default function AdminDestinationsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-5">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2.5">
-              <div className="h-10 w-10 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 shrink-0">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight flex items-center gap-2.5">
+              <div className="h-10 w-10 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
                 <FaCompass className="h-5 w-5" />
               </div>
               Destinations Control & Management
@@ -171,13 +171,13 @@ export default function AdminDestinationsPage() {
 
           <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
             <DialogTrigger>
-              <Button className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full font-bold shadow-md shadow-indigo-600/20 gap-2 shrink-0">
+              <Button className="gap-2 shrink-0">
                 <FaPlus className="h-3.5 w-3.5" /> Add New Destination
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
               <DialogHeader>
-                <DialogTitle className="text-lg font-bold">Add New Tourist Destination</DialogTitle>
+                <DialogTitle className="text-lg font-medium">Add New Tourist Destination</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleCreate} className="space-y-4 pt-2">
                 <div className="space-y-1">
@@ -217,7 +217,7 @@ export default function AdminDestinationsPage() {
                     <select
                       value={newDest.category}
                       onChange={(e) => setNewDest({ ...newDest, category: e.target.value })}
-                      className="w-full h-10 rounded-md border bg-background px-3 text-sm focus:ring-2 focus:ring-indigo-500"
+                      className="w-full h-10 rounded-md border bg-background px-3 text-sm focus:ring-2 focus:ring-primary"
                     >
                       <option value="Beach">Beach</option>
                       <option value="Mountain">Mountain</option>
@@ -260,7 +260,7 @@ export default function AdminDestinationsPage() {
                   <Button type="button" variant="outline" onClick={() => setAddDialogOpen(false)}>
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={submitting} className="bg-indigo-600 text-white font-bold">
+                  <Button type="submit" disabled={submitting}>
                     {submitting ? <FaSpinner className="animate-spin" /> : "Save Destination"}
                   </Button>
                 </div>
@@ -273,26 +273,26 @@ export default function AdminDestinationsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase">Total Destinations</p>
-              <h3 className="text-2xl font-black text-foreground mt-0.5">{destinations.length}</h3>
+              <p className="text-sm text-muted-foreground">Total Destinations</p>
+              <h3 className="text-2xl font-semibold text-foreground mt-0.5">{destinations.length}</h3>
             </div>
-            <FaCompass className="h-6 w-6 text-indigo-500" />
+            <FaCompass className="h-6 w-6 text-primary" />
           </div>
 
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase">Categories</p>
-              <h3 className="text-2xl font-black text-indigo-400 mt-0.5">
+              <p className="text-sm text-muted-foreground">Categories</p>
+              <h3 className="text-2xl font-semibold text-primary mt-0.5">
                 {new Set(destinations.map((d) => d.category)).size} Types
               </h3>
             </div>
-            <FaLayerGroup className="h-6 w-6 text-indigo-400" />
+            <FaLayerGroup className="h-6 w-6 text-primary" />
           </div>
 
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase">Average Rate</p>
-              <h3 className="text-2xl font-black text-emerald-400 mt-0.5">
+              <p className="text-sm text-muted-foreground">Average Rate</p>
+              <h3 className="text-2xl font-semibold text-emerald-400 mt-0.5">
                 ৳{destinations.length ? Math.round(totalValue / destinations.length).toLocaleString() : 0}
               </h3>
             </div>
@@ -315,7 +315,7 @@ export default function AdminDestinationsPage() {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="h-10 rounded-xl border bg-background px-3 text-xs font-bold"
+            className="h-10 rounded-xl border bg-background px-3 text-xs font-medium"
           >
             <option value="ALL">All Categories</option>
             <option value="Beach">Beach</option>
@@ -327,15 +327,15 @@ export default function AdminDestinationsPage() {
         </div>
 
         {/* Table View */}
-        <div className="rounded-3xl border border-border bg-card overflow-hidden shadow-sm">
+        <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm">
           {isLoading ? (
             <div className="py-16 flex justify-center text-muted-foreground">
-              <FaSpinner className="h-8 w-8 animate-spin text-indigo-500" />
+              <FaSpinner className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : destinations.length === 0 ? (
             <div className="py-16 text-center text-muted-foreground space-y-2">
               <FaCompass className="h-10 w-10 text-muted-foreground/30 mx-auto" />
-              <p className="font-bold text-foreground">No destinations found</p>
+              <p className="font-medium text-foreground">No destinations found</p>
             </div>
           ) : (
             <Table>
@@ -354,30 +354,30 @@ export default function AdminDestinationsPage() {
                 {destinations.map((item) => (
                   <TableRow key={item.id} className="hover:bg-muted/30 border-b border-border/60">
                     <TableCell>
-                      <div className="relative h-12 w-16 rounded-xl overflow-hidden bg-slate-900 border shrink-0">
+                      <div className="relative h-12 w-16 rounded-xl overflow-hidden bg-muted border shrink-0">
                         <Image src={item.coverImage || "https://images.unsplash.com/photo-1507525428034-b723cf961d3e"} alt={item.title} fill sizes="64px" className="object-cover" />
                       </div>
                     </TableCell>
                     <TableCell>
-                      <p className="font-bold text-foreground text-sm">{item.title}</p>
+                      <p className="font-medium text-foreground text-sm">{item.title}</p>
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground">
                       <span className="flex items-center gap-1">
-                        <FaMapMarkerAlt className="text-indigo-400 h-3 w-3" />
+                        <FaMapMarkerAlt className="text-primary h-3 w-3" />
                         {item.location}, {item.district}
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span className="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-full">
+                      <span className="px-2.5 py-0.5 text-xs font-medium bg-primary/10 text-primary border border-primary/20 rounded-full">
                         {item.category}
                       </span>
                     </TableCell>
-                    <TableCell className="text-xs font-bold text-amber-400">
+                    <TableCell className="text-xs font-medium text-amber-400">
                       <span className="flex items-center gap-1">
                         <FaStar className="fill-amber-400 h-3 w-3" /> {item.rating || 4.8}
                       </span>
                     </TableCell>
-                    <TableCell className="font-black text-emerald-400 text-sm">
+                    <TableCell className="font-semibold text-emerald-400 text-sm">
                       ৳{(item.price || 1500).toLocaleString()}
                     </TableCell>
                     <TableCell className="text-right">
@@ -386,7 +386,7 @@ export default function AdminDestinationsPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleOpenEdit(item)}
-                          className="h-8 w-8 p-0 text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 rounded-lg"
+                          className="h-8 w-8 p-0 text-primary hover:text-primary hover:bg-primary/10 rounded-lg"
                           title="Edit Destination"
                         >
                           <FaEdit className="h-3.5 w-3.5" />
@@ -414,7 +414,7 @@ export default function AdminDestinationsPage() {
           <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
             <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
               <DialogHeader>
-                <DialogTitle className="text-lg font-bold">Edit Destination</DialogTitle>
+                <DialogTitle className="text-lg font-medium">Edit Destination</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleUpdate} className="space-y-4 pt-2">
                 <div>
@@ -494,7 +494,7 @@ export default function AdminDestinationsPage() {
                   <Button type="button" variant="outline" onClick={() => setEditDialogOpen(false)}>
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={submitting} className="bg-indigo-600 text-white font-bold">
+                  <Button type="submit" disabled={submitting}>
                     {submitting ? <FaSpinner className="animate-spin" /> : "Save Changes"}
                   </Button>
                 </div>

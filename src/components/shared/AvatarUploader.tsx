@@ -94,7 +94,7 @@ export function AvatarUploader({
       <div
         onClick={() => !disabled && !loading && fileInputRef.current?.click()}
         className={cn(
-          "relative rounded-full cursor-pointer overflow-hidden border-2 border-indigo-500/40 shadow-xl transition-all hover:border-indigo-500 hover:scale-105",
+          "relative rounded-full cursor-pointer overflow-hidden border-2 border-border transition-colors hover:border-primary/40",
           sizeClasses,
           disabled && "opacity-50 cursor-not-allowed",
           className
@@ -105,14 +105,14 @@ export function AvatarUploader({
 
         {/* Loading Spinner Overlay */}
         {loading ? (
-          <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center text-white">
-            <FaSpinner className="h-5 w-5 animate-spin text-indigo-400" />
+          <div className="absolute inset-0 bg-stone-950/70 backdrop-blur-xs flex items-center justify-center text-white">
+            <FaSpinner className="h-5 w-5 animate-spin text-primary" />
           </div>
         ) : (
           /* Camera Hover Overlay */
-          <div className="absolute inset-0 bg-slate-950/50 backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white">
+          <div className="absolute inset-0 bg-stone-950/50 backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white">
             <FaCamera className="h-5 w-5 text-white drop-shadow-md" />
-            <span className="text-[10px] font-bold mt-0.5">Edit</span>
+            <span className="text-xs font-medium mt-0.5">Edit</span>
           </div>
         )}
       </div>
@@ -122,7 +122,7 @@ export function AvatarUploader({
         type="button"
         onClick={() => !disabled && !loading && fileInputRef.current?.click()}
         disabled={disabled || loading}
-        className="absolute bottom-0 right-0 h-7 w-7 rounded-full bg-indigo-600 border-2 border-background text-white flex items-center justify-center shadow-lg hover:bg-indigo-500 transition-colors"
+        className="absolute bottom-0 right-0 h-7 w-7 rounded-full bg-primary border-2 border-background text-primary-foreground flex items-center justify-center shadow-lg hover:bg-primary-hover transition-colors"
       >
         <FaCamera className="h-3 w-3" />
       </button>

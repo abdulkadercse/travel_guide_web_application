@@ -139,7 +139,7 @@ export default function DashboardLayout({
   ];
 
   const filteredNavItems = navItems.filter(
-    (item) => user && item.roles.includes(user.role)
+    (item) => user && item.roles.includes(user.role),
   );
 
   return (
@@ -152,14 +152,14 @@ export default function DashboardLayout({
             {/* Logo & Brand */}
             <div className="flex items-center justify-between pb-3 border-b border-border">
               <Link href="/" className="flex items-center gap-2.5 group">
-                <div className="h-9 w-9 rounded-2xl bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 shadow-sm group-hover:scale-105 transition-transform">
+                <div className="h-9 w-9 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shadow-sm group-hover: transition-transform">
                   <FaCompass className="h-4.5 w-4.5" />
                 </div>
                 <div>
-                  <span className="text-lg font-black tracking-wider text-foreground block leading-none">
-                    Travla<span className="text-indigo-500">BD</span>
+                  <span className="text-lg font-semibold tracking-tight text-foreground block leading-none">
+                    Travla<span className="text-primary">BD</span>
                   </span>
-                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest block mt-0.5">
+                  <span className="text-xs font-medium text-muted-foreground block mt-0.5">
                     Dashboard
                   </span>
                 </div>
@@ -168,11 +168,19 @@ export default function DashboardLayout({
 
             {/* User Mini Profile Card */}
             <div className="p-3 rounded-2xl bg-primary-soft/30 border border-border flex items-center gap-2.5">
-              <Avatar src={user?.avatar} fallback={user?.name} className="h-9 w-9 ring-2 ring-primary/20 shrink-0" />
+              <Avatar
+                src={user?.avatar}
+                fallback={user?.name}
+                className="h-9 w-9 ring-2 ring-primary/20 shrink-0"
+              />
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-bold text-foreground truncate">{user?.name}</p>
-                <p className="text-[10px] text-muted-foreground truncate">{user?.email}</p>
-                <span className="inline-block mt-0.5 px-2 py-0.2 rounded-full text-[8px] font-bold uppercase tracking-wider bg-indigo-500/15 text-indigo-400 border border-indigo-500/25">
+                <p className="text-xs font-medium text-foreground truncate">
+                  {user?.name}
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {user?.email}
+                </p>
+                <span className="inline-block mt-0.5 px-2 py-0.2 rounded-full text-[8px] font-medium bg-primary/15 text-primary border border-primary/25">
                   {user?.role}
                 </span>
               </div>
@@ -180,7 +188,7 @@ export default function DashboardLayout({
 
             {/* Sidebar Nav Links */}
             <nav className="space-y-1">
-              <p className="px-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground pb-1">
+              <p className="px-2.5 text-xs font-medium text-muted-foreground pb-1">
                 Navigation Menu
               </p>
               {filteredNavItems.map((item) => {
@@ -190,19 +198,23 @@ export default function DashboardLayout({
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all ${
+                    className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
                       isActive
-                        ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
+                        ? "bg-primary text-primary-foreground"
                         : item.highlight
-                        ? "bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500/20"
-                        : "text-muted-foreground hover:text-foreground hover:bg-card/80 border border-transparent hover:border-border"
+                          ? "bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500/20"
+                          : "text-muted-foreground hover:text-foreground hover:bg-card/80 border border-transparent hover:border-border"
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <Icon className={`h-3.5 w-3.5 ${isActive ? "text-white" : ""}`} />
+                      <Icon
+                        className={`h-3.5 w-3.5 ${isActive ? "text-white" : ""}`}
+                      />
                       <span className="truncate">{item.label}</span>
                     </div>
-                    {isActive && <FaChevronRight className="h-2.5 w-2.5 text-white/80 shrink-0" />}
+                    {isActive && (
+                      <FaChevronRight className="h-2.5 w-2.5 text-white/80 shrink-0" />
+                    )}
                   </Link>
                 );
               })}
@@ -213,24 +225,30 @@ export default function DashboardLayout({
           <div className="shrink-0 pt-3 border-t border-border space-y-1.5 bg-card/60">
             <Link
               href="/"
-              className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-muted-foreground hover:text-foreground hover:bg-card border border-transparent hover:border-border transition-all"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-card border border-transparent hover:border-border transition-all"
             >
-              <FaGlobe className="h-3.5 w-3.5 text-indigo-500" />
+              <FaGlobe className="h-3.5 w-3.5 text-primary" />
               <span>Back to Main Site</span>
             </Link>
 
             <div className="flex items-center justify-between px-3 py-1">
-              <span className="text-[11px] font-semibold text-muted-foreground">Theme</span>
+              <span className="text-xs font-semibold text-muted-foreground">
+                Theme
+              </span>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="h-7 rounded-full px-2.5 text-[11px] font-semibold"
+                className="h-7 rounded-full px-2.5 text-xs font-semibold"
               >
                 {mounted && theme === "dark" ? (
-                  <span className="flex items-center gap-1 text-amber-400"><FaSun className="h-2.5 w-2.5" /> Dark</span>
+                  <span className="flex items-center gap-1 text-amber-400">
+                    <FaSun className="h-2.5 w-2.5" /> Dark
+                  </span>
                 ) : (
-                  <span className="flex items-center gap-1 text-slate-700"><FaMoon className="h-2.5 w-2.5" /> Light</span>
+                  <span className="flex items-center gap-1 text-muted-foreground">
+                    <FaMoon className="h-2.5 w-2.5" /> Light
+                  </span>
                 )}
               </Button>
             </div>
@@ -238,7 +256,7 @@ export default function DashboardLayout({
             <Button
               variant="ghost"
               onClick={handleLogout}
-              className="w-full justify-start gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 cursor-pointer"
+              className="w-full justify-start gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 cursor-pointer"
             >
               <FaSignOutAlt className="h-3.5 w-3.5" />
               <span>Sign Out</span>
@@ -256,19 +274,32 @@ export default function DashboardLayout({
                 onClick={() => setMobileOpen(!mobileOpen)}
                 className="rounded-xl"
               >
-                {mobileOpen ? <FaTimes className="h-5 w-5" /> : <FaBars className="h-5 w-5" />}
+                {mobileOpen ? (
+                  <FaTimes className="h-5 w-5" />
+                ) : (
+                  <FaBars className="h-5 w-5" />
+                )}
               </Button>
               <Link href="/" className="flex items-center gap-2">
-                <FaCompass className="h-5 w-5 text-indigo-500" />
-                <span className="text-lg font-extrabold tracking-wider">
-                  Travla<span className="text-indigo-500">BD</span>
+                <FaCompass className="h-5 w-5 text-primary" />
+                <span className="text-lg font-semibold tracking-tight">
+                  Travla<span className="text-primary">BD</span>
                 </span>
               </Link>
             </div>
 
             <div className="flex items-center gap-2">
-              <Avatar src={user?.avatar} fallback={user?.name} className="h-8 w-8" />
-              <Button variant="ghost" size="icon" onClick={handleLogout} className="text-rose-400">
+              <Avatar
+                src={user?.avatar}
+                fallback={user?.name}
+                className="h-8 w-8"
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleLogout}
+                className="text-rose-400"
+              >
                 <FaSignOutAlt className="h-4 w-4" />
               </Button>
             </div>
@@ -279,8 +310,12 @@ export default function DashboardLayout({
             <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-xl p-6 flex flex-col justify-between">
               <div className="space-y-6">
                 <div className="flex items-center justify-between pb-4 border-b">
-                  <span className="text-lg font-bold">Dashboard Menu</span>
-                  <Button variant="ghost" size="icon" onClick={() => setMobileOpen(false)}>
+                  <span className="text-lg font-medium">Dashboard Menu</span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setMobileOpen(false)}
+                  >
                     <FaTimes className="h-5 w-5" />
                   </Button>
                 </div>
@@ -294,9 +329,9 @@ export default function DashboardLayout({
                         key={item.href}
                         href={item.href}
                         onClick={() => setMobileOpen(false)}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold ${
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium ${
                           isActive
-                            ? "bg-indigo-600 text-white"
+                            ? "bg-primary text-primary-foreground"
                             : "bg-card border border-border text-foreground"
                         }`}
                       >
@@ -312,12 +347,15 @@ export default function DashboardLayout({
                 <Link
                   href="/"
                   onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl bg-card border text-sm font-bold"
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl bg-card border text-sm font-medium"
                 >
-                  <FaGlobe className="h-5 w-5 text-indigo-500" />
+                  <FaGlobe className="h-5 w-5 text-primary" />
                   <span>Back to Main Website</span>
                 </Link>
-                <Button onClick={handleLogout} className="w-full bg-rose-600 text-white font-bold py-3 rounded-xl">
+                <Button
+                  onClick={handleLogout}
+                  className="w-full bg-rose-600 text-white font-medium py-3 rounded-xl"
+                >
                   Sign Out
                 </Button>
               </div>
@@ -332,19 +370,26 @@ export default function DashboardLayout({
           {/* Top Bar for Desktop */}
           <header className="sticky top-0 z-20 h-16 border-b border-border bg-background/80 backdrop-blur-md px-8 flex items-center justify-between">
             <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
-              <Link href="/" className="hover:text-foreground">Home</Link>
+              <Link href="/" className="hover:text-foreground">
+                Home
+              </Link>
               <span>/</span>
-              <span className="text-foreground font-bold">
-                {filteredNavItems.find((i) => i.href === pathname)?.label || "Dashboard"}
+              <span className="text-foreground font-medium">
+                {filteredNavItems.find((i) => i.href === pathname)?.label ||
+                  "Dashboard"}
               </span>
             </div>
 
             <div className="flex items-center gap-4">
-              <span className="text-xs font-bold text-muted-foreground">
-                Role: <strong className="text-indigo-400">{user?.role}</strong>
+              <span className="text-xs font-medium text-muted-foreground">
+                Role: <strong className="text-primary">{user?.role}</strong>
               </span>
               <div className="h-4 w-px bg-border" />
-              <Button size="sm" variant="outline" className="rounded-full text-xs font-bold" asChild>
+              <Button
+                size="sm"
+                variant="outline"
+                className="rounded-full text-xs font-medium"
+                asChild>
                 <Link href="/">Main Website &rarr;</Link>
               </Button>
             </div>

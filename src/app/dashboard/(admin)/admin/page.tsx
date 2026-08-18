@@ -263,7 +263,7 @@ export default function AdminDashboardPage() {
     <div className="space-y-8">
             {/* Top Cards */}
             <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
                 Administrator Control Center 🛡️
               </h1>
               <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -273,43 +273,43 @@ export default function AdminDashboardPage() {
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mt-5">
                 <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between">
                   <div>
-                    <p className="text-[11px] font-semibold text-muted-foreground uppercase">Destinations</p>
-                    <h3 className="text-xl font-black mt-0.5">{destinations.length}</h3>
+                    <p className="text-sm text-muted-foreground">Destinations</p>
+                    <h3 className="text-xl font-semibold mt-0.5">{destinations.length}</h3>
                   </div>
-                  <FaGlobe className="h-6 w-6 text-indigo-500" />
+                  <FaGlobe className="h-6 w-6 text-primary" />
                 </div>
 
                 <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between">
                   <div>
-                    <p className="text-[11px] font-semibold text-muted-foreground uppercase">Hotels</p>
-                    <h3 className="text-xl font-black mt-0.5">{hotels.length}</h3>
+                    <p className="text-sm text-muted-foreground">Hotels</p>
+                    <h3 className="text-xl font-semibold mt-0.5">{hotels.length}</h3>
                   </div>
                   <FaHotel className="h-6 w-6 text-emerald-500" />
                 </div>
 
                 <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between">
                   <div>
-                    <p className="text-[11px] font-semibold text-muted-foreground uppercase">Restaurants</p>
-                    <h3 className="text-xl font-black mt-0.5">{restaurants.length}</h3>
+                    <p className="text-sm text-muted-foreground">Restaurants</p>
+                    <h3 className="text-xl font-semibold mt-0.5">{restaurants.length}</h3>
                   </div>
                   <FaUtensils className="h-6 w-6 text-amber-500" />
                 </div>
 
                 <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between">
                   <div>
-                    <p className="text-[11px] font-semibold text-muted-foreground uppercase">Transport</p>
-                    <h3 className="text-xl font-black mt-0.5">{transportations.length}</h3>
+                    <p className="text-sm text-muted-foreground">Transport</p>
+                    <h3 className="text-xl font-semibold mt-0.5">{transportations.length}</h3>
                   </div>
-                  <FaBus className="h-6 w-6 text-sky-500" />
+                  <FaBus className="h-6 w-6 text-primary" />
                 </div>
 
                 <Link
                   href="/dashboard/admin/all-users"
-                  className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between hover:border-indigo-500/50 transition-all col-span-2 sm:col-span-1"
+                  className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between hover:border-primary/50 transition-all col-span-2 sm:col-span-1"
                 >
                   <div>
-                    <p className="text-[11px] font-semibold text-muted-foreground uppercase">Users</p>
-                    <h3 className="text-xs font-bold text-indigo-400 mt-1">Manage Users &rarr;</h3>
+                    <p className="text-sm text-muted-foreground">Users</p>
+                    <h3 className="text-xs font-medium text-primary mt-1">Manage Users &rarr;</h3>
                   </div>
                   <FaUsers className="h-6 w-6 text-rose-400" />
                 </Link>
@@ -320,9 +320,9 @@ export default function AdminDashboardPage() {
             <div className="flex items-center gap-2 overflow-x-auto border-b border-border pb-3">
               <button
                 onClick={() => setActiveTab("destinations")}
-                className={`px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-2 shrink-0 ${
+                className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-2 shrink-0 ${
                   activeTab === "destinations"
-                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
+                    ? "bg-primary text-primary-foreground"
                     : "bg-card border border-border text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -331,9 +331,9 @@ export default function AdminDashboardPage() {
 
               <button
                 onClick={() => setActiveTab("hotels")}
-                className={`px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-2 shrink-0 ${
+                className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-2 shrink-0 ${
                   activeTab === "hotels"
-                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
+                    ? "bg-primary text-primary-foreground"
                     : "bg-card border border-border text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -342,9 +342,9 @@ export default function AdminDashboardPage() {
 
               <button
                 onClick={() => setActiveTab("restaurants")}
-                className={`px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-2 shrink-0 ${
+                className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-2 shrink-0 ${
                   activeTab === "restaurants"
-                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
+                    ? "bg-primary text-primary-foreground"
                     : "bg-card border border-border text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -353,9 +353,9 @@ export default function AdminDashboardPage() {
 
               <button
                 onClick={() => setActiveTab("transportation")}
-                className={`px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-2 shrink-0 ${
+                className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-2 shrink-0 ${
                   activeTab === "transportation"
-                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
+                    ? "bg-primary text-primary-foreground"
                     : "bg-card border border-border text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -364,9 +364,9 @@ export default function AdminDashboardPage() {
 
               <button
                 onClick={() => setActiveTab("reservations")}
-                className={`px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-2 shrink-0 ${
+                className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-2 shrink-0 ${
                   activeTab === "reservations"
-                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
+                    ? "bg-primary text-primary-foreground"
                     : "bg-card border border-border text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -378,16 +378,16 @@ export default function AdminDashboardPage() {
             {activeTab === "destinations" && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-bold">Manage Tourist Destinations</h2>
+                  <h2 className="text-lg font-medium">Manage Tourist Destinations</h2>
                   <Dialog open={destDialogOpen} onOpenChange={setDestDialogOpen}>
                     <DialogTrigger>
-                      <Button className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full font-semibold gap-2">
+                      <Button className="gap-2">
                         <FaPlus className="h-3.5 w-3.5" /> Add Destination
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
                       <DialogHeader>
-                        <DialogTitle className="text-lg font-bold">Add New Tourist Destination</DialogTitle>
+                        <DialogTitle className="text-lg font-medium">Add New Tourist Destination</DialogTitle>
                       </DialogHeader>
                       <form onSubmit={handleCreateDestination} className="space-y-4 pt-2">
                         <div className="space-y-1">
@@ -427,7 +427,7 @@ export default function AdminDashboardPage() {
                         <ImageUploader label="Cover Image" folder="destinations" value={newDest.coverImage} onChange={(url) => setNewDest({ ...newDest, coverImage: url })} onRemove={() => setNewDest({ ...newDest, coverImage: "" })} />
                         <div className="flex justify-end gap-2 pt-2">
                           <Button type="button" variant="outline" onClick={() => setDestDialogOpen(false)}>Cancel</Button>
-                          <Button type="submit" disabled={submitting} className="bg-indigo-600 text-white">Save</Button>
+                          <Button type="submit" disabled={submitting}>Save</Button>
                         </div>
                       </form>
                     </DialogContent>
@@ -435,17 +435,17 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div className="rounded-2xl border bg-card overflow-hidden">
-                  {loadingDestinations ? <div className="py-12 flex justify-center"><FaSpinner className="animate-spin text-indigo-500 h-6 w-6" /></div> : (
+                  {loadingDestinations ? <div className="py-12 flex justify-center"><FaSpinner className="animate-spin text-primary h-6 w-6" /></div> : (
                     <Table>
                       <TableHeader><TableRow><TableHead>Cover</TableHead><TableHead>Title</TableHead><TableHead>District</TableHead><TableHead>Category</TableHead><TableHead>Price</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
                       <TableBody>
                         {destinations.map((item) => (
                           <TableRow key={item.id}>
-                            <TableCell><div className="relative h-12 w-16 rounded overflow-hidden bg-slate-900"><Image src={item.coverImage} alt="" fill className="object-cover" /></div></TableCell>
-                            <TableCell className="font-bold">{item.title}</TableCell>
+                            <TableCell><div className="relative h-12 w-16 rounded overflow-hidden bg-muted"><Image src={item.coverImage} alt="" fill className="object-cover" /></div></TableCell>
+                            <TableCell className="font-medium">{item.title}</TableCell>
                             <TableCell className="text-xs">{item.district}</TableCell>
-                            <TableCell><span className="px-2 py-0.5 text-xs bg-indigo-500/10 text-indigo-400 rounded-full font-semibold">{item.category}</span></TableCell>
-                            <TableCell className="font-bold text-emerald-400">৳{item.price}</TableCell>
+                            <TableCell><span className="px-2 py-0.5 text-xs bg-primary/10 text-primary rounded-full font-semibold">{item.category}</span></TableCell>
+                            <TableCell className="font-medium text-emerald-400">৳{item.price}</TableCell>
                             <TableCell><Button variant="ghost" size="sm" onClick={() => handleDeleteItem("destinations", item.id)} className="text-rose-400"><FaTrashAlt /></Button></TableCell>
                           </TableRow>
                         ))}
@@ -460,16 +460,16 @@ export default function AdminDashboardPage() {
             {activeTab === "hotels" && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-bold">Manage Hotels & Resorts</h2>
+                  <h2 className="text-lg font-medium">Manage Hotels & Resorts</h2>
                   <Dialog open={hotelDialogOpen} onOpenChange={setHotelDialogOpen}>
                     <DialogTrigger>
-                      <Button className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full font-semibold gap-2">
+                      <Button className="gap-2">
                         <FaPlus className="h-3.5 w-3.5" /> Add Hotel
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
                       <DialogHeader>
-                        <DialogTitle className="text-lg font-bold">Add New Hotel / Resort</DialogTitle>
+                        <DialogTitle className="text-lg font-medium">Add New Hotel / Resort</DialogTitle>
                       </DialogHeader>
                       <form onSubmit={handleCreateHotel} className="space-y-4 pt-2">
                         <div>
@@ -503,7 +503,7 @@ export default function AdminDashboardPage() {
                         <ImageUploader label="Cover Image" folder="hotels" value={newHotel.coverImage} onChange={(url) => setNewHotel({ ...newHotel, coverImage: url })} onRemove={() => setNewHotel({ ...newHotel, coverImage: "" })} />
                         <div className="flex justify-end gap-2 pt-2">
                           <Button type="button" variant="outline" onClick={() => setHotelDialogOpen(false)}>Cancel</Button>
-                          <Button type="submit" disabled={submitting} className="bg-indigo-600 text-white">Save Hotel</Button>
+                          <Button type="submit" disabled={submitting}>Save Hotel</Button>
                         </div>
                       </form>
                     </DialogContent>
@@ -511,17 +511,17 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div className="rounded-2xl border bg-card overflow-hidden">
-                  {loadingHotels ? <div className="py-12 flex justify-center"><FaSpinner className="animate-spin text-indigo-500 h-6 w-6" /></div> : (
+                  {loadingHotels ? <div className="py-12 flex justify-center"><FaSpinner className="animate-spin text-primary h-6 w-6" /></div> : (
                     <Table>
                       <TableHeader><TableRow><TableHead>Cover</TableHead><TableHead>Hotel Name</TableHead><TableHead>Location</TableHead><TableHead>Phone</TableHead><TableHead>Price/Night</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
                       <TableBody>
                         {hotels.map((item) => (
                           <TableRow key={item.id}>
-                            <TableCell><div className="relative h-12 w-16 rounded overflow-hidden bg-slate-900"><Image src={item.coverImage} alt="" fill className="object-cover" /></div></TableCell>
-                            <TableCell className="font-bold">{item.name}</TableCell>
+                            <TableCell><div className="relative h-12 w-16 rounded overflow-hidden bg-muted"><Image src={item.coverImage} alt="" fill className="object-cover" /></div></TableCell>
+                            <TableCell className="font-medium">{item.name}</TableCell>
                             <TableCell className="text-xs">{item.location}</TableCell>
                             <TableCell className="text-xs font-mono">{item.contactPhone || "N/A"}</TableCell>
-                            <TableCell className="font-bold text-emerald-400">৳{item.pricePerNight}</TableCell>
+                            <TableCell className="font-medium text-emerald-400">৳{item.pricePerNight}</TableCell>
                             <TableCell><Button variant="ghost" size="sm" onClick={() => handleDeleteItem("hotels", item.id)} className="text-rose-400"><FaTrashAlt /></Button></TableCell>
                           </TableRow>
                         ))}
@@ -536,16 +536,16 @@ export default function AdminDashboardPage() {
             {activeTab === "restaurants" && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-bold">Manage Restaurants & Dining</h2>
+                  <h2 className="text-lg font-medium">Manage Restaurants & Dining</h2>
                   <Dialog open={restDialogOpen} onOpenChange={setRestDialogOpen}>
                     <DialogTrigger>
-                      <Button className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full font-semibold gap-2">
+                      <Button className="gap-2">
                         <FaPlus className="h-3.5 w-3.5" /> Add Restaurant
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
                       <DialogHeader>
-                        <DialogTitle className="text-lg font-bold">Add New Restaurant</DialogTitle>
+                        <DialogTitle className="text-lg font-medium">Add New Restaurant</DialogTitle>
                       </DialogHeader>
                       <form onSubmit={handleCreateRestaurant} className="space-y-4 pt-2">
                         <div>
@@ -578,7 +578,7 @@ export default function AdminDashboardPage() {
                         <ImageUploader label="Cover Image" folder="restaurants" value={newRest.coverImage} onChange={(url) => setNewRest({ ...newRest, coverImage: url })} onRemove={() => setNewRest({ ...newRest, coverImage: "" })} />
                         <div className="flex justify-end gap-2 pt-2">
                           <Button type="button" variant="outline" onClick={() => setRestDialogOpen(false)}>Cancel</Button>
-                          <Button type="submit" disabled={submitting} className="bg-indigo-600 text-white">Save Restaurant</Button>
+                          <Button type="submit" disabled={submitting}>Save Restaurant</Button>
                         </div>
                       </form>
                     </DialogContent>
@@ -586,17 +586,17 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div className="rounded-2xl border bg-card overflow-hidden">
-                  {loadingRestaurants ? <div className="py-12 flex justify-center"><FaSpinner className="animate-spin text-indigo-500 h-6 w-6" /></div> : (
+                  {loadingRestaurants ? <div className="py-12 flex justify-center"><FaSpinner className="animate-spin text-primary h-6 w-6" /></div> : (
                     <Table>
                       <TableHeader><TableRow><TableHead>Cover</TableHead><TableHead>Restaurant Name</TableHead><TableHead>Cuisine</TableHead><TableHead>Location</TableHead><TableHead>Price Range</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
                       <TableBody>
                         {restaurants.map((item) => (
                           <TableRow key={item.id}>
-                            <TableCell><div className="relative h-12 w-16 rounded overflow-hidden bg-slate-900"><Image src={item.coverImage} alt="" fill className="object-cover" /></div></TableCell>
-                            <TableCell className="font-bold">{item.name}</TableCell>
+                            <TableCell><div className="relative h-12 w-16 rounded overflow-hidden bg-muted"><Image src={item.coverImage} alt="" fill className="object-cover" /></div></TableCell>
+                            <TableCell className="font-medium">{item.name}</TableCell>
                             <TableCell className="text-xs"><span className="px-2 py-0.5 text-xs bg-amber-500/10 text-amber-400 rounded-full font-semibold">{item.cuisineType}</span></TableCell>
                             <TableCell className="text-xs">{item.location}</TableCell>
-                            <TableCell className="font-bold text-emerald-400 text-xs">{item.priceRange}</TableCell>
+                            <TableCell className="font-medium text-emerald-400 text-xs">{item.priceRange}</TableCell>
                             <TableCell><Button variant="ghost" size="sm" onClick={() => handleDeleteItem("restaurants", item.id)} className="text-rose-400"><FaTrashAlt /></Button></TableCell>
                           </TableRow>
                         ))}
@@ -611,16 +611,16 @@ export default function AdminDashboardPage() {
             {activeTab === "transportation" && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-bold">Manage Transportation Schedules</h2>
+                  <h2 className="text-lg font-medium">Manage Transportation Schedules</h2>
                   <Dialog open={transportDialogOpen} onOpenChange={setTransportDialogOpen}>
                     <DialogTrigger>
-                      <Button className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full font-semibold gap-2">
+                      <Button className="gap-2">
                         <FaPlus className="h-3.5 w-3.5" /> Add Transport
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
                       <DialogHeader>
-                        <DialogTitle className="text-lg font-bold">Add New Transport Service</DialogTitle>
+                        <DialogTitle className="text-lg font-medium">Add New Transport Service</DialogTitle>
                       </DialogHeader>
                       <form onSubmit={handleCreateTransportation} className="space-y-4 pt-2">
                         <div className="grid grid-cols-2 gap-3">
@@ -664,7 +664,7 @@ export default function AdminDashboardPage() {
                         </div>
                         <div className="flex justify-end gap-2 pt-2">
                           <Button type="button" variant="outline" onClick={() => setTransportDialogOpen(false)}>Cancel</Button>
-                          <Button type="submit" disabled={submitting} className="bg-indigo-600 text-white">Save Transport</Button>
+                          <Button type="submit" disabled={submitting}>Save Transport</Button>
                         </div>
                       </form>
                     </DialogContent>
@@ -672,17 +672,17 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div className="rounded-2xl border bg-card overflow-hidden">
-                  {loadingTransport ? <div className="py-12 flex justify-center"><FaSpinner className="animate-spin text-indigo-500 h-6 w-6" /></div> : (
+                  {loadingTransport ? <div className="py-12 flex justify-center"><FaSpinner className="animate-spin text-primary h-6 w-6" /></div> : (
                     <Table>
                       <TableHeader><TableRow><TableHead>Type</TableHead><TableHead>Operator</TableHead><TableHead>Route</TableHead><TableHead>Schedule</TableHead><TableHead>Cost</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
                       <TableBody>
                         {transportations.map((item) => (
                           <TableRow key={item.id}>
-                            <TableCell><span className="px-2.5 py-0.5 text-xs bg-sky-500/10 text-sky-400 rounded-full font-bold uppercase">{item.type}</span></TableCell>
-                            <TableCell className="font-bold">{item.operatorName}</TableCell>
+                            <TableCell><span className="px-2.5 py-0.5 text-xs bg-primary/10 text-primary rounded-full font-medium uppercase">{item.type}</span></TableCell>
+                            <TableCell className="font-medium">{item.operatorName}</TableCell>
                             <TableCell className="text-xs">{item.routeFrom} → {item.routeTo}</TableCell>
                             <TableCell className="text-xs font-mono">{item.scheduleTime} ({item.duration})</TableCell>
-                            <TableCell className="font-bold text-emerald-400">৳{item.estimatedCost}</TableCell>
+                            <TableCell className="font-medium text-emerald-400">৳{item.estimatedCost}</TableCell>
                             <TableCell><Button variant="ghost" size="sm" onClick={() => handleDeleteItem("transportation", item.id)} className="text-rose-400"><FaTrashAlt /></Button></TableCell>
                           </TableRow>
                         ))}
@@ -697,28 +697,27 @@ export default function AdminDashboardPage() {
             {activeTab === "reservations" && (
               <div className="space-y-4">
                 <div className="border-b border-border pb-2">
-                  <h2 className="text-lg font-bold">Customer Reservations & Booking Requests</h2>
+                  <h2 className="text-lg font-medium">Customer Reservations & Booking Requests</h2>
                   <p className="text-xs text-muted-foreground">Approve or cancel customer bookings across destinations & hotels</p>
                 </div>
 
                 <div className="rounded-2xl border bg-card overflow-hidden">
-                  {loadingReservations ? <div className="py-12 flex justify-center"><FaSpinner className="animate-spin text-indigo-500 h-6 w-6" /></div> : (
+                  {loadingReservations ? <div className="py-12 flex justify-center"><FaSpinner className="animate-spin text-primary h-6 w-6" /></div> : (
                     <Table>
                       <TableHeader><TableRow><TableHead>Customer</TableHead><TableHead>Item / Target</TableHead><TableHead>Cost</TableHead><TableHead>Status</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
                       <TableBody>
                         {reservations.map((item) => (
                           <TableRow key={item.id}>
                             <TableCell>
-                              <p className="font-bold">{item.user?.name || "Customer"}</p>
-                              <p className="text-[10px] text-muted-foreground">{item.user?.email}</p>
+                              <p className="font-medium">{item.user?.name || "Customer"}</p>
+                              <p className="text-xs text-muted-foreground">{item.user?.email}</p>
                             </TableCell>
                             <TableCell className="text-xs">{item.destination?.title || item.hotel?.name || item.restaurant?.name || "Booking"}</TableCell>
-                            <TableCell className="font-bold text-emerald-400">৳{item.totalCost}</TableCell>
+                            <TableCell className="font-medium text-emerald-400">৳{item.totalCost}</TableCell>
                             <TableCell>
-                              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                              <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium uppercase ${
                                 item.status === "CONFIRMED" ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30" :
-                                item.status === "CANCELLED" ? "bg-rose-500/15 text-rose-400 border border-rose-500/30" :
-                                "bg-amber-500/15 text-amber-400 border border-amber-500/30"
+                                item.status === "CANCELLED" ? "bg-rose-500/15 text-rose-400 border border-rose-500/30" : "bg-amber-500/15 text-amber-400 border border-amber-500/30"
                               }`}>{item.status}</span>
                             </TableCell>
                             <TableCell>

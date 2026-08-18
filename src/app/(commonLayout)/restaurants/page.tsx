@@ -21,9 +21,6 @@ import {
   FaStar,
   FaSearch,
   FaSpinner,
-  FaCalendarCheck,
-  FaArrowRight,
-  FaSlidersH,
 } from "react-icons/fa";
 
 export default function RestaurantsListingPage() {
@@ -77,89 +74,79 @@ export default function RestaurantsListingPage() {
   });
 
   return (
-    <div className="min-h-screen bg-background text-foreground py-10 font-sans">
-      <Container className="space-y-8">
-        {/* Hero Header */}
-        <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <span className="px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest bg-amber-500/10 text-amber-400 border border-amber-500/20 inline-flex items-center gap-2">
-            <FaUtensils className="h-3.5 w-3.5" /> Authentic Dining Experiences
-          </span>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-            Discover Top <span className="text-amber-500">Restaurants & Dining</span>
-          </h1>
-          <p className="text-sm sm:text-base text-muted-foreground">
-            From mouthwatering Old Dhaka Kacchi Biryani to fresh beachside seafood in Cox's Bazar and traditional Sylheti Vorta thalis.
+    <div className="py-12 sm:py-16">
+      <Container className="space-y-9">
+        {/* Page header */}
+        <div className="max-w-xl space-y-4">
+          <p className="eyebrow">Where to eat</p>
+          <h1 className="heading">Tables worth booking ahead</h1>
+          <p className="text-lg leading-relaxed text-muted-foreground">
+            Old Dhaka kacchi, beachside seafood in Cox&apos;s Bazar and Sylheti vorta thalis —
+            rated by the people who ate there.
           </p>
         </div>
 
-        {/* Filter Bar */}
-        <div className="p-4 sm:p-6 rounded-3xl bg-card border border-border shadow-md space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {/* Search Input */}
+        {/* Filters */}
+        <div className="surface space-y-4 p-4 sm:p-5">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div className="relative">
-              <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <FaSearch className="absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Search restaurants, cuisines..."
+                placeholder="Search restaurants"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 h-11 rounded-2xl bg-background/50 text-sm font-medium"
+                className="pl-10"
               />
             </div>
 
-            {/* shadcn Location Selector */}
             <Select value={locationFilter} onValueChange={setLocationFilter}>
-              <SelectTrigger className="h-11 rounded-2xl bg-background/50 border-input text-xs font-semibold">
-                <SelectValue placeholder="All Locations" />
+              <SelectTrigger>
+                <SelectValue placeholder="All locations" />
               </SelectTrigger>
               <SelectContent>
                 {locations.map((loc) => (
                   <SelectItem key={loc} value={loc}>
-                    {loc === "ALL" ? "All Locations" : loc}
+                    {loc === "ALL" ? "All locations" : loc}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
 
-            {/* shadcn Cuisine Selector */}
             <Select value={cuisineFilter} onValueChange={setCuisineFilter}>
-              <SelectTrigger className="h-11 rounded-2xl bg-background/50 border-input text-xs font-semibold">
-                <SelectValue placeholder="All Cuisines" />
+              <SelectTrigger>
+                <SelectValue placeholder="All cuisines" />
               </SelectTrigger>
               <SelectContent>
                 {cuisines.map((c) => (
                   <SelectItem key={c} value={c}>
-                    {c === "ALL" ? "All Cuisines" : c}
+                    {c === "ALL" ? "All cuisines" : c}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
 
-            {/* shadcn Sort Selector */}
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="h-11 rounded-2xl bg-background/50 border-input text-xs font-semibold">
+              <SelectTrigger>
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="RECOMMENDED">Sort: Recommended</SelectItem>
-                <SelectItem value="RATING">Sort: Highest Rating</SelectItem>
+                <SelectItem value="RECOMMENDED">Recommended</SelectItem>
+                <SelectItem value="RATING">Highest rated</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          {/* Quick Dynamic Cuisine Badges */}
-          <div className="flex items-center gap-2 pt-2 border-t border-border/50 overflow-x-auto pb-1 text-xs">
-            <span className="text-muted-foreground flex items-center gap-1.5 shrink-0 font-bold">
-              <FaSlidersH className="h-3 w-3 text-amber-400" /> Quick Filter:
-            </span>
+          <div className="flex flex-wrap items-center gap-2 border-t border-border pt-4">
+            <span className="mr-1 text-sm text-muted-foreground">Cuisine:</span>
             {cuisines.slice(0, 8).map((c) => (
               <button
                 key={c}
                 type="button"
                 onClick={() => setCuisineFilter(c)}
-                className={`px-3.5 py-1.5 rounded-xl font-bold transition-all text-xs shrink-0 cursor-pointer ${
+                className={`rounded-full border px-3.5 py-1.5 text-sm transition-all ${
                   cuisineFilter === c
-                    ? "bg-amber-600 text-white shadow-md shadow-amber-600/30 scale-105"
-                    : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground"
                 }`}
               >
                 {c === "ALL" ? "All" : c}
@@ -168,26 +155,19 @@ export default function RestaurantsListingPage() {
           </div>
         </div>
 
-        {/* Results Info */}
-        <div className="flex justify-between items-center px-1">
-          <p className="text-xs sm:text-sm text-muted-foreground">
-            Showing <span className="font-bold text-foreground">{sortedRestaurants.length}</span> authentic restaurants
-          </p>
-        </div>
-
-        {/* Restaurants Grid */}
+        {/* Results */}
         {isLoading ? (
-          <div className="py-24 flex flex-col items-center justify-center gap-3 text-muted-foreground">
-            <FaSpinner className="h-8 w-8 animate-spin text-amber-500" />
-            <p className="text-sm font-semibold">Loading top dining spots...</p>
+          <div className="flex flex-col items-center justify-center gap-3 py-24 text-muted-foreground">
+            <FaSpinner className="h-6 w-6 animate-spin" />
+            <p className="text-sm">Loading restaurants…</p>
           </div>
         ) : sortedRestaurants.length === 0 ? (
-          <div className="py-24 text-center rounded-3xl border border-dashed border-border bg-card/40 space-y-4">
-            <FaUtensils className="h-12 w-12 text-muted-foreground/30 mx-auto" />
-            <div className="space-y-1">
-              <h3 className="text-lg font-bold text-foreground">No restaurants match your search</h3>
-              <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-                Try selecting a different cuisine or clearing search filters.
+          <div className="space-y-4 rounded-2xl border border-dashed border-border py-24 text-center">
+            <FaUtensils className="mx-auto h-10 w-10 text-muted-foreground/30" />
+            <div className="space-y-1.5">
+              <h3 className="text-lg font-semibold">No restaurants found</h3>
+              <p className="mx-auto max-w-sm text-sm text-muted-foreground">
+                Try a different cuisine or clear the search filters.
               </p>
             </div>
             <Button
@@ -197,93 +177,95 @@ export default function RestaurantsListingPage() {
                 setLocationFilter("ALL");
                 setCuisineFilter("ALL");
               }}
-              className="rounded-xl font-bold text-xs cursor-pointer"
             >
-              Reset Filters
+              Reset filters
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sortedRestaurants.map((rest) => (
-              <div
-                key={rest.id}
-                className="group rounded-3xl bg-card border border-border overflow-hidden hover:border-amber-500/40 hover:shadow-xl hover:shadow-amber-500/5 transition-all duration-300 flex flex-col justify-between"
-              >
-                <div>
-                  {/* Image Cover */}
-                  <div className="relative h-56 w-full overflow-hidden bg-slate-900">
+          <>
+            <p className="text-sm text-muted-foreground">
+              {sortedRestaurants.length} restaurant
+              {sortedRestaurants.length === 1 ? "" : "s"}
+            </p>
+
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {sortedRestaurants.map((rest) => (
+                <article
+                  key={rest.id}
+                  className="surface-interactive group flex flex-col overflow-hidden"
+                >
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
                     <Image
-                      src={rest.coverImage || "https://images.unsplash.com/photo-1555396273-367ea4eb4db5"}
+                      src={
+                        rest.coverImage ||
+                        "https://images.unsplash.com/photo-1555396273-367ea4eb4db5"
+                      }
                       alt={rest.name}
                       fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-700 group-hover:"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-                    <div className="absolute top-3 left-3 right-3 flex justify-between items-center">
-                      <span className="px-3 py-1 text-[11px] font-black uppercase tracking-wider bg-black/60 backdrop-blur-md text-amber-300 border border-amber-500/30 rounded-xl">
+                    {/* Scrim so the badges stay legible on any photo. */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-stone-950/55 via-transparent to-stone-950/25" />
+
+                    {rest.cuisineType && (
+                      <span className="chip-glass absolute left-3 top-3 px-2.5 py-1 text-xs font-medium">
                         {rest.cuisineType}
                       </span>
-                      <div className="flex items-center gap-1 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-xl text-amber-400 font-black text-xs border border-white/10">
-                        <FaStar className="h-3 w-3 fill-amber-400" />
-                        <span>{rest.rating || 4.8}</span>
-                      </div>
-                    </div>
+                    )}
 
-                    <div className="absolute bottom-3 left-3 right-3 flex justify-between items-end text-white">
-                      <div>
-                        <p className="text-xs text-slate-300 flex items-center gap-1 font-medium">
-                          <FaMapMarkerAlt className="text-amber-400 h-3 w-3" /> {rest.location}
-                        </p>
-                        <h3 className="text-base font-extrabold leading-tight mt-0.5 line-clamp-1">
-                          {rest.name}
-                        </h3>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <p className="text-[10px] text-slate-400 uppercase font-bold">Price Tier</p>
-                        <p className="text-sm font-black text-amber-400">
-                          {rest.priceRange || "৳৳"}
-                        </p>
-                      </div>
-                    </div>
+                    <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 text-sm font-medium text-white">
+                      <FaStar className="h-3.5 w-3.5 text-highlight" />
+                      {rest.rating || 4.8}
+                    </span>
                   </div>
 
-                  {/* Body Content */}
-                  <div className="p-5 space-y-3">
-                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                      {rest.description}
+                  <div className="flex flex-1 flex-col p-5">
+                    <h3 className="text-lg font-semibold leading-snug transition-colors group-hover:text-primary">
+                      <Link href={`/restaurants/${rest.id}`}>{rest.name}</Link>
+                    </h3>
+
+                    <p className="mt-1.5 flex items-center gap-1.5 text-sm text-muted-foreground">
+                      <FaMapMarkerAlt className="h-3 w-3 shrink-0" />
+                      {rest.location}
                     </p>
+
+                    {rest.description && (
+                      <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+                        {rest.description}
+                      </p>
+                    )}
+
+                    <div className="mt-auto flex items-end justify-between pt-5">
+                      <p>
+                        <span className="text-xl font-semibold tracking-tight">
+                          {rest.priceRange || "৳৳"}
+                        </span>
+                        <span className="text-sm text-muted-foreground"> price range</span>
+                      </p>
+
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedRest(rest);
+                            setResModalOpen(true);
+                          }}
+                        >
+                          Reserve
+                        </Button>
+                        <Button size="sm" asChild>
+                          <Link href={`/restaurants/${rest.id}`}>Details</Link>
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-
-                {/* Card Action Buttons */}
-                <div className="p-5 pt-0 grid grid-cols-2 gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      setSelectedRest(rest);
-                      setResModalOpen(true);
-                    }}
-                    className="h-10 rounded-2xl font-bold text-xs gap-1.5 hover:bg-amber-500/10 hover:text-amber-400 hover:border-amber-500/40 cursor-pointer"
-                  >
-                    <FaCalendarCheck className="h-3 w-3 text-amber-400" /> Reserve
-                  </Button>
-
-                  <Button
-                    asChild
-                    size="sm"
-                    className="h-10 rounded-2xl font-bold text-xs bg-amber-600 hover:bg-amber-500 text-white shadow-md shadow-amber-600/20 gap-1.5"
-                  >
-                    <Link href={`/restaurants/${rest.id}`}>
-                      Details <FaArrowRight className="h-3 w-3" />
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
+                </article>
+              ))}
+            </div>
+          </>
         )}
 
         {/* Global Reservation Modal */}

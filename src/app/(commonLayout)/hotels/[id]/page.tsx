@@ -15,13 +15,10 @@ import {
   FaArrowLeft,
   FaMapMarkerAlt,
   FaStar,
-  FaCalendarCheck,
   FaPhoneAlt,
   FaSpinner,
   FaCheckCircle,
   FaUser,
-  FaPaperPlane,
-  FaHotel,
 } from "react-icons/fa";
 
 export default function HotelDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -68,37 +65,35 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
 
   if (isLoading) {
     return (
-      <div className="py-24 flex justify-center text-muted-foreground">
-        <FaSpinner className="h-8 w-8 animate-spin text-indigo-500" />
+      <div className="flex justify-center py-24 text-muted-foreground">
+        <FaSpinner className="h-6 w-6 animate-spin" />
       </div>
     );
   }
 
   if (!hotel) {
     return (
-      <div className="py-24 text-center space-y-4">
-        <h2 className="text-xl font-bold">Hotel Not Found</h2>
-        <Button variant="outline" className="rounded-full" asChild>
-          <Link href="/hotels">Back to Hotels</Link>
+      <div className="space-y-4 py-24 text-center">
+        <h2 className="text-xl font-semibold">Hotel not found</h2>
+        <Button variant="outline" asChild>
+          <Link href="/hotels">Back to hotels</Link>
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground py-10 font-sans">
-      <Container className="space-y-8">
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" size="sm" className="rounded-full text-xs font-bold" asChild>
-            <Link href="/hotels">
-              <FaArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Back to Hotels & Stays
-            </Link>
-          </Button>
-        </div>
+    <div className="py-12 sm:py-16">
+      <Container className="space-y-12">
+        <Button variant="ghost" size="sm" className="-ml-2" asChild>
+          <Link href="/hotels">
+            <FaArrowLeft className="mr-2 h-3 w-3" /> All stays
+          </Link>
+        </Button>
 
-        {/* Hero Banner */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-          <div className="relative h-80 sm:h-96 w-full rounded-3xl overflow-hidden border border-border bg-slate-900 shadow-lg">
+        {/* Hero */}
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border bg-muted">
             <Image
               src={hotel.coverImage || "https://images.unsplash.com/photo-1566073771259-6a8506099945"}
               alt={hotel.name}
@@ -110,137 +105,131 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
           </div>
 
           <div className="space-y-6">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-xs font-bold text-indigo-400">
-                <FaMapMarkerAlt className="h-4 w-4" />
-                <span>{hotel.location}</span>
-              </div>
+            <div className="space-y-3">
+              <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <FaMapMarkerAlt className="h-3 w-3 shrink-0" />
+                {hotel.location}
+              </p>
 
-              <h1 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight text-foreground">
-                {hotel.name}
-              </h1>
+              <h1 className="heading">{hotel.name}</h1>
 
-              <div className="flex items-center gap-4 pt-1">
-                <div className="flex items-center gap-1 text-amber-400 text-sm font-black bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
-                  <FaStar className="h-4 w-4 fill-amber-400" />
-                  <span>{hotel.rating || 4.9} / 5.0</span>
-                </div>
+              <div className="flex flex-wrap items-center gap-4 text-sm">
+                <span className="inline-flex items-center gap-1.5">
+                  <FaStar className="h-3.5 w-3.5 text-highlight" />
+                  <span className="font-medium">{hotel.rating || 4.9}</span>
+                </span>
 
                 {hotel.contactPhone && (
-                  <span className="text-xs text-muted-foreground font-semibold flex items-center gap-1.5 bg-muted/40 px-3 py-1 rounded-full">
-                    <FaPhoneAlt className="h-3 w-3 text-indigo-400" /> {hotel.contactPhone}
+                  <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                    <FaPhoneAlt className="h-3 w-3" /> {hotel.contactPhone}
                   </span>
                 )}
               </div>
             </div>
 
-            <p className="text-sm text-muted-foreground leading-relaxed bg-card/60 p-4 rounded-2xl border border-border">
-              {hotel.description}
-            </p>
+            <p className="text-base leading-relaxed text-muted-foreground">{hotel.description}</p>
 
-            {/* Price & Booking CTA */}
-            <div className="p-6 rounded-3xl bg-indigo-500/5 border border-indigo-500/20 space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">Nightly Rate</span>
-                  <span className="text-3xl font-black text-emerald-400">৳{(hotel.pricePerNight || 3500).toLocaleString()}</span>
-                  <span className="text-xs text-muted-foreground ml-1">/ night</span>
-                </div>
-              </div>
+            <div className="surface space-y-5 p-5">
+              <p>
+                <span className="text-3xl font-semibold tracking-tight">
+                  ৳{(hotel.pricePerNight || 3500).toLocaleString()}
+                </span>
+                <span className="text-sm text-muted-foreground"> / night</span>
+              </p>
 
-              <Button
-                size="lg"
-                onClick={() => setResModalOpen(true)}
-                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-extrabold gap-2 shadow-lg shadow-indigo-600/20"
-              >
-                <FaCalendarCheck className="h-4 w-4" /> Reserve Room Now
+              <Button className="w-full" onClick={() => setResModalOpen(true)}>
+                Reserve a room
               </Button>
             </div>
           </div>
         </div>
 
-        {/* Amenities Section */}
+        {/* Amenities */}
         {hotel.amenities && hotel.amenities.length > 0 && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-card border border-border space-y-4">
-            <h2 className="text-xl font-extrabold tracking-tight flex items-center gap-2">
-              <FaHotel className="text-indigo-500" /> Hotel Amenities & Facilities
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <section className="space-y-5">
+            <h2 className="text-xl font-semibold tracking-tight">Amenities</h2>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {hotel.amenities.map((am: string, idx: number) => (
-                <div key={idx} className="p-3.5 rounded-2xl bg-muted/30 border border-border/60 flex items-center gap-2.5">
-                  <FaCheckCircle className="h-4 w-4 text-emerald-400 shrink-0" />
-                  <span className="text-xs font-bold text-foreground">{am}</span>
+                <div key={idx} className="surface flex items-center gap-2.5 p-4">
+                  <FaCheckCircle className="h-3.5 w-3.5 shrink-0 text-primary" />
+                  <span className="text-sm">{am}</span>
                 </div>
               ))}
             </div>
-          </div>
+          </section>
         )}
 
-        {/* Reviews Section */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-card border border-border space-y-6">
-          <h2 className="text-xl font-extrabold tracking-tight flex items-center gap-2">
-            <FaStar className="text-amber-400 h-5 w-5" /> Guest Reviews
-          </h2>
+        {/* Reviews */}
+        <section className="space-y-5">
+          <h2 className="text-xl font-semibold tracking-tight">Guest reviews</h2>
 
-          <form onSubmit={handleReviewSubmit} className="space-y-4 p-5 rounded-2xl bg-muted/30 border border-border">
-            <h3 className="text-sm font-bold">Write a Guest Review</h3>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold">Rating:</span>
+          <form onSubmit={handleReviewSubmit} className="surface space-y-4 p-5">
+            <div className="space-y-1.5">
+              <label htmlFor="hotel-rating" className="text-sm text-muted-foreground">
+                Rating
+              </label>
               <select
+                id="hotel-rating"
                 value={reviewRating}
                 onChange={(e) => setReviewRating(Number(e.target.value))}
-                className="h-8 rounded-lg border bg-background px-2 text-xs font-bold"
+                className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
               >
-                <option value={5}>⭐⭐⭐⭐⭐ (5/5 Excellent)</option>
-                <option value={4}>⭐⭐⭐⭐ (4/5 Very Good)</option>
-                <option value={3}>⭐⭐⭐ (3/5 Average)</option>
+                <option value={5}>5 — Excellent</option>
+                <option value={4}>4 — Very good</option>
+                <option value={3}>3 — Average</option>
+                <option value={2}>2 — Poor</option>
+                <option value={1}>1 — Terrible</option>
               </select>
             </div>
 
-            <textarea
-              placeholder="Tell us about your room quality, service, and breakfast experience..."
-              value={reviewComment}
-              onChange={(e) => setReviewComment(e.target.value)}
-              rows={3}
-              className="w-full p-3 rounded-xl border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
-            />
+            <div className="space-y-1.5">
+              <label htmlFor="hotel-comment" className="text-sm text-muted-foreground">
+                Your stay
+              </label>
+              <textarea
+                id="hotel-comment"
+                placeholder="Room quality, service, breakfast…"
+                value={reviewComment}
+                onChange={(e) => setReviewComment(e.target.value)}
+                rows={3}
+                className="w-full rounded-md border border-input bg-background p-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                required
+              />
+            </div>
 
-            <Button
-              type="submit"
-              disabled={submittingReview}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-full text-xs gap-1.5"
-            >
-              {submittingReview ? <FaSpinner className="animate-spin" /> : <><FaPaperPlane /> Submit Review</>}
+            <Button type="submit" size="sm" disabled={submittingReview}>
+              {submittingReview ? "Posting…" : "Post review"}
             </Button>
           </form>
 
-          {(!hotel.reviews || hotel.reviews.length === 0) ? (
-            <p className="text-xs text-muted-foreground italic">No guest reviews submitted yet.</p>
+          {!hotel.reviews || hotel.reviews.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No guest reviews yet.</p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {hotel.reviews.map((rev: any) => (
-                <div key={rev.id} className="p-4 rounded-2xl bg-background border border-border/80 space-y-2">
+                <div key={rev.id} className="surface space-y-3 p-5">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="h-8 w-8 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-500 font-bold text-xs">
-                        <FaUser />
-                      </div>
-                      <span className="text-xs font-bold">{rev.user?.name || "Verified Guest"}</span>
+                    <div className="flex items-center gap-2.5">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-soft text-primary">
+                        <FaUser className="h-3 w-3" />
+                      </span>
+                      <span className="text-sm font-medium">
+                        {rev.user?.name || "Verified guest"}
+                      </span>
                     </div>
 
-                    <div className="flex items-center gap-1 text-amber-400 text-xs font-bold">
-                      <FaStar className="h-3 w-3 fill-amber-400" />
-                      <span>{rev.rating}/5</span>
-                    </div>
+                    <span className="inline-flex items-center gap-1.5 text-sm">
+                      <FaStar className="h-3.5 w-3.5 text-highlight" />
+                      {rev.rating}
+                    </span>
                   </div>
 
-                  <p className="text-xs text-muted-foreground leading-relaxed pl-10">{rev.comment}</p>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{rev.comment}</p>
                 </div>
               ))}
             </div>
           )}
-        </div>
+        </section>
       </Container>
 
       {/* Reservation Modal */}

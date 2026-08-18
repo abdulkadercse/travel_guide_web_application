@@ -45,7 +45,7 @@ const teamMembers: TeamMember[] = [
     role: "Full Stack Engineer & Team Lead",
     image: "/teams/174376225.jpeg",
     initials: "TA",
-    color: "from-teal-500/20 to-emerald-500/20 text-teal-600 dark:text-teal-300",
+    color: "from-primary/20 to-emerald-500/20 text-primary dark:text-primary",
     skills: ["Next.js 16", "React 19", "Express.js", "TypeScript", "Prisma"],
     bio: "Led end-to-end architecture, user interface layer development, state management with RTK Query, and core service integration.",
   },
@@ -55,7 +55,7 @@ const teamMembers: TeamMember[] = [
     role: "Backend & System Architect",
     image: null,
     initials: "MI",
-    color: "from-blue-500/20 to-cyan-500/20 text-blue-600 dark:text-blue-300",
+    color: "from-primary/20 to-primary/20 text-primary dark:text-primary",
     skills: ["Node.js", "Express.js", "REST APIs", "JWT Security", "Bcrypt"],
     bio: "Architected application server layer, secure authentication flows, role-based authorization, and REST endpoint controllers.",
   },
@@ -65,7 +65,7 @@ const teamMembers: TeamMember[] = [
     role: "Frontend & UI/UX Engineer",
     image: null,
     initials: "AK",
-    color: "from-indigo-500/20 to-violet-500/20 text-indigo-600 dark:text-indigo-300",
+    color: "from-primary/20 to-primary/20 text-primary dark:text-primary",
     skills: ["Tailwind CSS v4", "Component Design", "Responsive Layouts", "Dark Mode"],
     bio: "Crafted accessible, responsive user interfaces, design tokens, reusable UI primitives, and modern interactive modules.",
   },
@@ -121,26 +121,26 @@ export function TeamContainer() {
             className="object-cover object-center"
           />
           {/* Clean uniform dark overlay */}
-          <div className="absolute inset-0 bg-slate-950/75" />
+          <div className="absolute inset-0 bg-stone-950/75" />
         </div>
 
         <Container>
           <div className="mx-auto max-w-4xl flex flex-col items-center text-center space-y-4">
             {/* Glass Eyebrow Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-teal-400/30 bg-teal-950/60 px-4 py-1.5 text-xs font-semibold text-teal-300 backdrop-blur-md shadow-sm">
-              <FaGraduationCap className="h-3.5 w-3.5 text-teal-400" />
+            <div className="chip-glass inline-flex items-center gap-2 px-4 py-1.5 text-xs font-semibold shadow-sm">
+              <FaGraduationCap className="h-3.5 w-3.5 text-white/80" />
               <span>{academicInfo.courseCode} Capstone Project</span>
-              <span className="h-1 w-1 rounded-full bg-teal-400" />
-              <span className="text-teal-200/80">Department of CSE</span>
+              <span className="h-1 w-1 rounded-full bg-white/70" />
+              <span className="text-white/80">Department of CSE</span>
             </div>
 
             {/* Main Heading */}
-            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl text-balance drop-shadow-sm">
+            <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-5xl text-balance drop-shadow-sm">
               Meet the Development Team
             </h1>
 
             {/* Subtitle */}
-            <p className="text-sm sm:text-base leading-relaxed text-slate-200 max-w-2xl mx-auto text-pretty drop-shadow-xs">
+            <p className="text-sm sm:text-base leading-relaxed text-white/85 max-w-2xl mx-auto text-pretty drop-shadow-xs">
               The engineers behind <strong>Travla BD</strong> — developed for the{" "}
               <strong>{academicInfo.course}</strong> course under the{" "}
               <strong>{academicInfo.department}</strong> at{" "}
@@ -150,15 +150,15 @@ export function TeamContainer() {
             {/* Glass Academic Badges */}
             <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
               <div className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/10 px-3.5 py-2 text-xs font-medium text-white backdrop-blur-md shadow-md transition-all hover:bg-white/15">
-                <FaBuildingColumns className="h-3.5 w-3.5 text-teal-300" />
+                <FaBuildingColumns className="h-3.5 w-3.5 text-white/80" />
                 <span>{academicInfo.institution}</span>
               </div>
               <div className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/10 px-3.5 py-2 text-xs font-medium text-white backdrop-blur-md shadow-md transition-all hover:bg-white/15">
-                <FaGraduationCap className="h-3.5 w-3.5 text-teal-300" />
+                <FaGraduationCap className="h-3.5 w-3.5 text-white/80" />
                 <span>Semester: <strong>{academicInfo.semester}</strong></span>
               </div>
               <div className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/10 px-3.5 py-2 text-xs font-medium text-white backdrop-blur-md shadow-md transition-all hover:bg-white/15">
-                <FaCalendarDays className="h-3.5 w-3.5 text-teal-300" />
+                <FaCalendarDays className="h-3.5 w-3.5 text-white/80" />
                 <span>Submission: <strong>{academicInfo.submissionDate}</strong></span>
               </div>
             </div>
@@ -184,13 +184,13 @@ export function TeamContainer() {
                 className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg"
               >
                 {/* Top accent line */}
-                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary to-teal-400 opacity-85" />
+                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary to-primary opacity-85" />
 
                 <div>
                   {/* Avatar / Photo */}
                   <div className="relative mb-4 flex items-center justify-center">
                     {member.image ? (
-                      <div className="relative h-24 w-24 overflow-hidden rounded-full border-3 border-primary/30 p-1 shadow-md transition-transform duration-300 group-hover:scale-105 group-hover:border-primary">
+                      <div className="relative h-24 w-24 overflow-hidden rounded-full border-3 border-primary/30 p-1 shadow-md transition-transform duration-300 group-hover: group-hover:border-primary">
                         <div className="relative h-full w-full overflow-hidden rounded-full">
                           <Image
                             src={member.image}
@@ -203,9 +203,9 @@ export function TeamContainer() {
                       </div>
                     ) : (
                       <div
-                        className={`flex h-24 w-24 items-center justify-center rounded-full border-3 border-border bg-gradient-to-br ${member.color} shadow-sm transition-transform duration-300 group-hover:scale-105`}
+                        className={`flex h-24 w-24 items-center justify-center rounded-full border-3 border-border bg-gradient-to-br ${member.color} shadow-sm transition-transform duration-300 group-hover:`}
                       >
-                        <span className="text-xl font-bold tracking-tight">
+                        <span className="text-xl font-medium tracking-tight">
                           {member.initials}
                         </span>
                       </div>
@@ -214,7 +214,7 @@ export function TeamContainer() {
 
                   {/* Member Details */}
                   <div className="text-center space-y-1">
-                    <h3 className="text-base font-bold text-foreground group-hover:text-primary transition-colors">
+                    <h3 className="text-base font-medium text-foreground group-hover:text-primary transition-colors">
                       {member.name}
                     </h3>
                     <p className="text-xs font-semibold text-primary">
@@ -240,14 +240,14 @@ export function TeamContainer() {
                     {member.skills.map((skill) => (
                       <span
                         key={skill}
-                        className="rounded-md bg-secondary/80 px-2 py-0.5 text-[10px] font-medium text-foreground/80"
+                        className="rounded-md bg-secondary/80 px-2 py-0.5 text-xs font-medium text-foreground/80"
                       >
                         {skill}
                       </span>
                     ))}
                   </div>
 
-                  <p className="text-[11px] text-center text-muted-foreground pt-1">
+                  <p className="text-xs text-center text-muted-foreground pt-1">
                     Northern University Bangladesh
                   </p>
                 </div>
@@ -279,7 +279,7 @@ export function TeamContainer() {
                     <layer.Icon className="h-5 w-5" />
                   </span>
                   <div>
-                    <h3 className="text-sm font-bold text-foreground">
+                    <h3 className="text-sm font-medium text-foreground">
                       {layer.layer}
                     </h3>
                   </div>
@@ -352,7 +352,7 @@ export function TeamContainer() {
                             />
                           </div>
                         ) : (
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-soft text-primary text-xs font-bold">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-soft text-primary text-xs font-medium">
                             {member.initials}
                           </div>
                         )}
@@ -381,7 +381,7 @@ export function TeamContainer() {
         <Container>
           <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div className="max-w-lg space-y-1.5">
-              <h2 className="text-2xl font-bold tracking-tight">
+              <h2 className="text-2xl font-medium tracking-tight">
                 Explore Travla BD Destinations
               </h2>
               <p className="text-sm text-muted-foreground">

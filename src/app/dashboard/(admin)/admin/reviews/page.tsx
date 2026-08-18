@@ -73,7 +73,7 @@ export default function AdminReviewsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-5">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2.5">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight flex items-center gap-2.5">
               <div className="h-10 w-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 shrink-0">
                 <FaStar className="h-5 w-5" />
               </div>
@@ -89,16 +89,16 @@ export default function AdminReviewsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase">Total Reviews</p>
-              <h3 className="text-2xl font-black text-foreground mt-0.5">{allReviews.length}</h3>
+              <p className="text-sm text-muted-foreground">Total Reviews</p>
+              <h3 className="text-2xl font-semibold text-foreground mt-0.5">{allReviews.length}</h3>
             </div>
             <FaComments className="h-6 w-6 text-amber-500" />
           </div>
 
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-amber-400 uppercase">Average Platform Rating</p>
-              <h3 className="text-2xl font-black text-amber-400 mt-0.5 flex items-center gap-1">
+              <p className="text-sm text-muted-foreground">Average Platform Rating</p>
+              <h3 className="text-2xl font-semibold text-amber-400 mt-0.5 flex items-center gap-1">
                 <FaStar className="h-5 w-5 fill-amber-400" /> {avgRating} / 5.0
               </h3>
             </div>
@@ -107,8 +107,8 @@ export default function AdminReviewsPage() {
 
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-emerald-400 uppercase">5-Star Feedback</p>
-              <h3 className="text-2xl font-black text-emerald-400 mt-0.5">
+              <p className="text-sm text-muted-foreground">5-Star Feedback</p>
+              <h3 className="text-2xl font-semibold text-emerald-400 mt-0.5">
                 {allReviews.filter((r) => r.rating === 5).length}
               </h3>
             </div>
@@ -131,7 +131,7 @@ export default function AdminReviewsPage() {
           <select
             value={ratingFilter}
             onChange={(e) => setRatingFilter(e.target.value)}
-            className="h-10 rounded-xl border bg-background px-3 text-xs font-bold"
+            className="h-10 rounded-xl border bg-background px-3 text-xs font-medium"
           >
             <option value="ALL">All Star Ratings</option>
             <option value="5">5 Stars</option>
@@ -143,7 +143,7 @@ export default function AdminReviewsPage() {
         </div>
 
         {/* Table View */}
-        <div className="rounded-3xl border border-border bg-card overflow-hidden shadow-sm">
+        <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm">
           {isLoading ? (
             <div className="py-16 flex justify-center text-muted-foreground">
               <FaSpinner className="h-8 w-8 animate-spin text-amber-500" />
@@ -151,7 +151,7 @@ export default function AdminReviewsPage() {
           ) : filteredReviews.length === 0 ? (
             <div className="py-16 text-center text-muted-foreground space-y-2">
               <FaComments className="h-10 w-10 text-muted-foreground/30 mx-auto" />
-              <p className="font-bold text-foreground">No reviews found</p>
+              <p className="font-medium text-foreground">No reviews found</p>
             </div>
           ) : (
             <Table>
@@ -169,7 +169,7 @@ export default function AdminReviewsPage() {
                   <TableRow key={rev.id} className="hover:bg-muted/30 border-b border-border/60">
                     <TableCell>
                       <div className="flex items-center gap-2.5">
-                        <div className="relative h-8 w-8 rounded-full overflow-hidden bg-slate-800 border shrink-0">
+                        <div className="relative h-8 w-8 rounded-full overflow-hidden bg-muted border shrink-0">
                           <Image
                             src={rev.user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100"}
                             alt={rev.user?.name || "User"}
@@ -179,13 +179,13 @@ export default function AdminReviewsPage() {
                           />
                         </div>
                         <div>
-                          <p className="font-bold text-foreground text-xs leading-tight">{rev.user?.name || "Anonymous"}</p>
+                          <p className="font-medium text-foreground text-xs leading-tight">{rev.user?.name || "Anonymous"}</p>
                         </div>
                       </div>
                     </TableCell>
 
                     <TableCell>
-                      <div className="flex items-center gap-1 text-amber-400 font-bold text-xs">
+                      <div className="flex items-center gap-1 text-amber-400 font-medium text-xs">
                         <FaStar className="fill-amber-400 h-3 w-3" />
                         <span>{rev.rating} / 5</span>
                       </div>

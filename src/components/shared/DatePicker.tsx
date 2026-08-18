@@ -25,6 +25,10 @@ export interface DatePickerProps {
   label?: string;
   error?: string;
   required?: boolean;
+  /** Hide the leading calendar icon when the surrounding frame already shows one. */
+  showIcon?: boolean;
+  /** date-fns format string for the selected date. */
+  dateFormat?: string;
 }
 
 export function DatePicker({
@@ -40,6 +44,8 @@ export function DatePicker({
   label,
   error,
   required,
+  showIcon = true,
+  dateFormat = "PPP",
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -73,7 +79,7 @@ export function DatePicker({
     <div className="w-full space-y-1.5 font-sans">
       {label && (
         <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
-          <FaCalendarAlt className="h-3 w-3 text-indigo-500" />
+          <FaCalendarAlt className="h-3 w-3 text-primary" />
           {label}
           {required && <span className="text-rose-500">*</span>}
         </label>
@@ -86,16 +92,18 @@ export function DatePicker({
             variant="outline"
             disabled={disabled}
             className={cn(
-              "w-full justify-start text-left font-medium h-11 px-3.5 rounded-2xl border border-input bg-card/60 hover:bg-muted/40 transition-all text-sm focus-visible:ring-2 focus-visible:ring-indigo-500 shadow-sm",
-              !selectedDate && "text-muted-foreground font-normal",
-              error && "border-rose-500 focus-visible:ring-rose-500",
-              className
+            "w-full justify-start text-left font-medium h-11 px-3.5 rounded-2xl border border-input bg-card/60 hover:bg-muted/40 transition-all text-sm focus-visible:ring-2 focus-visible:ring-ring shadow-sm",
+            !selectedDate && "text-muted-foreground font-normal",
+            error && "border-rose-500 focus-visible:ring-rose-500",
+            className
             )}
           >
-            <FaCalendarAlt className="mr-2.5 h-4 w-4 text-indigo-500 shrink-0" />
+            {showIcon && (
+              <FaCalendarAlt className="mr-2.5 h-4 w-4 text-primary shrink-0" />
+            )}
             {selectedDate ? (
               <span className="text-foreground font-semibold">
-                {format(selectedDate, "PPP")}
+                {format(selectedDate, dateFormat)}
               </span>
             ) : (
               <span>{placeholder}</span>

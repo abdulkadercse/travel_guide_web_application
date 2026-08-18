@@ -43,8 +43,8 @@ export function UserProfileContainer() {
       <div className="py-12">
         <Container>
           <div className="animate-pulse space-y-6">
-            <div className="h-44 rounded-3xl bg-secondary/80" />
-            <div className="h-64 rounded-3xl bg-secondary/80" />
+            <div className="h-44 rounded-2xl bg-secondary/80" />
+            <div className="h-64 rounded-2xl bg-secondary/80" />
           </div>
         </Container>
       </div>

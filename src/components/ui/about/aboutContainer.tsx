@@ -76,7 +76,7 @@ const teamMembers: TeamMember[] = [
     image: "/teams/174376225.jpeg",
     initials: "TA",
     color:
-      "from-teal-500/20 to-emerald-500/20 text-teal-600 dark:text-teal-300",
+      "from-primary/20 to-emerald-500/20 text-primary dark:text-primary",
   },
   {
     name: "Md. Mamun Islam",
@@ -84,7 +84,7 @@ const teamMembers: TeamMember[] = [
     role: "Backend & System Architect",
     image: null,
     initials: "MI",
-    color: "from-blue-500/20 to-cyan-500/20 text-blue-600 dark:text-blue-300",
+    color: "from-primary/20 to-primary/20 text-primary dark:text-primary",
   },
   {
     name: "Md. Abdul Kader",
@@ -93,7 +93,7 @@ const teamMembers: TeamMember[] = [
     image: null,
     initials: "AK",
     color:
-      "from-indigo-500/20 to-violet-500/20 text-indigo-600 dark:text-indigo-300",
+      "from-primary/20 to-primary/20 text-primary dark:text-primary",
   },
   {
     name: "Md. Nahid Hasan",
@@ -122,18 +122,18 @@ export function AboutContainer() {
             className="object-cover object-center"
           />
           {/* Clean uniform dark overlay without bottom shadow/fade */}
-          <div className="absolute inset-0 bg-slate-950/65" />
+          <div className="absolute inset-0 bg-stone-950/65" />
         </div>
 
         <Container>
           <div className="mx-auto max-w-5xl flex flex-col items-center text-center space-y-4">
             {/* Main Heading */}
-            <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl leading-[1.15] text-balance drop-shadow-sm">
+            <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-4xl lg:text-5xl leading-[1.15] text-balance drop-shadow-sm">
               Travel information worth trusting, in one place.
             </h1>
 
             {/* Subtitle / Paragraph */}
-            <p className="mx-auto text-sm leading-relaxed text-slate-200 sm:text-base text-pretty max-w-4xl drop-shadow-xs">
+            <p className="mx-auto text-sm leading-relaxed text-white/85 sm:text-base text-pretty max-w-4xl drop-shadow-xs">
               Planning a trip in Bangladesh usually means a dozen tabs, three
               phone calls and a screenshot folder. Travla brings destinations,
               hotels, restaurants, transport and your own itinerary into a
@@ -143,29 +143,29 @@ export function AboutContainer() {
 
             {/* Glass Metrics Cards */}
             <div className="mx-auto grid grid-cols-2 gap-3 pt-2 sm:grid-cols-3 w-full max-w-2xl text-center">
-              <div className="rounded-xl border border-white/15 bg-white/10 p-3 text-white backdrop-blur-md shadow-md transition-all duration-300 hover:border-teal-400/50 hover:bg-white/15 hover:-translate-y-0.5">
-                <p className="text-xl font-bold tracking-tight text-teal-300">
+              <div className="rounded-xl border border-white/15 bg-white/10 p-3 text-white backdrop-blur-md shadow-md transition-all duration-300 hover:border-primary/50 hover:bg-white/15 hover:-translate-y-0.5">
+                <p className="text-xl font-medium tracking-tight text-white">
                   64
                 </p>
-                <p className="text-xs font-medium text-slate-200">
+                <p className="text-xs font-medium text-white/85">
                   Districts of Bangladesh
                 </p>
               </div>
 
-              <div className="rounded-xl border border-white/15 bg-white/10 p-3 text-white backdrop-blur-md shadow-md transition-all duration-300 hover:border-teal-400/50 hover:bg-white/15 hover:-translate-y-0.5">
-                <p className="text-xl font-bold tracking-tight text-teal-300">
+              <div className="rounded-xl border border-white/15 bg-white/10 p-3 text-white backdrop-blur-md shadow-md transition-all duration-300 hover:border-primary/50 hover:bg-white/15 hover:-translate-y-0.5">
+                <p className="text-xl font-medium tracking-tight text-white">
                   100%
                 </p>
-                <p className="text-xs font-medium text-slate-200">
+                <p className="text-xs font-medium text-white/85">
                   Verified Listings
                 </p>
               </div>
 
-              <div className="col-span-2 sm:col-span-1 rounded-xl border border-white/15 bg-white/10 p-3 text-white backdrop-blur-md shadow-md transition-all duration-300 hover:border-teal-400/50 hover:bg-white/15 hover:-translate-y-0.5">
-                <p className="text-xl font-bold tracking-tight text-teal-300">
+              <div className="col-span-2 sm:col-span-1 rounded-xl border border-white/15 bg-white/10 p-3 text-white backdrop-blur-md shadow-md transition-all duration-300 hover:border-primary/50 hover:bg-white/15 hover:-translate-y-0.5">
+                <p className="text-xl font-medium tracking-tight text-white">
                   All-in-One
                 </p>
-                <p className="text-xs font-medium text-slate-200">
+                <p className="text-xs font-medium text-white/85">
                   Smart Trip Planner
                 </p>
               </div>
@@ -217,7 +217,7 @@ export function AboutContainer() {
           <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-xs">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               <div className="space-y-1">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <p className="text-xs font-semibold text-muted-foreground">
                   Course
                 </p>
                 <p className="text-sm font-semibold text-foreground">
@@ -229,7 +229,7 @@ export function AboutContainer() {
               </div>
 
               <div className="space-y-1">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <p className="text-xs font-semibold text-muted-foreground">
                   Department
                 </p>
                 <p className="text-sm font-semibold text-foreground">
@@ -241,7 +241,7 @@ export function AboutContainer() {
               </div>
 
               <div className="space-y-1">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <p className="text-xs font-semibold text-muted-foreground">
                   Semester & Batch
                 </p>
                 <p className="text-sm font-semibold text-foreground">
@@ -253,7 +253,7 @@ export function AboutContainer() {
               </div>
 
               <div className="space-y-1">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <p className="text-xs font-semibold text-muted-foreground">
                   Submission Date
                 </p>
                 <p className="text-sm font-semibold text-foreground">
@@ -285,12 +285,12 @@ export function AboutContainer() {
                   className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg"
                 >
                   {/* Top accent glow */}
-                  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary to-teal-400 opacity-80" />
+                  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary to-primary opacity-80" />
 
                   {/* Profile Picture / Avatar */}
                   <div className="relative mb-4 flex items-center justify-center">
                     {member.image ? (
-                      <div className="relative h-24 w-24 overflow-hidden rounded-full border-3 border-primary/30 p-1 shadow-md transition-transform duration-300 group-hover:scale-105 group-hover:border-primary">
+                      <div className="relative h-24 w-24 overflow-hidden rounded-full border-3 border-primary/30 p-1 shadow-md transition-transform duration-300 group-hover: group-hover:border-primary">
                         <div className="relative h-full w-full overflow-hidden rounded-full">
                           <Image
                             src={member.image}
@@ -303,9 +303,9 @@ export function AboutContainer() {
                       </div>
                     ) : (
                       <div
-                        className={`flex h-24 w-24 items-center justify-center rounded-full border-3 border-border bg-gradient-to-br ${member.color} shadow-sm transition-transform duration-300 group-hover:scale-105`}
+                        className={`flex h-24 w-24 items-center justify-center rounded-full border-3 border-border bg-gradient-to-br ${member.color} shadow-sm transition-transform duration-300 group-hover:`}
                       >
-                        <span className="text-xl font-bold tracking-tight">
+                        <span className="text-xl font-medium tracking-tight">
                           {member.initials}
                         </span>
                       </div>
@@ -314,7 +314,7 @@ export function AboutContainer() {
 
                   {/* Info */}
                   <div className="flex flex-1 flex-col text-center">
-                    <h4 className="text-base font-bold text-foreground group-hover:text-primary transition-colors">
+                    <h4 className="text-base font-medium text-foreground group-hover:text-primary transition-colors">
                       {member.name}
                     </h4>
                     <p className="mt-0.5 text-xs font-medium text-primary">
@@ -328,7 +328,7 @@ export function AboutContainer() {
                       </span>
                     </div>
 
-                    <div className="mt-3 border-t border-border/60 pt-2.5 text-[11px] text-muted-foreground">
+                    <div className="mt-3 border-t border-border/60 pt-2.5 text-xs text-muted-foreground">
                       Northern University Bangladesh
                     </div>
                   </div>
@@ -375,7 +375,7 @@ export function AboutContainer() {
                             />
                           </div>
                         ) : (
-                          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary-soft text-primary text-xs font-bold">
+                          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary-soft text-primary text-xs font-medium">
                             {member.initials}
                           </div>
                         )}

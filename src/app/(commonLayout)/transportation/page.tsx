@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import Container from "@/components/shared/Container";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,12 +18,17 @@ import {
   FaTrain,
   FaPlane,
   FaCar,
-  FaMapMarkerAlt,
   FaClock,
-  FaExchangeAlt,
   FaSpinner,
-  FaCalendarCheck,
 } from "react-icons/fa";
+
+const transportTypes = [
+  { id: "ALL", label: "All modes", icon: FaBus },
+  { id: "BUS", label: "Bus", icon: FaBus },
+  { id: "TRAIN", label: "Train", icon: FaTrain },
+  { id: "FLIGHT", label: "Flight", icon: FaPlane },
+  { id: "CAR_RENTAL", label: "Private car", icon: FaCar },
+];
 
 export default function TransportationPage() {
   const [routeFrom, setRouteFrom] = useState("ALL");
@@ -60,91 +66,69 @@ export default function TransportationPage() {
   const allToCities = ["ALL", ...toCities];
 
   return (
-    <div className="min-h-screen bg-background text-foreground py-10 font-sans">
-      <Container className="space-y-8">
-        {/* Page Hero */}
-        <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <span className="px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest bg-sky-500/10 text-sky-400 border border-sky-500/20 inline-flex items-center gap-2">
-            <FaBus className="h-3.5 w-3.5" /> Intercity Transit Finder
-          </span>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-            Book Bus, Train & <span className="text-sky-500">Flight Tickets</span>
-          </h1>
-          <p className="text-sm sm:text-base text-muted-foreground">
-            Search live transport schedules across Bangladesh. Book Green Line AC Buses, Cox's Bazar Express Trains, and domestic flights.
+    <div className="py-12 sm:py-16">
+      <Container className="space-y-9">
+        {/* Page header */}
+        <div className="max-w-xl space-y-4">
+          <p className="eyebrow">Getting around</p>
+          <h1 className="heading">Routes that actually run today</h1>
+          <p className="text-lg leading-relaxed text-muted-foreground">
+            Live intercity schedules across Bangladesh — AC coaches, express trains and domestic
+            flights.
           </p>
         </div>
 
-        {/* Route Finder Form */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-card border border-border shadow-lg space-y-6">
-          {/* Transport Type Tabs */}
-          <div className="flex items-center justify-center gap-2 overflow-x-auto pb-2 border-b border-border">
-            {[
-              { id: "ALL", label: "All Modes", icon: FaBus },
-              { id: "BUS", label: "AC/Non-AC Bus", icon: FaBus },
-              { id: "TRAIN", label: "Express Train", icon: FaTrain },
-              { id: "FLIGHT", label: "Domestic Flight", icon: FaPlane },
-              { id: "CAR_RENTAL", label: "Private Car", icon: FaCar },
-            ].map((t) => {
+        {/* Route finder */}
+        <div className="surface space-y-5 p-4 sm:p-5">
+          <div className="flex flex-wrap items-center gap-2">
+            {transportTypes.map((t) => {
               const Icon = t.icon;
               const isActive = typeFilter === t.id;
               return (
                 <button
                   key={t.id}
+                  type="button"
                   onClick={() => setTypeFilter(t.id)}
-                  className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
+                  className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm transition-all ${
                     isActive
-                      ? "bg-sky-600 text-white shadow-md shadow-sky-600/20 scale-105"
-                      : "bg-muted/40 text-muted-foreground hover:text-foreground hover:bg-muted"
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground"
                   }`}
                 >
-                  <Icon className="h-3.5 w-3.5" />
+                  <Icon className="h-3 w-3" />
                   <span>{t.label}</span>
                 </button>
               );
             })}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
-            {/* From Select */}
+          <div className="grid grid-cols-1 gap-3 border-t border-border pt-5 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-muted-foreground flex items-center gap-1">
-                <FaMapMarkerAlt className="text-sky-500 h-3 w-3" /> Departure From
-              </label>
+              <label className="text-sm text-muted-foreground">Leaving from</label>
               <Select value={routeFrom} onValueChange={setRouteFrom}>
-                <SelectTrigger className="h-11 rounded-2xl bg-background/50 border-input text-xs font-semibold">
-                  <SelectValue placeholder="All Departure Cities" />
+                <SelectTrigger>
+                  <SelectValue placeholder="Anywhere" />
                 </SelectTrigger>
                 <SelectContent>
                   {allFromCities.map((c) => (
                     <SelectItem key={c} value={c}>
-                      {c === "ALL" ? "All Departure Cities" : c}
+                      {c === "ALL" ? "Anywhere" : c}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Swap indicator */}
-            <div className="hidden sm:flex justify-center pt-5">
-              <div className="h-10 w-10 rounded-full bg-muted/60 flex items-center justify-center text-muted-foreground border border-border">
-                <FaExchangeAlt className="h-4 w-4" />
-              </div>
-            </div>
-
-            {/* To Select */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-muted-foreground flex items-center gap-1">
-                <FaMapMarkerAlt className="text-rose-500 h-3 w-3" /> Destination To
-              </label>
+              <label className="text-sm text-muted-foreground">Going to</label>
               <Select value={routeTo} onValueChange={setRouteTo}>
-                <SelectTrigger className="h-11 rounded-2xl bg-background/50 border-input text-xs font-semibold">
-                  <SelectValue placeholder="All Destination Cities" />
+                <SelectTrigger>
+                  <SelectValue placeholder="Anywhere" />
                 </SelectTrigger>
                 <SelectContent>
                   {allToCities.map((c) => (
                     <SelectItem key={c} value={c}>
-                      {c === "ALL" ? "All Destination Cities" : c}
+                      {c === "ALL" ? "Anywhere" : c}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -155,16 +139,17 @@ export default function TransportationPage() {
 
         {/* Schedule Results */}
         {isLoading ? (
-          <div className="py-24 flex justify-center text-muted-foreground">
-            <FaSpinner className="h-8 w-8 animate-spin text-sky-500" />
+          <div className="flex flex-col items-center justify-center gap-3 py-24 text-muted-foreground">
+            <FaSpinner className="h-6 w-6 animate-spin" />
+            <p className="text-sm">Loading routes…</p>
           </div>
         ) : schedules.length === 0 ? (
-          <div className="py-24 text-center rounded-3xl border border-dashed border-border bg-card/40 space-y-4">
-            <FaBus className="h-12 w-12 text-muted-foreground/30 mx-auto" />
-            <div className="space-y-1">
-              <h3 className="text-lg font-bold text-foreground">No transit routes found</h3>
-              <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-                No routes match your origin/destination search. Try resetting filters.
+          <div className="space-y-4 rounded-2xl border border-dashed border-border py-24 text-center">
+            <FaBus className="mx-auto h-10 w-10 text-muted-foreground/30" />
+            <div className="space-y-1.5">
+              <h3 className="text-lg font-semibold">No routes found</h3>
+              <p className="mx-auto max-w-sm text-sm text-muted-foreground">
+                Nothing runs between those cities right now. Try clearing the filters.
               </p>
             </div>
             <Button
@@ -174,90 +159,74 @@ export default function TransportationPage() {
                 setRouteTo("ALL");
                 setTypeFilter("ALL");
               }}
-              className="rounded-xl font-bold text-xs"
             >
-              Reset Filters
+              Reset filters
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {schedules.map((item) => (
-              <div
-                key={item.id}
-                className="p-6 rounded-3xl bg-card border border-border flex flex-col justify-between hover:border-sky-500/40 hover:shadow-lg transition-all space-y-4"
-              >
-                <div className="space-y-4">
-                  {/* Top Operator Header */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 shrink-0">
-                        {item.type === "BUS" ? (
-                          <FaBus className="h-4 w-4" />
-                        ) : item.type === "TRAIN" ? (
-                          <FaTrain className="h-4 w-4" />
-                        ) : item.type === "FLIGHT" ? (
-                          <FaPlane className="h-4 w-4" />
-                        ) : (
-                          <FaCar className="h-4 w-4" />
-                        )}
-                      </div>
-                      <div>
-                        <h4 className="font-extrabold text-foreground text-sm leading-tight">
-                          {item.operatorName}
-                        </h4>
-                        <span className="text-[10px] font-black uppercase tracking-wider text-sky-400">
-                          {item.type}
-                        </span>
-                      </div>
-                    </div>
+          <>
+            <p className="text-sm text-muted-foreground">
+              {schedules.length} route{schedules.length === 1 ? "" : "s"}
+            </p>
 
-                    <div className="text-right">
-                      <p className="text-[10px] text-muted-foreground font-bold uppercase">Fare</p>
-                      <p className="text-lg font-black text-emerald-400">
-                        ৳{item.price?.toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {schedules.map((item) => {
+                const Icon =
+                  item.type === "TRAIN"
+                    ? FaTrain
+                    : item.type === "FLIGHT"
+                    ? FaPlane
+                    : item.type === "CAR_RENTAL"
+                    ? FaCar
+                    : FaBus;
 
-                  {/* Route Timeline */}
-                  <div className="p-3.5 rounded-2xl bg-muted/40 border border-border/40 flex items-center justify-between text-xs">
-                    <div className="space-y-0.5">
-                      <p className="font-extrabold text-foreground">{item.routeFrom}</p>
-                      <p className="text-[11px] text-muted-foreground flex items-center gap-1">
-                        <FaClock className="h-2.5 w-2.5 text-sky-400" /> {item.departureTime || "08:00 AM"}
-                      </p>
-                    </div>
-
-                    <div className="flex flex-col items-center px-4">
-                      <span className="text-[10px] font-bold text-muted-foreground">
-                        {item.duration || "6h 30m"}
+                return (
+                  <div key={item.id} className="surface-interactive flex flex-col p-5">
+                    <div className="flex items-center justify-between">
+                      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-soft text-primary">
+                        <Icon className="h-3.5 w-3.5" />
                       </span>
-                      <div className="w-16 h-[2px] bg-sky-500/30 relative my-1">
-                        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-sky-500" />
-                      </div>
+                      <span className="rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground">
+                        {item.type}
+                      </span>
                     </div>
 
-                    <div className="text-right space-y-0.5">
-                      <p className="font-extrabold text-foreground">{item.routeTo}</p>
-                      <p className="text-[11px] text-muted-foreground flex items-center justify-end gap-1">
-                        <FaClock className="h-2.5 w-2.5 text-emerald-400" /> {item.arrivalTime || "02:30 PM"}
-                      </p>
+                    <h3 className="mt-4 text-base leading-snug">
+                      {item.routeFrom} <span className="text-muted-foreground">→</span>{" "}
+                      {item.routeTo}
+                    </h3>
+                    <p className="mt-1 text-sm text-muted-foreground">{item.operatorName}</p>
+
+                    <div className="mt-5 flex items-center justify-between border-t border-border pt-4 text-sm">
+                      <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                        <FaClock className="h-3 w-3" />
+                        {item.duration || item.scheduleTime || "—"}
+                      </span>
+                      <span className="font-medium">
+                        ৳{item.estimatedCost?.toLocaleString() ?? 0}
+                      </span>
+                    </div>
+
+                    <div className="mt-4 flex gap-2">
+                      <Button variant="outline" size="sm" className="flex-1" asChild>
+                        <Link href={`/transportation/${item.id}`}>Details</Link>
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => {
+                          setSelectedTransit(item);
+                          setResModalOpen(true);
+                        }}
+                      >
+                        Book
+                      </Button>
                     </div>
                   </div>
-                </div>
-
-                <Button
-                  onClick={() => {
-                    setSelectedTransit(item);
-                    setResModalOpen(true);
-                  }}
-                  className="w-full h-10 rounded-2xl font-bold text-xs bg-sky-600 hover:bg-sky-500 text-white gap-2 shadow-md shadow-sky-600/20"
-                >
-                  <FaCalendarCheck className="h-3 w-3" /> Book Ticket
-                </Button>
-              </div>
-            ))}
-          </div>
+                );
+              })}
+            </div>
+          </>
         )}
 
         {/* Global Reservation Modal */}
@@ -271,7 +240,7 @@ export default function TransportationPage() {
             targetType="TRANSPORTATION"
             targetId={selectedTransit.id}
             targetName={`${selectedTransit.operatorName} (${selectedTransit.routeFrom} -> ${selectedTransit.routeTo})`}
-            pricePerUnit={selectedTransit.price || 1500}
+            pricePerUnit={selectedTransit.estimatedCost || 1500}
             location={`${selectedTransit.routeFrom} to ${selectedTransit.routeTo}`}
           />
         )}

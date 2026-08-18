@@ -16,17 +16,17 @@ function Calendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
-      className={cn("p-3 font-sans", className)}
+      className={cn("relative p-3 font-sans", className)}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
-        month_caption: "flex justify-between pt-1 relative items-center px-1 mb-2",
+        month_caption: "flex justify-center pt-1 items-center px-1 mb-2",
         caption_label: "text-sm font-bold text-foreground",
-        nav: "space-x-1 flex items-center",
+        nav: "absolute inset-x-3 top-3 flex items-center justify-between",
         button_previous:
-          "h-7 w-7 bg-transparent p-0 opacity-70 hover:opacity-100 rounded-lg hover:bg-muted inline-flex items-center justify-center transition-colors text-foreground absolute left-1",
+          "h-7 w-7 bg-transparent p-0 opacity-70 hover:opacity-100 rounded-lg hover:bg-muted inline-flex items-center justify-center transition-colors text-foreground",
         button_next:
-          "h-7 w-7 bg-transparent p-0 opacity-70 hover:opacity-100 rounded-lg hover:bg-muted inline-flex items-center justify-center transition-colors text-foreground absolute right-1",
+          "h-7 w-7 bg-transparent p-0 opacity-70 hover:opacity-100 rounded-lg hover:bg-muted inline-flex items-center justify-center transition-colors text-foreground",
         month_grid: "w-full border-collapse space-y-1",
         weekdays: "flex",
         weekday:
@@ -38,8 +38,8 @@ function Calendar({
         ),
         range_end: "day-range-end",
         selected:
-          "bg-indigo-600 text-white hover:bg-indigo-600 hover:text-white focus:bg-indigo-600 focus:text-white font-bold shadow-md shadow-indigo-600/30",
-        today: "bg-muted font-bold text-foreground border border-primary/30",
+          "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground font-bold shadow-sm rounded-xl",
+        today: "bg-muted rounded-xl font-bold text-foreground border border-primary/30",
         outside:
           "day-outside text-muted-foreground/40 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
         disabled: "text-muted-foreground/30 opacity-40 cursor-not-allowed",

@@ -57,14 +57,14 @@ const ImageSlider = React.forwardRef<HTMLDivElement, ImageSliderProps>(
         </AnimatePresence>
 
         {/* Gradient Overlay & Text overlay for Bangladesh travel spots */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-stone-950/20 to-transparent pointer-events-none" />
 
         {currentImg.title && (
           <div className="absolute bottom-10 left-6 right-6 z-10 text-white">
-            <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-500/80 text-[10px] font-bold uppercase tracking-wider mb-1.5 backdrop-blur-sm">
+            <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-500/80 text-xs font-medium mb-1.5 backdrop-blur-sm">
               {currentImg.location || "Bangladesh"}
             </span>
-            <h3 className="text-xl font-extrabold tracking-tight drop-shadow-md">
+            <h3 className="text-xl font-semibold tracking-tight drop-shadow-md">
               {currentImg.title}
             </h3>
           </div>

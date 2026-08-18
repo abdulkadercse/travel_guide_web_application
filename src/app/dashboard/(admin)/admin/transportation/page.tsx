@@ -159,8 +159,8 @@ export default function AdminTransportationPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-5">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2.5">
-              <div className="h-10 w-10 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-500 shrink-0">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight flex items-center gap-2.5">
+              <div className="h-10 w-10 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
                 <FaBus className="h-5 w-5" />
               </div>
               Transportation & Transit Control Panel
@@ -172,13 +172,13 @@ export default function AdminTransportationPage() {
 
           <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
             <DialogTrigger>
-              <Button className="bg-sky-600 hover:bg-sky-500 text-white rounded-full font-bold shadow-md shadow-sky-600/20 gap-2 shrink-0">
+              <Button className="gap-2 shrink-0">
                 <FaPlus className="h-3.5 w-3.5" /> Add New Transport Schedule
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
               <DialogHeader>
-                <DialogTitle className="text-lg font-bold">Add Transport Schedule</DialogTitle>
+                <DialogTitle className="text-lg font-medium">Add Transport Schedule</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleCreate} className="space-y-4 pt-2">
                 <div className="grid grid-cols-2 gap-3">
@@ -187,7 +187,7 @@ export default function AdminTransportationPage() {
                     <select
                       value={newTransport.type}
                       onChange={(e) => setNewTransport({ ...newTransport, type: e.target.value })}
-                      className="w-full h-10 rounded-md border bg-background px-3 text-sm focus:ring-2 focus:ring-sky-500"
+                      className="w-full h-10 rounded-md border bg-background px-3 text-sm focus:ring-2 focus:ring-primary"
                     >
                       <option value="BUS">BUS (AC/Non-AC)</option>
                       <option value="TRAIN">TRAIN (Express)</option>
@@ -261,7 +261,7 @@ export default function AdminTransportationPage() {
                   <Button type="button" variant="outline" onClick={() => setAddDialogOpen(false)}>
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={submitting} className="bg-sky-600 text-white font-bold">
+                  <Button type="submit" disabled={submitting}>
                     {submitting ? <FaSpinner className="animate-spin" /> : "Save Schedule"}
                   </Button>
                 </div>
@@ -274,26 +274,26 @@ export default function AdminTransportationPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase">Total Transit Schedules</p>
-              <h3 className="text-2xl font-black text-foreground mt-0.5">{transportations.length}</h3>
+              <p className="text-sm text-muted-foreground">Total Transit Schedules</p>
+              <h3 className="text-2xl font-semibold text-foreground mt-0.5">{transportations.length}</h3>
             </div>
-            <FaBus className="h-6 w-6 text-sky-500" />
+            <FaBus className="h-6 w-6 text-primary" />
           </div>
 
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase">Transport Modes</p>
-              <h3 className="text-2xl font-black text-sky-400 mt-0.5">
+              <p className="text-sm text-muted-foreground">Transport Modes</p>
+              <h3 className="text-2xl font-semibold text-primary mt-0.5">
                 {new Set(transportations.map((t) => t.type)).size} Types
               </h3>
             </div>
-            <FaMapMarkerAlt className="h-6 w-6 text-sky-400" />
+            <FaMapMarkerAlt className="h-6 w-6 text-primary" />
           </div>
 
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase">Average Ticket Price</p>
-              <h3 className="text-2xl font-black text-emerald-400 mt-0.5">
+              <p className="text-sm text-muted-foreground">Average Ticket Price</p>
+              <h3 className="text-2xl font-semibold text-emerald-400 mt-0.5">
                 ৳{transportations.length ? Math.round(transportations.reduce((sum, t) => sum + (t.estimatedCost || 1200), 0) / transportations.length).toLocaleString() : 0}
               </h3>
             </div>
@@ -306,7 +306,7 @@ export default function AdminTransportationPage() {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="h-10 rounded-xl border bg-background px-3 text-xs font-bold"
+            className="h-10 rounded-xl border bg-background px-3 text-xs font-medium"
           >
             <option value="ALL">All Transport Modes</option>
             <option value="BUS">BUS</option>
@@ -318,7 +318,7 @@ export default function AdminTransportationPage() {
           <select
             value={routeFromFilter}
             onChange={(e) => setRouteFromFilter(e.target.value)}
-            className="h-10 rounded-xl border bg-background px-3 text-xs font-bold"
+            className="h-10 rounded-xl border bg-background px-3 text-xs font-medium"
           >
             <option value="ALL">All Departure Cities</option>
             <option value="Dhaka">Dhaka</option>
@@ -329,15 +329,15 @@ export default function AdminTransportationPage() {
         </div>
 
         {/* Table View */}
-        <div className="rounded-3xl border border-border bg-card overflow-hidden shadow-sm">
+        <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm">
           {isLoading ? (
             <div className="py-16 flex justify-center text-muted-foreground">
-              <FaSpinner className="h-8 w-8 animate-spin text-sky-500" />
+              <FaSpinner className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : transportations.length === 0 ? (
             <div className="py-16 text-center text-muted-foreground space-y-2">
               <FaBus className="h-10 w-10 text-muted-foreground/30 mx-auto" />
-              <p className="font-bold text-foreground">No transport schedules found</p>
+              <p className="font-medium text-foreground">No transport schedules found</p>
             </div>
           ) : (
             <Table>
@@ -355,17 +355,17 @@ export default function AdminTransportationPage() {
                 {transportations.map((item) => (
                   <TableRow key={item.id} className="hover:bg-muted/30 border-b border-border/60">
                     <TableCell>
-                      <span className="px-2.5 py-1 text-[10px] font-black uppercase tracking-wider bg-sky-500/10 text-sky-400 border border-sky-500/20 rounded-lg inline-flex items-center gap-1.5">
+                      <span className="px-2.5 py-1 text-xs font-semibold bg-primary/10 text-primary border border-primary/20 rounded-lg inline-flex items-center gap-1.5">
                         {item.type === "TRAIN" ? <FaTrain /> : item.type === "FLIGHT" ? <FaPlane /> : item.type === "BUS" ? <FaBus /> : <FaCar />}
                         {item.type}
                       </span>
                     </TableCell>
                     <TableCell>
-                      <p className="font-bold text-foreground text-sm">{item.operatorName}</p>
+                      <p className="font-medium text-foreground text-sm">{item.operatorName}</p>
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground font-semibold">
                       <span className="flex items-center gap-1">
-                        <FaMapMarkerAlt className="text-sky-400 h-3 w-3" />
+                        <FaMapMarkerAlt className="text-primary h-3 w-3" />
                         {item.routeFrom} &rarr; {item.routeTo}
                       </span>
                     </TableCell>
@@ -375,7 +375,7 @@ export default function AdminTransportationPage() {
                         {item.scheduleTime} ({item.duration})
                       </span>
                     </TableCell>
-                    <TableCell className="font-black text-emerald-400 text-sm">
+                    <TableCell className="font-semibold text-emerald-400 text-sm">
                       ৳{(item.estimatedCost || 1200).toLocaleString()}
                     </TableCell>
                     <TableCell className="text-right">
@@ -384,7 +384,7 @@ export default function AdminTransportationPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleOpenEdit(item)}
-                          className="h-8 w-8 p-0 text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 rounded-lg"
+                          className="h-8 w-8 p-0 text-primary hover:text-primary hover:bg-primary/10 rounded-lg"
                           title="Edit Schedule"
                         >
                           <FaEdit className="h-3.5 w-3.5" />
@@ -412,7 +412,7 @@ export default function AdminTransportationPage() {
           <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
             <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
               <DialogHeader>
-                <DialogTitle className="text-lg font-bold">Edit Transport Schedule</DialogTitle>
+                <DialogTitle className="text-lg font-medium">Edit Transport Schedule</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleUpdate} className="space-y-4 pt-2">
                 <div className="grid grid-cols-2 gap-3">
@@ -490,7 +490,7 @@ export default function AdminTransportationPage() {
                   <Button type="button" variant="outline" onClick={() => setEditDialogOpen(false)}>
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={submitting} className="bg-sky-600 text-white font-bold">
+                  <Button type="submit" disabled={submitting}>
                     {submitting ? <FaSpinner className="animate-spin" /> : "Save Changes"}
                   </Button>
                 </div>

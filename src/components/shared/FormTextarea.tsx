@@ -45,13 +45,13 @@ export const FormTextarea = React.forwardRef<
           {label && (
             <Label
               htmlFor={textareaId}
-              className="block text-xs font-semibold uppercase tracking-wider text-slate-300"
+              className="block text-xs font-semibold text-muted-foreground"
             >
               {label}
             </Label>
           )}
           {showCharCount && maxLength && (
-            <span className="text-xs text-slate-500 font-mono">
+            <span className="text-xs text-muted-foreground font-mono">
               {charCount}/{maxLength}
             </span>
           )}
@@ -63,22 +63,22 @@ export const FormTextarea = React.forwardRef<
           onChange={onChange}
           maxLength={maxLength}
           className={cn(
-            "w-full bg-slate-950/60 text-slate-100 placeholder:text-slate-500 text-sm rounded-xl p-3.5 border transition-all duration-200 focus:outline-none min-h-[100px]",
+            "w-full bg-background text-foreground placeholder:text-muted-foreground text-sm rounded-xl p-3.5 border transition-all duration-200 focus:outline-none min-h-[100px]",
             error
-              ? "border-rose-500/80 focus-visible:ring-rose-500/30 border-rose-500"
-              : "border-slate-800 focus-visible:ring-indigo-500/30 focus-visible:border-indigo-500 hover:border-slate-700",
+              ? "border-destructive focus-visible:ring-destructive/30"
+              : "border-input focus-visible:ring-primary/30 focus-visible:border-primary hover:border-primary/40",
             className
           )}
           {...props}
         />
         {error && (
-          <p className="text-xs text-rose-400 mt-1 flex items-center gap-1">
+          <p className="text-xs text-destructive mt-1 flex items-center gap-1">
             <FaExclamationCircle className="h-3.5 w-3.5 inline shrink-0" />
             {error}
           </p>
         )}
         {helperText && !error && (
-          <p className="text-xs text-slate-400 mt-1">{helperText}</p>
+          <p className="text-xs text-muted-foreground mt-1">{helperText}</p>
         )}
       </div>
     );

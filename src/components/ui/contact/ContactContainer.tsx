@@ -99,9 +99,9 @@ export function ContactContainer() {
         </nav>
 
         {/* Top Header Section with Illustration */}
-        <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6 overflow-hidden rounded-3xl bg-card border border-border p-6 sm:p-10 shadow-xs">
+        <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6 overflow-hidden rounded-2xl bg-card border border-border p-6 sm:p-10 shadow-xs">
           <div className="max-w-2xl space-y-3 z-10">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-foreground">
               Contact Us
             </h1>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
@@ -127,7 +127,7 @@ export function ContactContainer() {
               </svg>
             </div>
 
-            <div className="relative flex h-24 w-24 sm:h-28 sm:w-28 items-center justify-center rounded-3xl bg-primary-soft/80 border border-primary/20 shadow-inner">
+            <div className="relative flex h-24 w-24 sm:h-28 sm:w-28 items-center justify-center rounded-2xl bg-primary-soft/80 border border-primary/20 shadow-inner">
               <FaHeadset className="h-12 w-12 sm:h-14 sm:w-14 text-primary animate-pulse" />
               <span className="absolute -top-1 -right-1 flex h-4 w-4">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -145,9 +145,9 @@ export function ContactContainer() {
           {/* Left Column: Form Card + Support Badges */}
           <div className="lg:col-span-7 xl:col-span-8 space-y-8">
             {/* Form Card */}
-            <div className="rounded-3xl border border-border bg-card p-6 sm:p-9 shadow-sm space-y-7">
+            <div className="rounded-2xl border border-border bg-card p-6 sm:p-9 shadow-sm space-y-7">
               <div className="space-y-1">
-                <h2 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-medium text-foreground tracking-tight">
                   Send Us a Message
                 </h2>
                 <p className="text-xs sm:text-sm text-muted-foreground">
@@ -161,7 +161,7 @@ export function ContactContainer() {
                   <div className="space-y-2">
                     <label
                       htmlFor="fullName"
-                      className="block text-xs font-semibold text-foreground uppercase tracking-wider"
+                      className="block text-sm text-muted-foreground"
                     >
                       Full Name <span className="text-destructive">*</span>
                     </label>
@@ -176,7 +176,7 @@ export function ContactContainer() {
                         placeholder="Enter your full name"
                         value={formData.fullName}
                         onChange={handleChange}
-                        className="pl-10 h-11 rounded-xl bg-background border-input focus-visible:ring-primary"
+                        className="pl-10"
                         required
                       />
                     </div>
@@ -186,7 +186,7 @@ export function ContactContainer() {
                   <div className="space-y-2">
                     <label
                       htmlFor="email"
-                      className="block text-xs font-semibold text-foreground uppercase tracking-wider"
+                      className="block text-sm text-muted-foreground"
                     >
                       Email Address <span className="text-destructive">*</span>
                     </label>
@@ -201,7 +201,7 @@ export function ContactContainer() {
                         placeholder="Enter your email address"
                         value={formData.email}
                         onChange={handleChange}
-                        className="pl-10 h-11 rounded-xl bg-background border-input focus-visible:ring-primary"
+                        className="pl-10"
                         required
                       />
                     </div>
@@ -212,7 +212,7 @@ export function ContactContainer() {
                 <div className="space-y-2">
                   <label
                     htmlFor="subject"
-                    className="block text-xs font-semibold text-foreground uppercase tracking-wider"
+                    className="block text-sm text-muted-foreground"
                   >
                     Subject <span className="text-destructive">*</span>
                   </label>
@@ -227,7 +227,7 @@ export function ContactContainer() {
                       placeholder="Enter subject"
                       value={formData.subject}
                       onChange={handleChange}
-                      className="pl-10 h-11 rounded-xl bg-background border-input focus-visible:ring-primary"
+                      className="pl-10"
                       required
                     />
                   </div>
@@ -237,7 +237,7 @@ export function ContactContainer() {
                 <div className="space-y-2">
                   <label
                     htmlFor="message"
-                    className="block text-xs font-semibold text-foreground uppercase tracking-wider"
+                    className="block text-sm text-muted-foreground"
                   >
                     Message <span className="text-destructive">*</span>
                   </label>
@@ -252,7 +252,7 @@ export function ContactContainer() {
                       placeholder="Write your message here..."
                       value={formData.message}
                       onChange={handleChange}
-                      className="pl-10 pt-3 rounded-xl bg-background border-input focus-visible:ring-primary resize-y min-h-[120px]"
+                      className="pl-10 pt-3 resize-y min-h-[120px]"
                       required
                     />
                   </div>
@@ -263,7 +263,8 @@ export function ContactContainer() {
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="h-12 px-7 rounded-xl font-semibold bg-primary hover:bg-primary-hover text-primary-foreground transition-all shadow-md flex items-center gap-2.5 cursor-pointer"
+                    size="lg"
+                    className="gap-2.5"
                   >
                     {isSubmitting ? (
                       <>
@@ -282,14 +283,14 @@ export function ContactContainer() {
             </div>
 
             {/* Bottom Support Features Row (Matching bottom of reference image) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 rounded-3xl border border-border/80 bg-primary-soft/40 dark:bg-primary-soft/20 p-5 sm:p-6 shadow-2xs">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 rounded-2xl border border-border/80 bg-primary-soft/40 dark:bg-primary-soft/20 p-5 sm:p-6 shadow-2xs">
               <div className="flex items-center gap-3.5">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400">
                   <FaClock className="h-5 w-5" />
                 </div>
                 <div className="space-y-0.5">
-                  <h4 className="text-xs font-bold text-foreground">24/7 Support</h4>
-                  <p className="text-[11px] text-muted-foreground leading-tight">
+                  <h4 className="text-xs font-medium text-foreground">24/7 Support</h4>
+                  <p className="text-xs text-muted-foreground leading-tight">
                     We&apos;re here to help you anytime, anywhere.
                   </p>
                 </div>
@@ -300,8 +301,8 @@ export function ContactContainer() {
                   <FaShieldHalved className="h-5 w-5" />
                 </div>
                 <div className="space-y-0.5">
-                  <h4 className="text-xs font-bold text-foreground">Fast Response</h4>
-                  <p className="text-[11px] text-muted-foreground leading-tight">
+                  <h4 className="text-xs font-medium text-foreground">Fast Response</h4>
+                  <p className="text-xs text-muted-foreground leading-tight">
                     Our team responds to all inquiries within 24 hours.
                   </p>
                 </div>
@@ -312,10 +313,10 @@ export function ContactContainer() {
                   <FaHeart className="h-5 w-5" />
                 </div>
                 <div className="space-y-0.5">
-                  <h4 className="text-xs font-bold text-foreground">
+                  <h4 className="text-xs font-medium text-foreground">
                     Travel with Confidence
                   </h4>
-                  <p className="text-[11px] text-muted-foreground leading-tight">
+                  <p className="text-xs text-muted-foreground leading-tight">
                     Trusted by thousands of travelers worldwide.
                   </p>
                 </div>
@@ -325,9 +326,9 @@ export function ContactContainer() {
 
           {/* Right Column: Contact Info Card + Interactive Map */}
           <div className="lg:col-span-5 xl:col-span-4 space-y-6">
-            <div className="rounded-3xl border border-border bg-card p-6 sm:p-7 shadow-sm space-y-7">
+            <div className="rounded-2xl border border-border bg-card p-6 sm:p-7 shadow-sm space-y-7">
               <div className="space-y-1.5">
-                <h2 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-medium text-foreground tracking-tight">
                   Get in Touch
                 </h2>
                 <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
@@ -343,7 +344,7 @@ export function ContactContainer() {
                     <FaPhone className="h-4 w-4" />
                   </div>
                   <div className="space-y-0.5">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                    <h3 className="text-xs font-medium text-foreground">
                       Phone
                     </h3>
                     <p className="text-sm font-semibold text-primary">
@@ -361,7 +362,7 @@ export function ContactContainer() {
                     <FaEnvelope className="h-4 w-4" />
                   </div>
                   <div className="space-y-0.5">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                    <h3 className="text-xs font-medium text-foreground">
                       Email
                     </h3>
                     <a
@@ -382,7 +383,7 @@ export function ContactContainer() {
                     <FaLocationDot className="h-4 w-4" />
                   </div>
                   <div className="space-y-0.5">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                    <h3 className="text-xs font-medium text-foreground">
                       Address
                     </h3>
                     <p className="text-xs sm:text-sm font-medium text-foreground leading-relaxed">
@@ -394,7 +395,7 @@ export function ContactContainer() {
 
               {/* Social Follow */}
               <div className="pt-4 border-t border-border/70 space-y-3">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                <h3 className="text-xs font-medium text-foreground">
                   Follow Us
                 </h3>
                 <div className="flex items-center gap-2.5">
@@ -438,10 +439,10 @@ export function ContactContainer() {
               </div>
 
               {/* Interactive Visual Map Container */}
-              <div className="relative overflow-hidden rounded-2xl border border-border h-48 bg-slate-900/10 dark:bg-slate-900/40 group">
+              <div className="relative overflow-hidden rounded-2xl border border-border h-48 bg-muted group">
                 {/* Visual Map Grid Pattern */}
                 <div
-                  className="absolute inset-0 bg-cover bg-center opacity-85 transition-transform duration-700 group-hover:scale-105"
+                  className="absolute inset-0 bg-cover bg-center opacity-85 transition-transform duration-700 group-hover:"
                   style={{
                     backgroundImage: `radial-gradient(var(--color-primary) 0.75px, transparent 0.75px), radial-gradient(var(--color-primary) 0.75px, var(--color-card) 0.75px)`,
                     backgroundSize: "20px 20px",
@@ -490,10 +491,10 @@ export function ContactContainer() {
                     <FaLocationDot className="h-3.5 w-3.5" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-[11px] font-bold text-foreground truncate">
+                    <p className="text-xs font-medium text-foreground truncate">
                       Travla BD Office
                     </p>
-                    <p className="text-[10px] text-muted-foreground truncate">
+                    <p className="text-xs text-muted-foreground truncate">
                       123 Travel Street, Gulshan-2, Dhaka 1212
                     </p>
                   </div>

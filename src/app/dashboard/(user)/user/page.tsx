@@ -137,8 +137,8 @@ export default function UserDashboardPage() {
   return (
     <div className="space-y-8">
             {/* User Profile Banner & Avatar Uploader */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-card border border-border shadow-md relative overflow-hidden flex flex-col sm:flex-row items-center gap-6">
-              <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none" />
+            <div className="p-6 sm:p-8 rounded-2xl bg-card border border-border shadow-md relative overflow-hidden flex flex-col sm:flex-row items-center gap-6">
+              <div className="absolute top-0 right-0 w-80 h-80 bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
 
               <AvatarUploader
                 src={user?.avatar}
@@ -149,10 +149,10 @@ export default function UserDashboardPage() {
 
               <div className="text-center sm:text-left space-y-1.5 flex-1">
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                  <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                  <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
                     {user?.name}
                   </h1>
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 uppercase tracking-wider flex items-center gap-1">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/15 text-primary border border-primary/30 flex items-center gap-1">
                     <FaUserCheck className="h-3 w-3" /> {user?.role}
                   </span>
                 </div>
@@ -173,7 +173,7 @@ export default function UserDashboardPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-border pb-4">
                 <div>
-                  <h2 className="text-xl font-bold tracking-tight flex items-center gap-2">
+                  <h2 className="text-xl font-medium tracking-tight flex items-center gap-2">
                     <FaHeart className="text-rose-500 h-5 w-5" />
                     My Saved Favorites ({myFavorites.length})
                   </h2>
@@ -202,7 +202,7 @@ export default function UserDashboardPage() {
                     >
                       <div className="flex items-center gap-3">
                         {fav.destination?.coverImage && (
-                          <div className="relative h-14 w-14 rounded-xl overflow-hidden bg-slate-900 border shrink-0">
+                          <div className="relative h-14 w-14 rounded-xl overflow-hidden bg-muted border shrink-0">
                             <Image
                               src={fav.destination.coverImage}
                               alt={fav.destination.title}
@@ -213,14 +213,14 @@ export default function UserDashboardPage() {
                           </div>
                         )}
                         <div>
-                          <h3 className="font-bold text-sm leading-snug group-hover:text-rose-400 transition-colors">
+                          <h3 className="font-medium text-sm leading-snug group-hover:text-rose-400 transition-colors">
                             {fav.destination?.title || "Saved Destination"}
                           </h3>
-                          <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
                             <FaMapMarkerAlt className="h-3 w-3 text-rose-500 shrink-0" />
                             {fav.destination?.location || fav.destination?.district || "Bangladesh"}
                           </p>
-                          <p className="text-xs font-black text-emerald-400 mt-1">
+                          <p className="text-xs font-semibold text-emerald-400 mt-1">
                             ৳{fav.destination?.price || 0}
                           </p>
                         </div>
@@ -245,13 +245,13 @@ export default function UserDashboardPage() {
             <div className="space-y-4 pt-4">
               <div className="flex items-center justify-between border-b border-border pb-4">
                 <div>
-                  <h2 className="text-xl font-bold tracking-tight flex items-center gap-2">
-                    <FaCalendarCheck className="text-indigo-500 h-5 w-5" />
+                  <h2 className="text-xl font-medium tracking-tight flex items-center gap-2">
+                    <FaCalendarCheck className="text-primary h-5 w-5" />
                     My Bookings & Reservations
                   </h2>
                   <p className="text-xs text-muted-foreground">Track status of your hotel and tour package bookings</p>
                 </div>
-                <Button size="sm" className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full font-semibold" asChild>
+                <Button size="sm" asChild>
                   <Link href="/demo">Book New Tour</Link>
                 </Button>
               </div>
@@ -259,7 +259,7 @@ export default function UserDashboardPage() {
               <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm">
                 {loadingReservations ? (
                   <div className="py-12 flex justify-center text-muted-foreground">
-                    <FaSpinner className="h-6 w-6 animate-spin text-indigo-500" />
+                    <FaSpinner className="h-6 w-6 animate-spin text-primary" />
                   </div>
                 ) : myReservations.length === 0 ? (
                   <div className="py-12 text-center text-muted-foreground text-sm space-y-2">
@@ -281,19 +281,19 @@ export default function UserDashboardPage() {
                     <TableBody>
                       {myReservations.map((item) => (
                         <TableRow key={item.id}>
-                          <TableCell className="font-bold text-foreground">
+                          <TableCell className="font-medium text-foreground">
                             {item.destination?.title || item.hotel?.name || "Tour Package"}
                           </TableCell>
                           <TableCell className="text-xs text-muted-foreground">
                             {new Date(item.startDate).toLocaleDateString()} &mdash;{" "}
                             {new Date(item.endDate).toLocaleDateString()}
                           </TableCell>
-                          <TableCell className="font-bold text-emerald-400 text-xs">
+                          <TableCell className="font-medium text-emerald-400 text-xs">
                             ৳{item.totalCost}
                           </TableCell>
                           <TableCell>
                             <span
-                              className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                              className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
                                 item.status === "CONFIRMED"
                                   ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
                                   : item.status === "CANCELLED"
@@ -316,8 +316,8 @@ export default function UserDashboardPage() {
             <div className="space-y-4 pt-4">
               <div className="flex items-center justify-between border-b border-border pb-4">
                 <div>
-                  <h2 className="text-xl font-bold tracking-tight flex items-center gap-2">
-                    <FaRoute className="text-indigo-500 h-5 w-5" />
+                  <h2 className="text-xl font-medium tracking-tight flex items-center gap-2">
+                    <FaRoute className="text-primary h-5 w-5" />
                     My Custom Trip Plans
                   </h2>
                   <p className="text-xs text-muted-foreground">Personalized travel itineraries and schedule notes</p>
@@ -325,13 +325,13 @@ export default function UserDashboardPage() {
 
                 <Dialog open={planDialogOpen} onOpenChange={setPlanDialogOpen}>
                   <DialogTrigger>
-                    <Button className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full font-semibold gap-2">
+                    <Button className="gap-2">
                       <FaPlus className="h-3.5 w-3.5" /> Create Trip Plan
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-md bg-card border-border">
                     <DialogHeader>
-                      <DialogTitle className="text-lg font-bold">Create Personalized Trip Plan</DialogTitle>
+                      <DialogTitle className="text-lg font-medium">Create Personalized Trip Plan</DialogTitle>
                     </DialogHeader>
 
                     <form onSubmit={handleCreateTripPlan} className="space-y-4 pt-2">
@@ -387,7 +387,7 @@ export default function UserDashboardPage() {
                         <Button type="button" variant="outline" onClick={() => setPlanDialogOpen(false)}>
                           Cancel
                         </Button>
-                        <Button type="submit" disabled={submittingPlan} className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold">
+                        <Button type="submit" disabled={submittingPlan}>
                           {submittingPlan ? <FaSpinner className="animate-spin mr-1" /> : "Save Plan"}
                         </Button>
                       </div>
@@ -399,7 +399,7 @@ export default function UserDashboardPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {loadingTripPlans ? (
                   <div className="col-span-full py-12 flex justify-center text-muted-foreground">
-                    <FaSpinner className="h-6 w-6 animate-spin text-indigo-500" />
+                    <FaSpinner className="h-6 w-6 animate-spin text-primary" />
                   </div>
                 ) : myTripPlans.length === 0 ? (
                   <div className="col-span-full py-12 text-center text-muted-foreground text-sm">
@@ -413,13 +413,13 @@ export default function UserDashboardPage() {
                     >
                       <div>
                         <div className="flex items-center justify-between">
-                          <h3 className="font-bold text-lg leading-snug">{plan.title}</h3>
-                          <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-500/15 text-indigo-400 border border-indigo-500/30">
+                          <h3 className="font-medium text-lg leading-snug">{plan.title}</h3>
+                          <span className="px-2 py-0.5 rounded-md text-xs font-medium bg-primary/15 text-primary border border-primary/30">
                             ৳{plan.totalBudget || 0}
                           </span>
                         </div>
                         <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                          <FaPlaneDeparture className="h-3 w-3 text-indigo-500 shrink-0" />
+                          <FaPlaneDeparture className="h-3 w-3 text-primary shrink-0" />
                           {new Date(plan.startDate).toLocaleDateString()} &mdash;{" "}
                           {new Date(plan.endDate).toLocaleDateString()}
                         </p>

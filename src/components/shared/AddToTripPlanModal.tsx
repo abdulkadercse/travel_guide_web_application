@@ -118,8 +118,8 @@ export function AddToTripPlanModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md bg-card border-border font-sans">
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold flex items-center gap-2">
-            <FaRoute className="text-indigo-500" />
+          <DialogTitle className="text-lg font-medium flex items-center gap-2">
+            <FaRoute className="text-primary" />
             <span>Add "{destinationTitle}" to Custom Trip Plan</span>
           </DialogTitle>
         </DialogHeader>
@@ -129,7 +129,7 @@ export function AddToTripPlanModal({
           <button
             type="button"
             onClick={() => setMode("EXISTING")}
-            className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all ${
+            className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-all ${
               mode === "EXISTING" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
             }`}
           >
@@ -138,7 +138,7 @@ export function AddToTripPlanModal({
           <button
             type="button"
             onClick={() => setMode("NEW")}
-            className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all ${
+            className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-all ${
               mode === "NEW" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
             }`}
           >
@@ -156,7 +156,7 @@ export function AddToTripPlanModal({
                     type="button"
                     size="sm"
                     onClick={() => setMode("NEW")}
-                    className="bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-full"
+                    className="bg-primary hover:bg-primary-hover text-primary-foreground font-medium rounded-full"
                   >
                     Create New Trip Plan Now
                   </Button>
@@ -167,7 +167,7 @@ export function AddToTripPlanModal({
                   <select
                     value={selectedPlanId}
                     onChange={(e) => setSelectedPlanId(e.target.value)}
-                    className="w-full h-10 rounded-md border bg-background px-3 text-sm focus:ring-2 focus:ring-indigo-500"
+                    className="w-full h-10 rounded-md border bg-background px-3 text-sm focus:ring-2 focus:ring-primary"
                     required={mode === "EXISTING"}
                   >
                     <option value="">-- Select an Itinerary --</option>
@@ -243,7 +243,7 @@ export function AddToTripPlanModal({
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={submitting} className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold gap-1">
+            <Button type="submit" disabled={submitting} className="gap-1">
               {submitting ? <FaSpinner className="animate-spin" /> : <><FaCheck /> Add to Trip Plan</>}
             </Button>
           </div>

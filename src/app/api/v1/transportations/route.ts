@@ -8,8 +8,10 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const filters = {
       type: (searchParams.get("type") as any) || undefined,
-      from: searchParams.get("from") || undefined,
-      to: searchParams.get("to") || undefined,
+      // Callers send routeFrom/routeTo (the Prisma field names); the original
+      // from/to spelling is kept so existing links keep working.
+      from: searchParams.get("routeFrom") || searchParams.get("from") || undefined,
+      to: searchParams.get("routeTo") || searchParams.get("to") || undefined,
     };
 
     const result = await transportationService.getAllTransportationDB(filters);

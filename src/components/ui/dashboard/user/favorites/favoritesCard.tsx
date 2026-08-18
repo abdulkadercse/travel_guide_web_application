@@ -69,18 +69,18 @@ export function FavoritesCard({ favorite, onRemove }: FavoritesCardProps) {
           alt={dest.title}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-cover transition-transform duration-500 group-hover:"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
 
         {/* Top-Right Favorite Amber Badge */}
-        <div className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-amber-400 text-slate-950 shadow-md transition-transform hover:scale-110">
-          <FaHeart className="h-4 w-4 text-slate-900 fill-slate-900" />
+        <div className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-white text-rose-500 shadow-md transition-transform hover:scale-110">
+          <FaHeart className="h-4 w-4 text-rose-500 fill-rose-500" />
         </div>
 
         {/* Top-Left Category Badge */}
         {dest.category && (
-          <div className="absolute top-3 left-3 rounded-full border border-white/20 bg-black/40 px-2.5 py-0.5 text-[11px] font-semibold text-white backdrop-blur-md">
+          <div className="absolute top-3 left-3 rounded-full border border-white/20 bg-black/40 px-2.5 py-0.5 text-xs font-semibold text-white backdrop-blur-md">
             {dest.category}
           </div>
         )}
@@ -94,7 +94,7 @@ export function FavoritesCard({ favorite, onRemove }: FavoritesCardProps) {
             </span>
           )}
           {dest.price !== undefined && dest.price > 0 && (
-            <span className="rounded-md bg-primary/90 px-2 py-0.5 text-xs font-semibold text-white backdrop-blur-xs">
+            <span className="rounded-md bg-primary/90 px-2 py-0.5 text-xs font-semibold text-primary-foreground backdrop-blur-xs">
               ৳{dest.price.toLocaleString()}
             </span>
           )}
@@ -104,7 +104,7 @@ export function FavoritesCard({ favorite, onRemove }: FavoritesCardProps) {
       {/* Content */}
       <div className="flex flex-1 flex-col justify-between p-4.5 space-y-3">
         <div className="space-y-1.5">
-          <h3 className="text-base font-bold tracking-tight text-foreground line-clamp-1 group-hover:text-primary transition-colors">
+          <h3 className="text-base font-medium tracking-tight text-foreground line-clamp-1 group-hover:text-primary transition-colors">
             {dest.title}
           </h3>
 
@@ -129,7 +129,7 @@ export function FavoritesCard({ favorite, onRemove }: FavoritesCardProps) {
             asChild
             variant="outline"
             size="sm"
-            className="flex-1 rounded-xl border-primary/40 text-primary hover:bg-primary hover:text-white transition-colors h-9 text-xs font-semibold"
+            className="flex-1 rounded-xl border-primary/40 text-primary hover:bg-primary hover:text-primary-foreground transition-colors h-9 text-xs font-semibold"
           >
             <Link href={`/destinations/${dest.id}`}>View Details</Link>
           </Button>
@@ -141,8 +141,7 @@ export function FavoritesCard({ favorite, onRemove }: FavoritesCardProps) {
             onClick={handleRemove}
             disabled={isRemoving}
             className="h-9 w-9 shrink-0 rounded-xl border-border text-rose-500 hover:border-rose-500/50 hover:bg-rose-500/10 hover:text-rose-600 transition-colors"
-            title="Remove from favorites"
-          >
+            title="Remove from favorites">
             {isRemoving ? (
               <FaSpinner className="h-3.5 w-3.5 animate-spin" />
             ) : (

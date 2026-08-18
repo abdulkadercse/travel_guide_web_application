@@ -100,17 +100,17 @@ export function ImageUploader({
             alt="Uploaded Preview"
             fill
                     sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover transition-transform duration-300 group-hover:"
           />
 
-          <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 backdrop-blur-sm">
+          <div className="absolute inset-0 bg-stone-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 backdrop-blur-sm">
             <Button
               type="button"
               variant="secondary"
               size="sm"
               onClick={() => fileInputRef.current?.click()}
               disabled={disabled || loading}
-              className="rounded-full bg-slate-900/80 text-white hover:bg-slate-900"
+              className="rounded-full bg-stone-950/80 text-white hover:bg-stone-950/85"
             >
               Change
             </Button>
@@ -132,21 +132,21 @@ export function ImageUploader({
           className={`relative w-full h-44 rounded-2xl border-2 border-dashed transition-all flex flex-col items-center justify-center p-6 text-center cursor-pointer ${
             disabled || loading
               ? "opacity-50 cursor-not-allowed border-muted"
-              : "border-border hover:border-indigo-500 hover:bg-indigo-500/5"
+              : "border-border hover:border-primary hover:bg-primary/5"
           }`}
         >
           {loading ? (
-            <div className="flex flex-col items-center gap-2 text-indigo-500">
+            <div className="flex flex-col items-center gap-2 text-primary">
               <FaSpinner className="h-8 w-8 animate-spin" />
               <span className="text-xs font-semibold">Uploading to Cloudinary...</span>
             </div>
           ) : (
             <div className="flex flex-col items-center gap-2 text-muted-foreground">
-              <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500">
+              <div className="h-12 w-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
                 <FaCloudUploadAlt className="h-6 w-6" />
               </div>
               <div>
-                <p className="text-sm font-bold text-foreground">
+                <p className="text-sm font-medium text-foreground">
                   Click to upload image
                 </p>
                 <p className="text-xs text-muted-foreground mt-0.5">

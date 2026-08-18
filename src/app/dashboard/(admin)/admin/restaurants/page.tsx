@@ -160,8 +160,8 @@ export default function AdminRestaurantsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-5">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2.5">
-              <div className="h-10 w-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 shrink-0">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight flex items-center gap-2.5">
+              <div className="h-10 w-10 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
                 <FaUtensils className="h-5 w-5" />
               </div>
               Restaurants & Dining Control Panel
@@ -173,13 +173,13 @@ export default function AdminRestaurantsPage() {
 
           <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
             <DialogTrigger>
-              <Button className="bg-amber-600 hover:bg-amber-500 text-white rounded-full font-bold shadow-md shadow-amber-600/20 gap-2 shrink-0">
+              <Button className="gap-2 shrink-0">
                 <FaPlus className="h-3.5 w-3.5" /> Add New Restaurant
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
               <DialogHeader>
-                <DialogTitle className="text-lg font-bold">Add New Restaurant</DialogTitle>
+                <DialogTitle className="text-lg font-medium">Add New Restaurant</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleCreate} className="space-y-4 pt-2">
                 <div className="space-y-1">
@@ -256,7 +256,7 @@ export default function AdminRestaurantsPage() {
                   <Button type="button" variant="outline" onClick={() => setAddDialogOpen(false)}>
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={submitting} className="bg-amber-600 text-white font-bold">
+                  <Button type="submit" disabled={submitting}>
                     {submitting ? <FaSpinner className="animate-spin" /> : "Save Restaurant"}
                   </Button>
                 </div>
@@ -269,26 +269,26 @@ export default function AdminRestaurantsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase">Total Restaurants</p>
-              <h3 className="text-2xl font-black text-foreground mt-0.5">{restaurants.length}</h3>
+              <p className="text-sm text-muted-foreground">Total Restaurants</p>
+              <h3 className="text-2xl font-semibold text-foreground mt-0.5">{restaurants.length}</h3>
             </div>
-            <FaUtensils className="h-6 w-6 text-amber-500" />
+            <FaUtensils className="h-6 w-6 text-primary" />
           </div>
 
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase">Cuisines Offered</p>
-              <h3 className="text-2xl font-black text-amber-400 mt-0.5">
+              <p className="text-sm text-muted-foreground">Cuisines Offered</p>
+              <h3 className="text-2xl font-semibold text-primary mt-0.5">
                 {new Set(restaurants.map((r) => r.cuisineType)).size} Types
               </h3>
             </div>
-            <FaMapMarkerAlt className="h-6 w-6 text-amber-400" />
+            <FaMapMarkerAlt className="h-6 w-6 text-primary" />
           </div>
 
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase">Avg Meal Cost</p>
-              <h3 className="text-2xl font-black text-emerald-400 mt-0.5">
+              <p className="text-sm text-muted-foreground">Avg Meal Cost</p>
+              <h3 className="text-2xl font-semibold text-emerald-400 mt-0.5">
                 ৳{restaurants.length ? Math.round(restaurants.reduce((sum, r) => sum + (r.avgPrice || 800), 0) / restaurants.length).toLocaleString() : 0}
               </h3>
             </div>
@@ -311,7 +311,7 @@ export default function AdminRestaurantsPage() {
           <select
             value={cuisineFilter}
             onChange={(e) => setCuisineFilter(e.target.value)}
-            className="h-10 rounded-xl border bg-background px-3 text-xs font-bold"
+            className="h-10 rounded-xl border bg-background px-3 text-xs font-medium"
           >
             <option value="ALL">All Cuisines</option>
             <option value="Seafood">Seafood</option>
@@ -321,15 +321,15 @@ export default function AdminRestaurantsPage() {
         </div>
 
         {/* Table View */}
-        <div className="rounded-3xl border border-border bg-card overflow-hidden shadow-sm">
+        <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm">
           {isLoading ? (
             <div className="py-16 flex justify-center text-muted-foreground">
-              <FaSpinner className="h-8 w-8 animate-spin text-amber-500" />
+              <FaSpinner className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : restaurants.length === 0 ? (
             <div className="py-16 text-center text-muted-foreground space-y-2">
               <FaUtensils className="h-10 w-10 text-muted-foreground/30 mx-auto" />
-              <p className="font-bold text-foreground">No restaurants found</p>
+              <p className="font-medium text-foreground">No restaurants found</p>
             </div>
           ) : (
             <Table>
@@ -348,30 +348,30 @@ export default function AdminRestaurantsPage() {
                 {restaurants.map((item) => (
                   <TableRow key={item.id} className="hover:bg-muted/30 border-b border-border/60">
                     <TableCell>
-                      <div className="relative h-12 w-16 rounded-xl overflow-hidden bg-slate-900 border shrink-0">
+                      <div className="relative h-12 w-16 rounded-xl overflow-hidden bg-muted border shrink-0">
                         <Image src={item.coverImage || "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4"} alt={item.name} fill sizes="64px" className="object-cover" />
                       </div>
                     </TableCell>
                     <TableCell>
-                      <p className="font-bold text-foreground text-sm">{item.name}</p>
+                      <p className="font-medium text-foreground text-sm">{item.name}</p>
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground">
                       <span className="flex items-center gap-1">
-                        <FaMapMarkerAlt className="text-amber-400 h-3 w-3" />
+                        <FaMapMarkerAlt className="text-primary h-3 w-3" />
                         {item.location}
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span className="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-full">
+                      <span className="px-2.5 py-0.5 text-xs font-medium bg-primary/10 text-primary border border-primary/20 rounded-full">
                         {item.cuisineType || "Seafood"}
                       </span>
                     </TableCell>
-                    <TableCell className="text-xs font-bold text-amber-400">
+                    <TableCell className="text-xs font-medium text-primary">
                       <span className="flex items-center gap-1">
                         <FaStar className="fill-amber-400 h-3 w-3" /> {item.rating || 4.7}
                       </span>
                     </TableCell>
-                    <TableCell className="font-black text-emerald-400 text-sm">
+                    <TableCell className="font-semibold text-emerald-400 text-sm">
                       ৳{(item.avgPrice || 800).toLocaleString()}
                     </TableCell>
                     <TableCell className="text-right">
@@ -380,7 +380,7 @@ export default function AdminRestaurantsPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleOpenEdit(item)}
-                          className="h-8 w-8 p-0 text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 rounded-lg"
+                          className="h-8 w-8 p-0 text-primary hover:text-primary hover:bg-primary/10 rounded-lg"
                           title="Edit Restaurant"
                         >
                           <FaEdit className="h-3.5 w-3.5" />
@@ -408,7 +408,7 @@ export default function AdminRestaurantsPage() {
           <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
             <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
               <DialogHeader>
-                <DialogTitle className="text-lg font-bold">Edit Restaurant</DialogTitle>
+                <DialogTitle className="text-lg font-medium">Edit Restaurant</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleUpdate} className="space-y-4 pt-2">
                 <div>
@@ -481,7 +481,7 @@ export default function AdminRestaurantsPage() {
                   <Button type="button" variant="outline" onClick={() => setEditDialogOpen(false)}>
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={submitting} className="bg-amber-600 text-white font-bold">
+                  <Button type="submit" disabled={submitting}>
                     {submitting ? <FaSpinner className="animate-spin" /> : "Save Changes"}
                   </Button>
                 </div>

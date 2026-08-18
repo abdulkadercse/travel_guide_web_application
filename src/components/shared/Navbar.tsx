@@ -147,7 +147,7 @@ export function Navbar() {
                     <div className="border-b border-border px-3.5 py-3">
                       <p className="truncate text-sm font-medium">{user.name}</p>
                       <p className="truncate text-xs text-muted-foreground">{user.email}</p>
-                      <span className="mt-2 inline-block rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-primary">
+                      <span className="mt-2 inline-block rounded-full bg-primary-soft px-2 py-0.5 text-xs font-medium text-primary">
                         {user.role.replace("_", " ")}
                       </span>
                     </div>

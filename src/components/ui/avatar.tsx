@@ -22,7 +22,7 @@ export function Avatar({ src, alt, fallback, className, ...props }: AvatarProps)
   return (
     <div
       className={cn(
-        "relative flex h-9 w-9 shrink-0 overflow-hidden rounded-full border border-indigo-500/30 bg-slate-900 shadow-md",
+        "relative flex h-9 w-9 shrink-0 overflow-hidden rounded-full border border-primary/30 bg-muted shadow-md",
         className
       )}
       {...props}
@@ -35,7 +35,7 @@ export function Avatar({ src, alt, fallback, className, ...props }: AvatarProps)
           className="aspect-square h-full w-full object-cover"
         />
       ) : (
-        <div className="flex h-full w-full items-center justify-center rounded-full bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-500 font-bold text-xs text-white uppercase tracking-wider">
+        <div className="flex h-full w-full items-center justify-center rounded-full bg-gradient-to-tr from-primary via-primary to-primary font-medium text-xs text-white">
           {getInitials(fallback || alt)}
         </div>
       )}

@@ -70,8 +70,8 @@ export default function UserReservationsPage() {
         {/* Top Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-5">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2.5">
-              <div className="h-10 w-10 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 shrink-0">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight flex items-center gap-2.5">
+              <div className="h-10 w-10 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
                 <FaCalendarCheck className="h-5 w-5" />
               </div>
               My Bookings & Reservations
@@ -81,7 +81,7 @@ export default function UserReservationsPage() {
             </p>
           </div>
 
-          <Button className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full font-bold shadow-md shadow-indigo-600/20 shrink-0" asChild>
+          <Button className="shrink-0" asChild>
             <Link href="/destinations">Explore New Destinations</Link>
           </Button>
         </div>
@@ -90,24 +90,24 @@ export default function UserReservationsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Total Bookings</p>
-              <h3 className="text-2xl font-black text-foreground mt-0.5">{myReservations.length}</h3>
+              <p className="text-xs font-medium text-muted-foreground">Total Bookings</p>
+              <h3 className="text-2xl font-semibold text-foreground mt-0.5">{myReservations.length}</h3>
             </div>
-            <FaCalendarCheck className="h-6 w-6 text-indigo-500" />
+            <FaCalendarCheck className="h-6 w-6 text-primary" />
           </div>
 
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Confirmed Stays</p>
-              <h3 className="text-2xl font-black text-emerald-400 mt-0.5">{confirmedCount}</h3>
+              <p className="text-xs font-medium text-muted-foreground">Confirmed Stays</p>
+              <h3 className="text-2xl font-semibold text-emerald-400 mt-0.5">{confirmedCount}</h3>
             </div>
             <FaHotel className="h-6 w-6 text-emerald-500" />
           </div>
 
           <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Pending Approvals</p>
-              <h3 className="text-2xl font-black text-amber-400 mt-0.5">{pendingCount}</h3>
+              <p className="text-xs font-medium text-muted-foreground">Pending Approvals</p>
+              <h3 className="text-2xl font-semibold text-amber-400 mt-0.5">{pendingCount}</h3>
             </div>
             <FaClock className="h-6 w-6 text-amber-500" />
           </div>
@@ -119,9 +119,9 @@ export default function UserReservationsPage() {
             <button
               key={tab}
               onClick={() => setStatusFilter(tab)}
-              className={`px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${
+              className={`px-4 py-2 rounded-full text-xs font-medium transition-all shrink-0 ${
                 statusFilter === tab
-                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
+                  ? "bg-primary text-primary-foreground"
                   : "bg-card border border-border text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -131,15 +131,15 @@ export default function UserReservationsPage() {
         </div>
 
         {/* Table of Reservations */}
-        <div className="rounded-3xl border border-border bg-card overflow-hidden shadow-sm">
+        <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm">
           {isLoading ? (
             <div className="py-16 flex justify-center text-muted-foreground">
-              <FaSpinner className="h-8 w-8 animate-spin text-indigo-500" />
+              <FaSpinner className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : filteredReservations.length === 0 ? (
             <div className="py-16 text-center text-muted-foreground space-y-3">
               <FaCalendarCheck className="h-12 w-12 text-muted-foreground/40 mx-auto" />
-              <h3 className="text-base font-bold text-foreground">No reservation requests found</h3>
+              <h3 className="text-base font-medium text-foreground">No reservation requests found</h3>
               <p className="text-xs text-muted-foreground max-w-sm mx-auto">
                 You haven't requested any hotel or tour reservations under this filter yet.
               </p>
@@ -186,7 +186,7 @@ export default function UserReservationsPage() {
                       <TableCell>
                         <div className="flex items-center gap-3">
                           {coverImage ? (
-                            <div className="relative h-12 w-16 rounded-xl overflow-hidden bg-slate-900 border shrink-0">
+                            <div className="relative h-12 w-16 rounded-xl overflow-hidden bg-muted border shrink-0">
                               <Image
                                 src={coverImage}
                                 alt={targetName}
@@ -196,14 +196,14 @@ export default function UserReservationsPage() {
                               />
                             </div>
                           ) : (
-                            <div className="h-12 w-12 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-500 shrink-0">
+                            <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
                               <FaHotel className="h-6 w-6" />
                             </div>
                           )}
                           <div>
-                            <p className="font-bold text-foreground text-sm leading-snug">{targetName}</p>
-                            <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
-                              <FaMapMarkerAlt className="h-3 w-3 text-indigo-500 shrink-0" />
+                            <p className="font-medium text-foreground text-sm leading-snug">{targetName}</p>
+                            <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                              <FaMapMarkerAlt className="h-3 w-3 text-primary shrink-0" />
                               {location}
                             </p>
                           </div>
@@ -211,7 +211,7 @@ export default function UserReservationsPage() {
                       </TableCell>
 
                       <TableCell>
-                        <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 inline-flex items-center gap-1">
+                        <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-primary/10 text-primary border border-primary/20 inline-flex items-center gap-1">
                           {item.hotel ? <FaHotel className="h-3 w-3" /> : item.restaurant ? <FaUtensils className="h-3 w-3" /> : <FaGlobe className="h-3 w-3" />}
                           {typeLabel}
                         </span>
@@ -223,19 +223,19 @@ export default function UserReservationsPage() {
                         {new Date(item.endDate).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
                       </TableCell>
 
-                      <TableCell className="font-black text-emerald-400 text-sm">
+                      <TableCell className="font-semibold text-emerald-400 text-sm">
                         ৳{item.totalCost?.toLocaleString() || 0}
                       </TableCell>
 
                       <TableCell>
                         <span
-                          className={`px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider inline-flex items-center gap-1.5 ${
+                          className={`px-3 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1.5 ${
                             item.status === "CONFIRMED"
                               ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
                               : item.status === "CANCELLED"
                               ? "bg-rose-500/15 text-rose-400 border border-rose-500/30"
                               : item.status === "COMPLETED"
-                              ? "bg-sky-500/15 text-sky-400 border border-sky-500/30"
+                              ? "bg-primary/15 text-primary border border-primary/30"
                               : "bg-amber-500/15 text-amber-400 border border-amber-500/30"
                           }`}
                         >
@@ -252,7 +252,7 @@ export default function UserReservationsPage() {
                             size="sm"
                             variant="outline"
                             onClick={() => handleCancelReservation(item.id)}
-                            className="rounded-full text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 border-rose-500/30 text-xs font-bold gap-1"
+                            className="rounded-full text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 border-rose-500/30 text-xs font-medium gap-1"
                           >
                             <FaTimesCircle className="h-3.5 w-3.5" /> Cancel Request
                           </Button>

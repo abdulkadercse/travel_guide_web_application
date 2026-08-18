@@ -15,11 +15,8 @@ import {
   FaArrowLeft,
   FaMapMarkerAlt,
   FaStar,
-  FaCalendarCheck,
-  FaUtensils,
   FaSpinner,
   FaUser,
-  FaPaperPlane,
 } from "react-icons/fa";
 
 export default function RestaurantDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -66,165 +63,161 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
 
   if (isLoading) {
     return (
-      <div className="py-24 flex justify-center text-muted-foreground">
-        <FaSpinner className="h-8 w-8 animate-spin text-amber-500" />
+      <div className="flex justify-center py-24 text-muted-foreground">
+        <FaSpinner className="h-6 w-6 animate-spin" />
       </div>
     );
   }
 
   if (!restaurant) {
     return (
-      <div className="py-24 text-center space-y-4">
-        <h2 className="text-xl font-bold">Restaurant Not Found</h2>
-        <Button variant="outline" className="rounded-full" asChild>
-          <Link href="/restaurants">Back to Restaurants</Link>
+      <div className="space-y-4 py-24 text-center">
+        <h2 className="text-xl font-semibold">Restaurant not found</h2>
+        <Button variant="outline" asChild>
+          <Link href="/restaurants">Back to restaurants</Link>
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground py-10 font-sans">
-      <Container className="space-y-8">
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" size="sm" className="rounded-full text-xs font-bold" asChild>
-            <Link href="/restaurants">
-              <FaArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Back to Restaurants
-            </Link>
-          </Button>
-        </div>
+    <div className="py-12 sm:py-16">
+      <Container className="space-y-12">
+        <Button variant="ghost" size="sm" className="-ml-2" asChild>
+          <Link href="/restaurants">
+            <FaArrowLeft className="mr-2 h-3 w-3" /> All restaurants
+          </Link>
+        </Button>
 
-        {/* Hero Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-          <div className="relative h-80 sm:h-96 w-full rounded-3xl overflow-hidden border border-border bg-slate-900 shadow-lg">
+        {/* Hero */}
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border bg-muted">
             <Image
-              src={restaurant.coverImage || "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4"}
+              src={
+                restaurant.coverImage ||
+                "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4"
+              }
               alt={restaurant.name}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
               priority
             />
-            <div className="absolute top-4 left-4 flex gap-2">
-              <span className="px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-black/60 backdrop-blur-md text-white border border-white/20">
-                {restaurant.cuisineType || "Seafood"}
-              </span>
-            </div>
+            <span className="chip-glass absolute left-4 top-4 px-2.5 py-1 text-xs font-medium">
+              {restaurant.cuisineType || "Seafood"}
+            </span>
           </div>
 
           <div className="space-y-6">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-xs font-bold text-amber-400">
-                <FaMapMarkerAlt className="h-4 w-4" />
-                <span>{restaurant.location}</span>
-              </div>
+            <div className="space-y-3">
+              <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <FaMapMarkerAlt className="h-3 w-3 shrink-0" />
+                {restaurant.location}
+              </p>
 
-              <h1 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight text-foreground">
-                {restaurant.name}
-              </h1>
+              <h1 className="heading">{restaurant.name}</h1>
 
-              <div className="flex items-center gap-4 pt-1">
-                <div className="flex items-center gap-1 text-amber-400 text-sm font-black bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
-                  <FaStar className="h-4 w-4 fill-amber-400" />
-                  <span>{restaurant.rating || 4.7} / 5.0</span>
-                </div>
-
-                <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-                  Price Tier: {restaurant.priceRange || "৳৳"}
+              <div className="flex flex-wrap items-center gap-4 text-sm">
+                <span className="inline-flex items-center gap-1.5">
+                  <FaStar className="h-3.5 w-3.5 text-highlight" />
+                  <span className="font-medium">{restaurant.rating || 4.7}</span>
+                </span>
+                <span className="text-muted-foreground">
+                  Price range {restaurant.priceRange || "৳৳"}
                 </span>
               </div>
             </div>
 
-            <p className="text-sm text-muted-foreground leading-relaxed bg-card/60 p-4 rounded-2xl border border-border">
+            <p className="text-base leading-relaxed text-muted-foreground">
               {restaurant.description}
             </p>
 
-            {/* Price & Reserve CTA */}
-            <div className="p-6 rounded-3xl bg-amber-500/5 border border-amber-500/20 space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">Average Meal Cost</span>
-                  <span className="text-3xl font-black text-emerald-400">৳{(restaurant.avgPrice || 800).toLocaleString()}</span>
-                  <span className="text-xs text-muted-foreground ml-1">/ person</span>
-                </div>
-              </div>
+            <div className="surface space-y-5 p-5">
+              <p>
+                <span className="text-3xl font-semibold tracking-tight">
+                  ৳{(restaurant.avgPrice || 800).toLocaleString()}
+                </span>
+                <span className="text-sm text-muted-foreground"> / person</span>
+              </p>
 
-              <Button
-                size="lg"
-                onClick={() => setResModalOpen(true)}
-                className="w-full bg-amber-600 hover:bg-amber-500 text-white rounded-2xl font-extrabold gap-2 shadow-lg shadow-amber-600/20"
-              >
-                <FaCalendarCheck className="h-4 w-4" /> Reserve Table Now
+              <Button className="w-full" onClick={() => setResModalOpen(true)}>
+                Reserve a table
               </Button>
             </div>
           </div>
         </div>
 
-        {/* Reviews Section */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-card border border-border space-y-6">
-          <h2 className="text-xl font-extrabold tracking-tight flex items-center gap-2">
-            <FaStar className="text-amber-400 h-5 w-5" /> Diner Reviews & Feedback
-          </h2>
+        {/* Reviews */}
+        <section className="space-y-5">
+          <h2 className="text-xl font-semibold tracking-tight">Diner reviews</h2>
 
-          <form onSubmit={handleReviewSubmit} className="space-y-4 p-5 rounded-2xl bg-muted/30 border border-border">
-            <h3 className="text-sm font-bold">Write a Dining Review</h3>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold">Rating:</span>
+          <form onSubmit={handleReviewSubmit} className="surface space-y-4 p-5">
+            <div className="space-y-1.5">
+              <label htmlFor="rest-rating" className="text-sm text-muted-foreground">
+                Rating
+              </label>
               <select
+                id="rest-rating"
                 value={reviewRating}
                 onChange={(e) => setReviewRating(Number(e.target.value))}
-                className="h-8 rounded-lg border bg-background px-2 text-xs font-bold"
+                className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
               >
-                <option value={5}>⭐⭐⭐⭐⭐ (5/5 Delicious)</option>
-                <option value={4}>⭐⭐⭐⭐ (4/5 Great)</option>
-                <option value={3}>⭐⭐⭐ (3/5 Average)</option>
+                <option value={5}>5 — Delicious</option>
+                <option value={4}>4 — Great</option>
+                <option value={3}>3 — Average</option>
+                <option value={2}>2 — Poor</option>
+                <option value={1}>1 — Terrible</option>
               </select>
             </div>
 
-            <textarea
-              placeholder="Tell us about food taste, ambiance, and service quality..."
-              value={reviewComment}
-              onChange={(e) => setReviewComment(e.target.value)}
-              rows={3}
-              className="w-full p-3 rounded-xl border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-              required
-            />
+            <div className="space-y-1.5">
+              <label htmlFor="rest-comment" className="text-sm text-muted-foreground">
+                Your meal
+              </label>
+              <textarea
+                id="rest-comment"
+                placeholder="Taste, ambiance, service…"
+                value={reviewComment}
+                onChange={(e) => setReviewComment(e.target.value)}
+                rows={3}
+                className="w-full rounded-md border border-input bg-background p-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                required
+              />
+            </div>
 
-            <Button
-              type="submit"
-              disabled={submittingReview}
-              className="bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-full text-xs gap-1.5"
-            >
-              {submittingReview ? <FaSpinner className="animate-spin" /> : <><FaPaperPlane /> Submit Review</>}
+            <Button type="submit" size="sm" disabled={submittingReview}>
+              {submittingReview ? "Posting…" : "Post review"}
             </Button>
           </form>
 
-          {(!restaurant.reviews || restaurant.reviews.length === 0) ? (
-            <p className="text-xs text-muted-foreground italic">No diner reviews submitted yet.</p>
+          {!restaurant.reviews || restaurant.reviews.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No diner reviews yet.</p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {restaurant.reviews.map((rev: any) => (
-                <div key={rev.id} className="p-4 rounded-2xl bg-background border border-border/80 space-y-2">
+                <div key={rev.id} className="surface space-y-3 p-5">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="h-8 w-8 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 font-bold text-xs">
-                        <FaUser />
-                      </div>
-                      <span className="text-xs font-bold">{rev.user?.name || "Verified Diner"}</span>
+                    <div className="flex items-center gap-2.5">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-soft text-primary">
+                        <FaUser className="h-3 w-3" />
+                      </span>
+                      <span className="text-sm font-medium">
+                        {rev.user?.name || "Verified diner"}
+                      </span>
                     </div>
 
-                    <div className="flex items-center gap-1 text-amber-400 text-xs font-bold">
-                      <FaStar className="h-3 w-3 fill-amber-400" />
-                      <span>{rev.rating}/5</span>
-                    </div>
+                    <span className="inline-flex items-center gap-1.5 text-sm">
+                      <FaStar className="h-3.5 w-3.5 text-highlight" />
+                      {rev.rating}
+                    </span>
                   </div>
 
-                  <p className="text-xs text-muted-foreground leading-relaxed pl-10">{rev.comment}</p>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{rev.comment}</p>
                 </div>
               ))}
             </div>
           )}
-        </div>
+        </section>
       </Container>
 
       {/* Reservation Modal */}

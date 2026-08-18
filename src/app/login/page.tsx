@@ -147,20 +147,16 @@ export default function LoginPage() {
               )}
             </div>
 
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full font-bold h-11 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/20"
-            >
+            <Button type="submit" size="lg" disabled={isSubmitting} className="w-full">
               {isSubmitting ? <FaSpinner className="animate-spin" /> : "Sign in"}
             </Button>
           </form>
 
           {/* Quick 1-Click Demo Login Box */}
-          <div className="mt-6 p-4 rounded-2xl bg-muted/40 border border-border/80 space-y-3">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
-              <span>⚡ Quick Demo Logins</span>
-              <span className="text-[10px] text-indigo-400 font-mono">Pass: Password123!</span>
+          <div className="mt-6 space-y-3 rounded-lg border border-border bg-secondary/50 p-4">
+            <p className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Demo logins</span>
+              <span className="font-mono text-xs text-muted-foreground">Password123!</span>
             </p>
             <div className="grid grid-cols-3 gap-2">
               <button
@@ -169,10 +165,10 @@ export default function LoginPage() {
                   setValue("email", "superadmin@travla.com");
                   setValue("password", "Password123!");
                 }}
-                className="p-2 rounded-xl bg-card border border-border text-center hover:border-indigo-500 hover:text-indigo-400 transition-all cursor-pointer shadow-xs"
+                className="rounded-md border border-border bg-card p-2 text-center transition-colors hover:border-primary/40 hover:text-primary"
               >
-                <p className="text-[11px] font-black text-foreground">Super Admin</p>
-                <p className="text-[9px] text-muted-foreground">superadmin</p>
+                <p className="text-xs font-medium">Super Admin</p>
+                <p className="text-xs text-muted-foreground">superadmin</p>
               </button>
               <button
                 type="button"
@@ -180,10 +176,10 @@ export default function LoginPage() {
                   setValue("email", "admin@travla.com");
                   setValue("password", "Password123!");
                 }}
-                className="p-2 rounded-xl bg-card border border-border text-center hover:border-indigo-500 hover:text-indigo-400 transition-all cursor-pointer shadow-xs"
+                className="rounded-md border border-border bg-card p-2 text-center transition-colors hover:border-primary/40 hover:text-primary"
               >
-                <p className="text-[11px] font-black text-foreground">Admin</p>
-                <p className="text-[9px] text-muted-foreground">admin</p>
+                <p className="text-xs font-medium">Admin</p>
+                <p className="text-xs text-muted-foreground">admin</p>
               </button>
               <button
                 type="button"
@@ -191,10 +187,10 @@ export default function LoginPage() {
                   setValue("email", "ayman@travla.com");
                   setValue("password", "Password123!");
                 }}
-                className="p-2 rounded-xl bg-card border border-border text-center hover:border-indigo-500 hover:text-indigo-400 transition-all cursor-pointer shadow-xs"
+                className="rounded-md border border-border bg-card p-2 text-center transition-colors hover:border-primary/40 hover:text-primary"
               >
-                <p className="text-[11px] font-black text-foreground">Traveler</p>
-                <p className="text-[9px] text-muted-foreground">ayman</p>
+                <p className="text-xs font-medium">Traveler</p>
+                <p className="text-xs text-muted-foreground">ayman</p>
               </button>
             </div>
           </div>
