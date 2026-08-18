@@ -1,13 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import toast from "react-hot-toast";
-import { ProtectedRoute, Container, ImageUploader } from "@/components/shared";
+import { ProtectedRoute } from "@/components/shared";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Table,
   TableHeader,
@@ -16,732 +13,543 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { logout, selectCurrentUser } from "@/redux/features/auth/authSlice";
 import {
-  useGetDestinationsQuery,
-  useCreateDestinationMutation,
-  useDeleteDestinationMutation,
-} from "@/redux/features/destination/destinationApi";
+  StatTile,
+  CategoryBars,
+  StatusBreakdownBar,
+  OverviewTrendChart,
+} from "@/components/ui/dashboard/admin";
+import { useGetAdminOverviewQuery } from "@/redux/features/stats/statsApi";
+import { formatBdt, formatCompactNumber, formatRelativeTime } from "@/utils";
 import {
-  useGetHotelsQuery,
-  useCreateHotelMutation,
-  useDeleteHotelMutation,
-} from "@/redux/features/hotel/hotelApi";
-import {
-  useGetRestaurantsQuery,
-  useCreateRestaurantMutation,
-  useDeleteRestaurantMutation,
-} from "@/redux/features/restaurant/restaurantApi";
-import {
-  useGetTransportationsQuery,
-  useCreateTransportationMutation,
-  useDeleteTransportationMutation,
-} from "@/redux/features/transportation/transportationApi";
-import {
-  useGetReservationsQuery,
-  useUpdateReservationStatusMutation,
-} from "@/redux/features/reservation/reservationApi";
-import { useTheme } from "next-themes";
-import {
-  FaCompass,
-  FaCompass as FaGlobe,
-  FaUsers,
-  FaMapMarkerAlt,
+  FaBus,
   FaCalendarCheck,
-  FaPlus,
-  FaTrashAlt,
-  FaCheckCircle,
-  FaTimesCircle,
-  FaSignOutAlt,
-  FaMoon,
-  FaSun,
+  FaComments,
+  FaExclamationTriangle,
+  FaHeart,
+  FaHotel,
+  FaMapMarkedAlt,
+  FaRedo,
+  FaRoute,
   FaShieldAlt,
   FaSpinner,
-  FaHotel,
+  FaStar,
+  FaUsers,
   FaUtensils,
-  FaBus,
-  FaPhoneAlt,
+  FaWallet,
 } from "react-icons/fa";
 
-type AdminTab = "destinations" | "hotels" | "restaurants" | "transportation" | "reservations";
+/** A reservation or review always points at exactly one of these three. */
+type LinkedItem = {
+  destination?: { id: string; title: string } | null;
+  hotel?: { id: string; name: string } | null;
+  restaurant?: { id: string; name: string } | null;
+};
 
-export default function AdminDashboardPage() {
-  const dispatch = useAppDispatch();
-  const user = useAppSelector(selectCurrentUser);
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<AdminTab>("destinations");
+type RecentReservation = LinkedItem & {
+  id: string;
+  status: string;
+  totalCost: number;
+  createdAt: string;
+  user?: { id: string; name: string; email: string } | null;
+};
 
-  // Queries
-  const { data: destinationsResponse, isLoading: loadingDestinations } = useGetDestinationsQuery(undefined);
-  const { data: hotelsResponse, isLoading: loadingHotels } = useGetHotelsQuery(undefined);
-  const { data: restaurantsResponse, isLoading: loadingRestaurants } = useGetRestaurantsQuery(undefined);
-  const { data: transportResponse, isLoading: loadingTransport } = useGetTransportationsQuery(undefined);
-  const { data: reservationsResponse, isLoading: loadingReservations } = useGetReservationsQuery(undefined);
+type RecentUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  createdAt: string;
+};
 
-  // Mutations
-  const [createDestination] = useCreateDestinationMutation();
-  const [deleteDestinationMutation] = useDeleteDestinationMutation();
-  const [createHotel] = useCreateHotelMutation();
-  const [deleteHotelMutation] = useDeleteHotelMutation();
-  const [createRestaurant] = useCreateRestaurantMutation();
-  const [deleteRestaurantMutation] = useDeleteRestaurantMutation();
-  const [createTransportation] = useCreateTransportationMutation();
-  const [deleteTransportationMutation] = useDeleteTransportationMutation();
-  const [updateReservationStatus] = useUpdateReservationStatusMutation();
+type RecentReview = LinkedItem & {
+  id: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  user?: { id: string; name: string } | null;
+};
 
-  const destinations: any[] = destinationsResponse?.data ?? [];
-  const hotels: any[] = hotelsResponse?.data ?? [];
-  const restaurants: any[] = restaurantsResponse?.data ?? [];
-  const transportations: any[] = transportResponse?.data ?? [];
-  const reservations: any[] = reservationsResponse?.data ?? [];
+type TopDestination = {
+  id: string;
+  title: string;
+  district: string;
+  category: string;
+  coverImage: string;
+  rating: number;
+  price: number | null;
+  _count: { reviews: number; favorites: number; reservations: number };
+};
 
-  // Dialog States
-  const [destDialogOpen, setDestDialogOpen] = useState(false);
-  const [hotelDialogOpen, setHotelDialogOpen] = useState(false);
-  const [restDialogOpen, setRestDialogOpen] = useState(false);
-  const [transportDialogOpen, setTransportDialogOpen] = useState(false);
-
-  // Form States
-  const [newDest, setNewDest] = useState({
-    title: "",
-    description: "",
-    location: "",
-    district: "",
-    category: "Beach",
-    coverImage: "",
-    price: 1500,
-  });
-
-  const [newHotel, setNewHotel] = useState({
-    name: "",
-    location: "",
-    description: "",
-    pricePerNight: 5000,
-    coverImage: "",
-    amenitiesInput: "Free WiFi, Pool, Breakfast",
-    contactPhone: "+8801700000000",
-  });
-
-  const [newRest, setNewRest] = useState({
-    name: "",
-    location: "",
-    cuisineType: "Seafood & Bangladeshi",
-    description: "",
-    priceRange: "৳৳ - ৳৳৳",
-    coverImage: "",
-  });
-
-  const [newTransport, setNewTransport] = useState({
-    type: "BUS",
-    operatorName: "",
-    routeFrom: "Dhaka",
-    routeTo: "Cox's Bazar",
-    estimatedCost: 1500,
-    duration: "8h 00m",
-    scheduleTime: "10:00 PM",
-  });
-
-  const [submitting, setSubmitting] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const errorMessage = (err: unknown, fallback: string) =>
-    (err as { data?: { message?: string } })?.data?.message || fallback;
-
-  // Handlers
-  const handleCreateDestination = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newDest.coverImage) return toast.error("Please upload a cover image!");
-    setSubmitting(true);
-    const toastId = toast.loading("Saving destination...");
-    try {
-      await createDestination({ ...newDest, price: Number(newDest.price) }).unwrap();
-      toast.success("Destination added successfully!", { id: toastId });
-      setDestDialogOpen(false);
-      setNewDest({ title: "", description: "", location: "", district: "", category: "Beach", coverImage: "", price: 1500 });
-    } catch (err) {
-      toast.error(errorMessage(err, "Failed to create destination"), { id: toastId });
-    } finally {
-      setSubmitting(false);
-    }
+/** Shape of the aggregate payload from GET /api/v1/stats/overview. */
+type Overview = {
+  totals: Record<string, number>;
+  revenue: { earned: number; pending: number; cancelled: number; averageBookingValue: number };
+  reservationsByStatus: { status: string; count: number; amount: number }[];
+  monthly: {
+    label: string;
+    year: number;
+    month: string;
+    reservations: number;
+    revenue: number;
+    newUsers: number;
+  }[];
+  ratings: { average: number; fiveStar: number; lowRated: number };
+  growth: { newUsers30d: number; newReservations30d: number; newReviews30d: number };
+  destinationsByCategory: { name: string; count: number }[];
+  transportationsByType: { name: string; count: number }[];
+  topDestinations: TopDestination[];
+  recent: {
+    reservations: RecentReservation[];
+    users: RecentUser[];
+    reviews: RecentReview[];
   };
+  generatedAt: string;
+};
 
-  const handleCreateHotel = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newHotel.coverImage) return toast.error("Please upload a cover image!");
-    setSubmitting(true);
-    const toastId = toast.loading("Saving hotel...");
-    try {
-      const amenities = newHotel.amenitiesInput.split(",").map((a) => a.trim()).filter(Boolean);
-      await createHotel({
-        name: newHotel.name,
-        location: newHotel.location,
-        description: newHotel.description,
-        pricePerNight: Number(newHotel.pricePerNight),
-        coverImage: newHotel.coverImage,
-        images: [newHotel.coverImage],
-        amenities,
-        contactPhone: newHotel.contactPhone,
-      }).unwrap();
-      toast.success("Hotel added successfully!", { id: toastId });
-      setHotelDialogOpen(false);
-      setNewHotel({ name: "", location: "", description: "", pricePerNight: 5000, coverImage: "", amenitiesInput: "Free WiFi, Pool, Breakfast", contactPhone: "+8801700000000" });
-    } catch (err) {
-      toast.error(errorMessage(err, "Failed to create hotel"), { id: toastId });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+const statusBadgeClass = (status: string) =>
+  status === "CONFIRMED"
+    ? "bg-primary/15 text-primary border-primary/30"
+    : status === "COMPLETED"
+    ? "bg-emerald-500/15 text-emerald-600 border-emerald-500/30 dark:text-emerald-400"
+    : status === "CANCELLED"
+    ? "bg-rose-500/15 text-rose-600 border-rose-500/30 dark:text-rose-400"
+    : "bg-amber-500/15 text-amber-600 border-amber-500/30 dark:text-amber-400";
 
-  const handleCreateRestaurant = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newRest.coverImage) return toast.error("Please upload a cover image!");
-    setSubmitting(true);
-    const toastId = toast.loading("Saving restaurant...");
-    try {
-      await createRestaurant({
-        ...newRest,
-        images: [newRest.coverImage],
-      }).unwrap();
-      toast.success("Restaurant added successfully!", { id: toastId });
-      setRestDialogOpen(false);
-      setNewRest({ name: "", location: "", cuisineType: "Seafood & Bangladeshi", description: "", priceRange: "৳৳ - ৳৳৳", coverImage: "" });
-    } catch (err) {
-      toast.error(errorMessage(err, "Failed to create restaurant"), { id: toastId });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+/** Reservations and reviews point at exactly one destination, hotel or restaurant. */
+const linkedName = (item: LinkedItem, fallback: string) =>
+  item.destination?.title || item.hotel?.name || item.restaurant?.name || fallback;
 
-  const handleCreateTransportation = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    const toastId = toast.loading("Saving transportation...");
-    try {
-      await createTransportation({
-        ...newTransport,
-        estimatedCost: Number(newTransport.estimatedCost),
-      }).unwrap();
-      toast.success("Transportation added successfully!", { id: toastId });
-      setTransportDialogOpen(false);
-      setNewTransport({ type: "BUS", operatorName: "", routeFrom: "Dhaka", routeTo: "Cox's Bazar", estimatedCost: 1500, duration: "8h 00m", scheduleTime: "10:00 PM" });
-    } catch (err) {
-      toast.error(errorMessage(err, "Failed to create transportation"), { id: toastId });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+export default function AdminOverviewPage() {
+  const { data, isLoading, isFetching, isError, error, refetch } = useGetAdminOverviewQuery(
+    undefined,
+    { refetchOnMountOrArgChange: true }
+  );
 
-  const handleDeleteItem = async (type: AdminTab, id: string) => {
-    if (!confirm(`Are you sure you want to delete this ${type.slice(0, -1)}?`)) return;
-    try {
-      if (type === "destinations") await deleteDestinationMutation(id).unwrap();
-      if (type === "hotels") await deleteHotelMutation(id).unwrap();
-      if (type === "restaurants") await deleteRestaurantMutation(id).unwrap();
-      if (type === "transportation") await deleteTransportationMutation(id).unwrap();
-      toast.success("Item deleted successfully");
-    } catch (err) {
-      toast.error(errorMessage(err, "Failed to delete item"));
-    }
-  };
-
-  const handleUpdateReservationStatus = async (id: string, status: string) => {
-    try {
-      await updateReservationStatus({ id, status }).unwrap();
-      toast.success(`Reservation ${status.toLowerCase()}`);
-    } catch (err) {
-      toast.error(errorMessage(err, "Failed to update status"));
-    }
-  };
+  const overview: Overview | undefined = data?.data;
 
   return (
-    <div className="space-y-8">
-            {/* Top Cards */}
+    <ProtectedRoute allowedRoles={["ADMIN", "SUPER_ADMIN"]}>
+      <div className="space-y-8 font-sans">
+        {/* Header */}
+        <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="flex items-center gap-2.5 text-2xl font-semibold tracking-tight sm:text-3xl">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary">
+                <FaShieldAlt className="h-5 w-5" />
+              </span>
+              Platform Overview
+            </h1>
+            <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+              Everything happening across Travla BD — bookings, revenue, catalogue and community, in
+              one place.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {overview && (
+              <span className="hidden text-xs text-muted-foreground sm:inline">
+                Updated {formatRelativeTime(overview.generatedAt)}
+              </span>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 rounded-full"
+              onClick={() => refetch()}
+              disabled={isFetching}
+            >
+              <FaRedo className={`h-3 w-3 ${isFetching ? "animate-spin" : ""}`} />
+              Refresh
+            </Button>
+          </div>
+        </div>
+
+        {isLoading ? (
+          <div className="flex flex-col items-center gap-3 py-24 text-muted-foreground">
+            <FaSpinner className="h-6 w-6 animate-spin text-primary" />
+            <p className="text-sm">Gathering platform statistics…</p>
+          </div>
+        ) : isError || !overview ? (
+          <div className="surface flex flex-col items-center gap-3 p-12 text-center">
+            <FaExclamationTriangle className="h-7 w-7 text-amber-500" />
             <div>
-              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
-                Administrator Control Center 🛡️
-              </h1>
-              <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                Add and manage Destinations, Hotels, Restaurants, Transportation, and Booking Requests.
+              <h2 className="text-base font-semibold">Could not load the overview</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {(error as { data?: { message?: string } })?.data?.message ||
+                  "Something went wrong while fetching platform statistics."}
               </p>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mt-5">
-                <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Destinations</p>
-                    <h3 className="text-xl font-semibold mt-0.5">{destinations.length}</h3>
-                  </div>
-                  <FaGlobe className="h-6 w-6 text-primary" />
-                </div>
-
-                <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Hotels</p>
-                    <h3 className="text-xl font-semibold mt-0.5">{hotels.length}</h3>
-                  </div>
-                  <FaHotel className="h-6 w-6 text-emerald-500" />
-                </div>
-
-                <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Restaurants</p>
-                    <h3 className="text-xl font-semibold mt-0.5">{restaurants.length}</h3>
-                  </div>
-                  <FaUtensils className="h-6 w-6 text-amber-500" />
-                </div>
-
-                <div className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Transport</p>
-                    <h3 className="text-xl font-semibold mt-0.5">{transportations.length}</h3>
-                  </div>
-                  <FaBus className="h-6 w-6 text-primary" />
-                </div>
-
-                <Link
-                  href="/dashboard/admin/all-users"
-                  className="p-4 rounded-2xl bg-card border border-border flex items-center justify-between hover:border-primary/50 transition-all col-span-2 sm:col-span-1"
-                >
-                  <div>
-                    <p className="text-sm text-muted-foreground">Users</p>
-                    <h3 className="text-xs font-medium text-primary mt-1">Manage Users &rarr;</h3>
-                  </div>
-                  <FaUsers className="h-6 w-6 text-rose-400" />
-                </Link>
-              </div>
+            </div>
+            <Button size="sm" onClick={() => refetch()} className="rounded-full">
+              Try again
+            </Button>
+          </div>
+        ) : (
+          <>
+            {/* Headline numbers */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <StatTile
+                label="Revenue earned"
+                value={formatBdt(overview.revenue.earned, true)}
+                icon={FaWallet}
+                tone="text-emerald-500"
+                hint={`${formatBdt(overview.revenue.pending, true)} still pending approval`}
+              />
+              <StatTile
+                label="Total bookings"
+                value={formatCompactNumber(overview.totals.reservations)}
+                icon={FaCalendarCheck}
+                href="/dashboard/admin/reservations"
+                hint={`+${overview.growth.newReservations30d} in the last 30 days`}
+              />
+              <StatTile
+                label="Registered travellers"
+                value={formatCompactNumber(overview.totals.users)}
+                icon={FaUsers}
+                tone="text-rose-500"
+                href="/dashboard/all-users"
+                hint={`+${overview.growth.newUsers30d} in the last 30 days`}
+              />
+              <StatTile
+                label="Average rating"
+                value={overview.ratings.average ? `${overview.ratings.average} / 5` : "—"}
+                icon={FaStar}
+                tone="text-amber-500"
+                href="/dashboard/admin/reviews"
+                hint={`${formatCompactNumber(overview.totals.reviews)} reviews · ${
+                  overview.ratings.fiveStar
+                } five-star`}
+              />
             </div>
 
-            {/* Navigation Tabs */}
-            <div className="flex items-center gap-2 overflow-x-auto border-b border-border pb-3">
-              <button
-                onClick={() => setActiveTab("destinations")}
-                className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-2 shrink-0 ${
-                  activeTab === "destinations"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-card border border-border text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <FaGlobe className="h-3.5 w-3.5" /> Destinations ({destinations.length})
-              </button>
-
-              <button
-                onClick={() => setActiveTab("hotels")}
-                className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-2 shrink-0 ${
-                  activeTab === "hotels"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-card border border-border text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <FaHotel className="h-3.5 w-3.5" /> Hotels ({hotels.length})
-              </button>
-
-              <button
-                onClick={() => setActiveTab("restaurants")}
-                className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-2 shrink-0 ${
-                  activeTab === "restaurants"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-card border border-border text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <FaUtensils className="h-3.5 w-3.5" /> Restaurants ({restaurants.length})
-              </button>
-
-              <button
-                onClick={() => setActiveTab("transportation")}
-                className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-2 shrink-0 ${
-                  activeTab === "transportation"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-card border border-border text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <FaBus className="h-3.5 w-3.5" /> Transportation ({transportations.length})
-              </button>
-
-              <button
-                onClick={() => setActiveTab("reservations")}
-                className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-2 shrink-0 ${
-                  activeTab === "reservations"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-card border border-border text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <FaCalendarCheck className="h-3.5 w-3.5" /> Reservations ({reservations.length})
-              </button>
+            {/* Trend + pipeline */}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+              <div className="lg:col-span-2">
+                <OverviewTrendChart points={overview.monthly} />
+              </div>
+              <StatusBreakdownBar slices={overview.reservationsByStatus} />
             </div>
 
-            {/* Tab 1: Destinations */}
-            {activeTab === "destinations" && (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-medium">Manage Tourist Destinations</h2>
-                  <Dialog open={destDialogOpen} onOpenChange={setDestDialogOpen}>
-                    <DialogTrigger>
-                      <Button className="gap-2">
-                        <FaPlus className="h-3.5 w-3.5" /> Add Destination
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
-                      <DialogHeader>
-                        <DialogTitle className="text-lg font-medium">Add New Tourist Destination</DialogTitle>
-                      </DialogHeader>
-                      <form onSubmit={handleCreateDestination} className="space-y-4 pt-2">
-                        <div className="space-y-1">
-                          <label className="text-xs font-semibold">Title</label>
-                          <Input placeholder="e.g. Cox's Bazar Sea Beach" value={newDest.title} onChange={(e) => setNewDest({ ...newDest, title: e.target.value })} required />
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="text-xs font-semibold">District</label>
-                            <Input placeholder="Cox's Bazar" value={newDest.district} onChange={(e) => setNewDest({ ...newDest, district: e.target.value })} required />
+            {/* Catalogue */}
+            <section className="space-y-4">
+              <div className="flex items-center justify-between border-b border-border pb-3">
+                <div>
+                  <h2 className="text-lg font-medium tracking-tight">Catalogue</h2>
+                  <p className="text-xs text-muted-foreground">
+                    Everything travellers can browse and book
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <StatTile
+                  label="Destinations"
+                  value={overview.totals.destinations}
+                  icon={FaMapMarkedAlt}
+                  href="/dashboard/admin/destinations"
+                  hint={`${overview.totals.featuredDestinations} featured on the home page`}
+                />
+                <StatTile
+                  label="Hotels"
+                  value={overview.totals.hotels}
+                  icon={FaHotel}
+                  tone="text-emerald-500"
+                  href="/dashboard/admin/hotels"
+                  hint="Stays available for reservation"
+                />
+                <StatTile
+                  label="Restaurants"
+                  value={overview.totals.restaurants}
+                  icon={FaUtensils}
+                  tone="text-amber-500"
+                  href="/dashboard/admin/restaurants"
+                  hint="Dining listings across districts"
+                />
+                <StatTile
+                  label="Transport routes"
+                  value={overview.totals.transportations}
+                  icon={FaBus}
+                  href="/dashboard/admin/transportation"
+                  hint="Bus, train, flight and rental options"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <CategoryBars
+                  title="Destinations by category"
+                  caption="Where the catalogue is deep and where it is thin"
+                  slices={overview.destinationsByCategory}
+                  emptyLabel="No destinations added yet."
+                />
+                <CategoryBars
+                  title="Transport by type"
+                  caption="Coverage across the four transport modes"
+                  slices={overview.transportationsByType}
+                  emptyLabel="No transport routes added yet."
+                />
+              </div>
+            </section>
+
+            {/* Community */}
+            <section className="space-y-4">
+              <div className="border-b border-border pb-3">
+                <h2 className="text-lg font-medium tracking-tight">Community</h2>
+                <p className="text-xs text-muted-foreground">
+                  Who is on the platform and what they are planning
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <StatTile
+                  label="Active accounts"
+                  value={formatCompactNumber(overview.totals.activeUsers)}
+                  icon={FaUsers}
+                  href="/dashboard/all-users"
+                  hint={`${overview.totals.blockedUsers} blocked · ${overview.totals.admins} admins`}
+                />
+                <StatTile
+                  label="Trip plans"
+                  value={formatCompactNumber(overview.totals.tripPlans)}
+                  icon={FaRoute}
+                  hint="Itineraries travellers built themselves"
+                />
+                <StatTile
+                  label="Saved favourites"
+                  value={formatCompactNumber(overview.totals.favorites)}
+                  icon={FaHeart}
+                  tone="text-rose-500"
+                  hint="Destinations bookmarked for later"
+                />
+                <StatTile
+                  label="Low ratings"
+                  value={overview.ratings.lowRated}
+                  icon={FaComments}
+                  tone="text-amber-500"
+                  href="/dashboard/admin/reviews"
+                  hint="Reviews at 2 stars or below — worth a look"
+                />
+              </div>
+            </section>
+
+            {/* Recent activity */}
+            <section className="space-y-4">
+              <div className="border-b border-border pb-3">
+                <h2 className="text-lg font-medium tracking-tight">Recent activity</h2>
+                <p className="text-xs text-muted-foreground">The latest movement across the platform</p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                {/* Latest bookings */}
+                <div className="surface flex flex-col p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="flex items-center gap-2 text-sm font-semibold">
+                      <FaCalendarCheck className="h-4 w-4 text-primary" /> Latest bookings
+                    </h3>
+                    <Link
+                      href="/dashboard/admin/reservations"
+                      className="text-xs font-medium text-primary hover:underline"
+                    >
+                      View all
+                    </Link>
+                  </div>
+
+                  {overview.recent.reservations.length === 0 ? (
+                    <p className="py-8 text-center text-sm text-muted-foreground">No bookings yet.</p>
+                  ) : (
+                    <ul className="mt-4 space-y-3">
+                      {overview.recent.reservations.map((item) => (
+                        <li key={item.id} className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-medium">{linkedName(item, "Booking")}</p>
+                            <p className="truncate text-xs text-muted-foreground">
+                              {item.user?.name} · {formatRelativeTime(item.createdAt)}
+                            </p>
                           </div>
-                          <div>
-                            <label className="text-xs font-semibold">Location</label>
-                            <Input placeholder="Chittagong" value={newDest.location} onChange={(e) => setNewDest({ ...newDest, location: e.target.value })} required />
+                          <div className="shrink-0 text-right">
+                            <p className="text-sm font-medium tabular-nums">
+                              {formatBdt(item.totalCost, true)}
+                            </p>
+                            <span
+                              className={`mt-1 inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${statusBadgeClass(
+                                item.status
+                              )}`}
+                            >
+                              {item.status}
+                            </span>
                           </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="text-xs font-semibold">Category</label>
-                            <select value={newDest.category} onChange={(e) => setNewDest({ ...newDest, category: e.target.value })} className="w-full h-10 rounded-md border bg-background px-3 text-sm">
-                              <option value="Beach">Beach</option>
-                              <option value="Heritage">Heritage</option>
-                              <option value="Mountain">Mountain</option>
-                              <option value="Nature">Nature</option>
-                              <option value="Wildlife">Wildlife</option>
-                            </select>
-                          </div>
-                          <div>
-                            <label className="text-xs font-semibold">Price (BDT)</label>
-                            <Input type="number" value={newDest.price} onChange={(e) => setNewDest({ ...newDest, price: Number(e.target.value) })} required />
-                          </div>
-                        </div>
-                        <div>
-                          <label className="text-xs font-semibold">Description</label>
-                          <Textarea rows={3} value={newDest.description} onChange={(e) => setNewDest({ ...newDest, description: e.target.value })} required />
-                        </div>
-                        <ImageUploader label="Cover Image" folder="destinations" value={newDest.coverImage} onChange={(url) => setNewDest({ ...newDest, coverImage: url })} onRemove={() => setNewDest({ ...newDest, coverImage: "" })} />
-                        <div className="flex justify-end gap-2 pt-2">
-                          <Button type="button" variant="outline" onClick={() => setDestDialogOpen(false)}>Cancel</Button>
-                          <Button type="submit" disabled={submitting}>Save</Button>
-                        </div>
-                      </form>
-                    </DialogContent>
-                  </Dialog>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
 
-                <div className="rounded-2xl border bg-card overflow-hidden">
-                  {loadingDestinations ? <div className="py-12 flex justify-center"><FaSpinner className="animate-spin text-primary h-6 w-6" /></div> : (
-                    <Table>
-                      <TableHeader><TableRow><TableHead>Cover</TableHead><TableHead>Title</TableHead><TableHead>District</TableHead><TableHead>Category</TableHead><TableHead>Price</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
-                      <TableBody>
-                        {destinations.map((item) => (
-                          <TableRow key={item.id}>
-                            <TableCell><div className="relative h-12 w-16 rounded overflow-hidden bg-muted"><Image src={item.coverImage} alt="" fill className="object-cover" /></div></TableCell>
-                            <TableCell className="font-medium">{item.title}</TableCell>
-                            <TableCell className="text-xs">{item.district}</TableCell>
-                            <TableCell><span className="px-2 py-0.5 text-xs bg-primary/10 text-primary rounded-full font-semibold">{item.category}</span></TableCell>
-                            <TableCell className="font-medium text-emerald-400">৳{item.price}</TableCell>
-                            <TableCell><Button variant="ghost" size="sm" onClick={() => handleDeleteItem("destinations", item.id)} className="text-rose-400"><FaTrashAlt /></Button></TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                {/* Newest members */}
+                <div className="surface flex flex-col p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="flex items-center gap-2 text-sm font-semibold">
+                      <FaUsers className="h-4 w-4 text-rose-500" /> Newest members
+                    </h3>
+                    <Link
+                      href="/dashboard/all-users"
+                      className="text-xs font-medium text-primary hover:underline"
+                    >
+                      Manage
+                    </Link>
+                  </div>
+
+                  {overview.recent.users.length === 0 ? (
+                    <p className="py-8 text-center text-sm text-muted-foreground">
+                      No registrations yet.
+                    </p>
+                  ) : (
+                    <ul className="mt-4 space-y-3">
+                      {overview.recent.users.map((member) => (
+                        <li key={member.id} className="flex items-center justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-medium">{member.name}</p>
+                            <p className="truncate text-xs text-muted-foreground">{member.email}</p>
+                          </div>
+                          <div className="shrink-0 text-right">
+                            <span className="rounded-full border border-primary/25 bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+                              {member.role}
+                            </span>
+                            <p className="mt-1 text-[11px] text-muted-foreground">
+                              {formatRelativeTime(member.createdAt)}
+                            </p>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
+                {/* Latest reviews */}
+                <div className="surface flex flex-col p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="flex items-center gap-2 text-sm font-semibold">
+                      <FaComments className="h-4 w-4 text-amber-500" /> Latest reviews
+                    </h3>
+                    <Link
+                      href="/dashboard/admin/reviews"
+                      className="text-xs font-medium text-primary hover:underline"
+                    >
+                      Moderate
+                    </Link>
+                  </div>
+
+                  {overview.recent.reviews.length === 0 ? (
+                    <p className="py-8 text-center text-sm text-muted-foreground">No reviews yet.</p>
+                  ) : (
+                    <ul className="mt-4 space-y-3">
+                      {overview.recent.reviews.map((review) => (
+                        <li key={review.id} className="space-y-1">
+                          <div className="flex items-center justify-between gap-3">
+                            <p className="truncate text-sm font-medium">{linkedName(review, "Platform")}</p>
+                            <span className="flex shrink-0 items-center gap-1 text-xs font-medium text-amber-500">
+                              <FaStar className="h-3 w-3" /> {review.rating}
+                            </span>
+                          </div>
+                          <p className="line-clamp-2 text-xs text-muted-foreground">{review.comment}</p>
+                          <p className="text-[11px] text-muted-foreground">
+                            {review.user?.name} · {formatRelativeTime(review.createdAt)}
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </div>
               </div>
-            )}
+            </section>
 
-            {/* Tab 2: Hotels */}
-            {activeTab === "hotels" && (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-medium">Manage Hotels & Resorts</h2>
-                  <Dialog open={hotelDialogOpen} onOpenChange={setHotelDialogOpen}>
-                    <DialogTrigger>
-                      <Button className="gap-2">
-                        <FaPlus className="h-3.5 w-3.5" /> Add Hotel
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
-                      <DialogHeader>
-                        <DialogTitle className="text-lg font-medium">Add New Hotel / Resort</DialogTitle>
-                      </DialogHeader>
-                      <form onSubmit={handleCreateHotel} className="space-y-4 pt-2">
-                        <div>
-                          <label className="text-xs font-semibold">Hotel Name</label>
-                          <Input placeholder="Sayeman Beach Resort" value={newHotel.name} onChange={(e) => setNewHotel({ ...newHotel, name: e.target.value })} required />
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="text-xs font-semibold">Location</label>
-                            <Input placeholder="Cox's Bazar" value={newHotel.location} onChange={(e) => setNewHotel({ ...newHotel, location: e.target.value })} required />
-                          </div>
-                          <div>
-                            <label className="text-xs font-semibold">Price per Night (BDT)</label>
-                            <Input type="number" value={newHotel.pricePerNight} onChange={(e) => setNewHotel({ ...newHotel, pricePerNight: Number(e.target.value) })} required />
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="text-xs font-semibold">Contact Phone</label>
-                            <Input value={newHotel.contactPhone} onChange={(e) => setNewHotel({ ...newHotel, contactPhone: e.target.value })} required />
-                          </div>
-                          <div>
-                            <label className="text-xs font-semibold">Amenities (comma separated)</label>
-                            <Input value={newHotel.amenitiesInput} onChange={(e) => setNewHotel({ ...newHotel, amenitiesInput: e.target.value })} required />
-                          </div>
-                        </div>
-                        <div>
-                          <label className="text-xs font-semibold">Description</label>
-                          <Textarea rows={3} value={newHotel.description} onChange={(e) => setNewHotel({ ...newHotel, description: e.target.value })} required />
-                        </div>
-                        <ImageUploader label="Cover Image" folder="hotels" value={newHotel.coverImage} onChange={(url) => setNewHotel({ ...newHotel, coverImage: url })} onRemove={() => setNewHotel({ ...newHotel, coverImage: "" })} />
-                        <div className="flex justify-end gap-2 pt-2">
-                          <Button type="button" variant="outline" onClick={() => setHotelDialogOpen(false)}>Cancel</Button>
-                          <Button type="submit" disabled={submitting}>Save Hotel</Button>
-                        </div>
-                      </form>
-                    </DialogContent>
-                  </Dialog>
+            {/* Top destinations */}
+            <section className="space-y-4">
+              <div className="flex items-center justify-between border-b border-border pb-3">
+                <div>
+                  <h2 className="text-lg font-medium tracking-tight">Top rated destinations</h2>
+                  <p className="text-xs text-muted-foreground">
+                    Highest rated listings and the engagement behind them
+                  </p>
                 </div>
-
-                <div className="rounded-2xl border bg-card overflow-hidden">
-                  {loadingHotels ? <div className="py-12 flex justify-center"><FaSpinner className="animate-spin text-primary h-6 w-6" /></div> : (
-                    <Table>
-                      <TableHeader><TableRow><TableHead>Cover</TableHead><TableHead>Hotel Name</TableHead><TableHead>Location</TableHead><TableHead>Phone</TableHead><TableHead>Price/Night</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
-                      <TableBody>
-                        {hotels.map((item) => (
-                          <TableRow key={item.id}>
-                            <TableCell><div className="relative h-12 w-16 rounded overflow-hidden bg-muted"><Image src={item.coverImage} alt="" fill className="object-cover" /></div></TableCell>
-                            <TableCell className="font-medium">{item.name}</TableCell>
-                            <TableCell className="text-xs">{item.location}</TableCell>
-                            <TableCell className="text-xs font-mono">{item.contactPhone || "N/A"}</TableCell>
-                            <TableCell className="font-medium text-emerald-400">৳{item.pricePerNight}</TableCell>
-                            <TableCell><Button variant="ghost" size="sm" onClick={() => handleDeleteItem("hotels", item.id)} className="text-rose-400"><FaTrashAlt /></Button></TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  )}
-                </div>
+                <Button size="sm" variant="outline" className="rounded-full" asChild>
+                  <Link href="/dashboard/admin/destinations">Manage destinations</Link>
+                </Button>
               </div>
-            )}
 
-            {/* Tab 3: Restaurants */}
-            {activeTab === "restaurants" && (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-medium">Manage Restaurants & Dining</h2>
-                  <Dialog open={restDialogOpen} onOpenChange={setRestDialogOpen}>
-                    <DialogTrigger>
-                      <Button className="gap-2">
-                        <FaPlus className="h-3.5 w-3.5" /> Add Restaurant
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
-                      <DialogHeader>
-                        <DialogTitle className="text-lg font-medium">Add New Restaurant</DialogTitle>
-                      </DialogHeader>
-                      <form onSubmit={handleCreateRestaurant} className="space-y-4 pt-2">
-                        <div>
-                          <label className="text-xs font-semibold">Restaurant Name</label>
-                          <Input placeholder="Jhao Bon Seafood Restaurant" value={newRest.name} onChange={(e) => setNewRest({ ...newRest, name: e.target.value })} required />
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="text-xs font-semibold">Location</label>
-                            <Input placeholder="Kolatoli Beach, Cox's Bazar" value={newRest.location} onChange={(e) => setNewRest({ ...newRest, location: e.target.value })} required />
-                          </div>
-                          <div>
-                            <label className="text-xs font-semibold">Cuisine Type</label>
-                            <Input placeholder="Seafood & Bangladeshi" value={newRest.cuisineType} onChange={(e) => setNewRest({ ...newRest, cuisineType: e.target.value })} required />
-                          </div>
-                        </div>
-                        <div>
-                          <label className="text-xs font-semibold">Price Range Indicator</label>
-                          <select value={newRest.priceRange} onChange={(e) => setNewRest({ ...newRest, priceRange: e.target.value })} className="w-full h-10 rounded-md border bg-background px-3 text-sm">
-                            <option value="৳">৳ (Budget)</option>
-                            <option value="৳৳">৳৳ (Moderate)</option>
-                            <option value="৳৳ - ৳৳৳">৳৳ - ৳৳৳ (Mid to Premium)</option>
-                            <option value="৳৳৳৳">৳৳৳৳ (Fine Dining)</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label className="text-xs font-semibold">Description</label>
-                          <Textarea rows={3} value={newRest.description} onChange={(e) => setNewRest({ ...newRest, description: e.target.value })} required />
-                        </div>
-                        <ImageUploader label="Cover Image" folder="restaurants" value={newRest.coverImage} onChange={(url) => setNewRest({ ...newRest, coverImage: url })} onRemove={() => setNewRest({ ...newRest, coverImage: "" })} />
-                        <div className="flex justify-end gap-2 pt-2">
-                          <Button type="button" variant="outline" onClick={() => setRestDialogOpen(false)}>Cancel</Button>
-                          <Button type="submit" disabled={submitting}>Save Restaurant</Button>
-                        </div>
-                      </form>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-
-                <div className="rounded-2xl border bg-card overflow-hidden">
-                  {loadingRestaurants ? <div className="py-12 flex justify-center"><FaSpinner className="animate-spin text-primary h-6 w-6" /></div> : (
+              <div className="surface overflow-hidden">
+                {overview.topDestinations.length === 0 ? (
+                  <p className="py-12 text-center text-sm text-muted-foreground">
+                    No destinations added yet.
+                  </p>
+                ) : (
+                  <div className="overflow-x-auto">
                     <Table>
-                      <TableHeader><TableRow><TableHead>Cover</TableHead><TableHead>Restaurant Name</TableHead><TableHead>Cuisine</TableHead><TableHead>Location</TableHead><TableHead>Price Range</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Destination</TableHead>
+                          <TableHead>Category</TableHead>
+                          <TableHead>Rating</TableHead>
+                          <TableHead>Reviews</TableHead>
+                          <TableHead>Favourites</TableHead>
+                          <TableHead>Bookings</TableHead>
+                          <TableHead>Price</TableHead>
+                        </TableRow>
+                      </TableHeader>
                       <TableBody>
-                        {restaurants.map((item) => (
-                          <TableRow key={item.id}>
-                            <TableCell><div className="relative h-12 w-16 rounded overflow-hidden bg-muted"><Image src={item.coverImage} alt="" fill className="object-cover" /></div></TableCell>
-                            <TableCell className="font-medium">{item.name}</TableCell>
-                            <TableCell className="text-xs"><span className="px-2 py-0.5 text-xs bg-amber-500/10 text-amber-400 rounded-full font-semibold">{item.cuisineType}</span></TableCell>
-                            <TableCell className="text-xs">{item.location}</TableCell>
-                            <TableCell className="font-medium text-emerald-400 text-xs">{item.priceRange}</TableCell>
-                            <TableCell><Button variant="ghost" size="sm" onClick={() => handleDeleteItem("restaurants", item.id)} className="text-rose-400"><FaTrashAlt /></Button></TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Tab 4: Transportation */}
-            {activeTab === "transportation" && (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-medium">Manage Transportation Schedules</h2>
-                  <Dialog open={transportDialogOpen} onOpenChange={setTransportDialogOpen}>
-                    <DialogTrigger>
-                      <Button className="gap-2">
-                        <FaPlus className="h-3.5 w-3.5" /> Add Transport
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
-                      <DialogHeader>
-                        <DialogTitle className="text-lg font-medium">Add New Transport Service</DialogTitle>
-                      </DialogHeader>
-                      <form onSubmit={handleCreateTransportation} className="space-y-4 pt-2">
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="text-xs font-semibold">Transport Type</label>
-                            <select value={newTransport.type} onChange={(e) => setNewTransport({ ...newTransport, type: e.target.value })} className="w-full h-10 rounded-md border bg-background px-3 text-sm">
-                              <option value="BUS">Bus</option>
-                              <option value="TRAIN">Train</option>
-                              <option value="FLIGHT">Flight</option>
-                              <option value="CAR_RENTAL">Car Rental</option>
-                            </select>
-                          </div>
-                          <div>
-                            <label className="text-xs font-semibold">Operator / Service Name</label>
-                            <Input placeholder="Green Line Paribahan" value={newTransport.operatorName} onChange={(e) => setNewTransport({ ...newTransport, operatorName: e.target.value })} required />
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="text-xs font-semibold">From City</label>
-                            <Input placeholder="Dhaka" value={newTransport.routeFrom} onChange={(e) => setNewTransport({ ...newTransport, routeFrom: e.target.value })} required />
-                          </div>
-                          <div>
-                            <label className="text-xs font-semibold">To Destination</label>
-                            <Input placeholder="Cox's Bazar" value={newTransport.routeTo} onChange={(e) => setNewTransport({ ...newTransport, routeTo: e.target.value })} required />
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-3 gap-3">
-                          <div>
-                            <label className="text-xs font-semibold">Cost (BDT)</label>
-                            <Input type="number" value={newTransport.estimatedCost} onChange={(e) => setNewTransport({ ...newTransport, estimatedCost: Number(e.target.value) })} required />
-                          </div>
-                          <div>
-                            <label className="text-xs font-semibold">Duration</label>
-                            <Input placeholder="8h 30m" value={newTransport.duration} onChange={(e) => setNewTransport({ ...newTransport, duration: e.target.value })} required />
-                          </div>
-                          <div>
-                            <label className="text-xs font-semibold">Schedule Time</label>
-                            <Input placeholder="10:30 PM" value={newTransport.scheduleTime} onChange={(e) => setNewTransport({ ...newTransport, scheduleTime: e.target.value })} required />
-                          </div>
-                        </div>
-                        <div className="flex justify-end gap-2 pt-2">
-                          <Button type="button" variant="outline" onClick={() => setTransportDialogOpen(false)}>Cancel</Button>
-                          <Button type="submit" disabled={submitting}>Save Transport</Button>
-                        </div>
-                      </form>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-
-                <div className="rounded-2xl border bg-card overflow-hidden">
-                  {loadingTransport ? <div className="py-12 flex justify-center"><FaSpinner className="animate-spin text-primary h-6 w-6" /></div> : (
-                    <Table>
-                      <TableHeader><TableRow><TableHead>Type</TableHead><TableHead>Operator</TableHead><TableHead>Route</TableHead><TableHead>Schedule</TableHead><TableHead>Cost</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
-                      <TableBody>
-                        {transportations.map((item) => (
-                          <TableRow key={item.id}>
-                            <TableCell><span className="px-2.5 py-0.5 text-xs bg-primary/10 text-primary rounded-full font-medium uppercase">{item.type}</span></TableCell>
-                            <TableCell className="font-medium">{item.operatorName}</TableCell>
-                            <TableCell className="text-xs">{item.routeFrom} → {item.routeTo}</TableCell>
-                            <TableCell className="text-xs font-mono">{item.scheduleTime} ({item.duration})</TableCell>
-                            <TableCell className="font-medium text-emerald-400">৳{item.estimatedCost}</TableCell>
-                            <TableCell><Button variant="ghost" size="sm" onClick={() => handleDeleteItem("transportation", item.id)} className="text-rose-400"><FaTrashAlt /></Button></TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Tab 5: Reservations */}
-            {activeTab === "reservations" && (
-              <div className="space-y-4">
-                <div className="border-b border-border pb-2">
-                  <h2 className="text-lg font-medium">Customer Reservations & Booking Requests</h2>
-                  <p className="text-xs text-muted-foreground">Approve or cancel customer bookings across destinations & hotels</p>
-                </div>
-
-                <div className="rounded-2xl border bg-card overflow-hidden">
-                  {loadingReservations ? <div className="py-12 flex justify-center"><FaSpinner className="animate-spin text-primary h-6 w-6" /></div> : (
-                    <Table>
-                      <TableHeader><TableRow><TableHead>Customer</TableHead><TableHead>Item / Target</TableHead><TableHead>Cost</TableHead><TableHead>Status</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
-                      <TableBody>
-                        {reservations.map((item) => (
-                          <TableRow key={item.id}>
+                        {overview.topDestinations.map((destination) => (
+                          <TableRow key={destination.id}>
                             <TableCell>
-                              <p className="font-medium">{item.user?.name || "Customer"}</p>
-                              <p className="text-xs text-muted-foreground">{item.user?.email}</p>
-                            </TableCell>
-                            <TableCell className="text-xs">{item.destination?.title || item.hotel?.name || item.restaurant?.name || "Booking"}</TableCell>
-                            <TableCell className="font-medium text-emerald-400">৳{item.totalCost}</TableCell>
-                            <TableCell>
-                              <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium uppercase ${
-                                item.status === "CONFIRMED" ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30" :
-                                item.status === "CANCELLED" ? "bg-rose-500/15 text-rose-400 border border-rose-500/30" : "bg-amber-500/15 text-amber-400 border border-amber-500/30"
-                              }`}>{item.status}</span>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-1">
-                                {item.status !== "CONFIRMED" && (
-                                  <Button size="sm" variant="ghost" onClick={() => handleUpdateReservationStatus(item.id, "CONFIRMED")} className="text-emerald-400 hover:bg-emerald-500/10 h-8 px-2 text-xs font-semibold gap-1">
-                                    <FaCheckCircle /> Approve
-                                  </Button>
+                              <div className="flex items-center gap-3">
+                                {destination.coverImage && (
+                                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-border bg-muted">
+                                    <Image
+                                      src={destination.coverImage}
+                                      alt={destination.title}
+                                      fill
+                                      sizes="40px"
+                                      className="object-cover"
+                                    />
+                                  </div>
                                 )}
-                                {item.status !== "CANCELLED" && (
-                                  <Button size="sm" variant="ghost" onClick={() => handleUpdateReservationStatus(item.id, "CANCELLED")} className="text-rose-400 hover:bg-rose-500/10 h-8 px-2 text-xs font-semibold gap-1">
-                                    <FaTimesCircle /> Cancel
-                                  </Button>
-                                )}
+                                <div className="min-w-0">
+                                  <p className="truncate text-sm font-medium">{destination.title}</p>
+                                  <p className="truncate text-xs text-muted-foreground">
+                                    {destination.district}
+                                  </p>
+                                </div>
                               </div>
                             </TableCell>
+                            <TableCell className="text-xs text-muted-foreground">
+                              {destination.category}
+                            </TableCell>
+                            <TableCell>
+                              <span className="flex items-center gap-1 text-xs font-medium text-amber-500">
+                                <FaStar className="h-3 w-3" /> {destination.rating?.toFixed(1)}
+                              </span>
+                            </TableCell>
+                            <TableCell className="text-xs tabular-nums">
+                              {destination._count?.reviews ?? 0}
+                            </TableCell>
+                            <TableCell className="text-xs tabular-nums">
+                              {destination._count?.favorites ?? 0}
+                            </TableCell>
+                            <TableCell className="text-xs tabular-nums">
+                              {destination._count?.reservations ?? 0}
+                            </TableCell>
+                            <TableCell className="text-xs font-medium tabular-nums">
+                              {formatBdt(destination.price || 0)}
+                            </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
                     </Table>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
-            )}
-    </div>
+            </section>
+          </>
+        )}
+      </div>
+    </ProtectedRoute>
   );
 }

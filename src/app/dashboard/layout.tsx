@@ -58,6 +58,12 @@ export default function DashboardLayout({
 
   const navItems = [
     {
+      label: "Admin Overview",
+      href: "/dashboard/admin",
+      icon: FaShieldAlt,
+      roles: ["ADMIN", "SUPER_ADMIN"],
+    },
+    {
       label: "My Profile",
       href: "/dashboard/user",
       icon: FaUser,
@@ -86,13 +92,6 @@ export default function DashboardLayout({
       href: "/dashboard/favorites",
       icon: FaHeart,
       roles: ["USER", "ADMIN", "SUPER_ADMIN"],
-    },
-    {
-      label: "Admin Overview",
-      href: "/dashboard/admin",
-      icon: FaShieldAlt,
-      roles: ["ADMIN", "SUPER_ADMIN"],
-      highlight: true,
     },
     {
       label: "Manage Destinations",
@@ -201,9 +200,7 @@ export default function DashboardLayout({
                     className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
                       isActive
                         ? "bg-primary text-primary-foreground"
-                        : item.highlight
-                          ? "bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500/20"
-                          : "text-muted-foreground hover:text-foreground hover:bg-card/80 border border-transparent hover:border-border"
+                        : "text-muted-foreground hover:text-foreground hover:bg-card/80 border border-transparent hover:border-border"
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
