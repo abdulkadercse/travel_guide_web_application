@@ -352,11 +352,13 @@ export default function TripPlanDetailPage({
             </div>
 
             <Dialog open={itemDialogOpen} onOpenChange={setItemDialogOpen}>
-              <DialogTrigger>
-                <Button className="gap-2">
-                  <FaPlus className="h-3.5 w-3.5" /> Add Spot to Itinerary
-                </Button>
-              </DialogTrigger>
+              <DialogTrigger
+                render={
+                  <Button className="gap-2">
+                    <FaPlus className="h-3.5 w-3.5" /> Add Spot to Itinerary
+                  </Button>
+                }
+              />
               <DialogContent className="max-w-md bg-card border-border">
                 <DialogHeader>
                   <DialogTitle className="text-lg font-medium">

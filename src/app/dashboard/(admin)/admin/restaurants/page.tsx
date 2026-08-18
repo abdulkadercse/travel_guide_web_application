@@ -172,11 +172,13 @@ export default function AdminRestaurantsPage() {
           </div>
 
           <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
-            <DialogTrigger>
-              <Button className="gap-2 shrink-0">
-                <FaPlus className="h-3.5 w-3.5" /> Add New Restaurant
-              </Button>
-            </DialogTrigger>
+            <DialogTrigger
+              render={
+                <Button className="gap-2 shrink-0">
+                  <FaPlus className="h-3.5 w-3.5" /> Add New Restaurant
+                </Button>
+              }
+            />
             <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
               <DialogHeader>
                 <DialogTitle className="text-lg font-medium">Add New Restaurant</DialogTitle>

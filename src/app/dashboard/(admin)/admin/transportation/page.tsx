@@ -171,11 +171,13 @@ export default function AdminTransportationPage() {
           </div>
 
           <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
-            <DialogTrigger>
-              <Button className="gap-2 shrink-0">
-                <FaPlus className="h-3.5 w-3.5" /> Add New Transport Schedule
-              </Button>
-            </DialogTrigger>
+            <DialogTrigger
+              render={
+                <Button className="gap-2 shrink-0">
+                  <FaPlus className="h-3.5 w-3.5" /> Add New Transport Schedule
+                </Button>
+              }
+            />
             <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
               <DialogHeader>
                 <DialogTitle className="text-lg font-medium">Add Transport Schedule</DialogTitle>

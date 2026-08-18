@@ -121,11 +121,13 @@ export default function UserTripPlansPage() {
           </div>
 
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger>
-              <Button className="gap-2 shrink-0">
-                <FaPlus className="h-3.5 w-3.5" /> Create Trip Plan
-              </Button>
-            </DialogTrigger>
+            <DialogTrigger
+              render={
+                <Button className="gap-2 shrink-0">
+                  <FaPlus className="h-3.5 w-3.5" /> Create Trip Plan
+                </Button>
+              }
+            />
             <DialogContent className="max-w-md bg-card border-border">
               <DialogHeader>
                 <DialogTitle className="text-lg font-medium flex items-center gap-2">
