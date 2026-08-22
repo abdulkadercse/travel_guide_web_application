@@ -4,6 +4,9 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
 
 export const baseApi = createApi({
   reducerPath: 'baseApi',
+  keepUnusedDataFor: 300, // Cache data for 5 minutes by default
+  refetchOnFocus: false,
+  refetchOnReconnect: true,
   baseQuery: fetchBaseQuery({
     baseUrl: API_BASE_URL,
     prepareHeaders: (headers, { getState }) => {
@@ -18,6 +21,7 @@ export const baseApi = createApi({
       return headers;
     },
   }),
+
   tagTypes: [
     'Auth',
     'User',

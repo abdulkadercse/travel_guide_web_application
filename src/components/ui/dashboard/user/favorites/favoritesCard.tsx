@@ -30,23 +30,31 @@ export interface FavoriteItem {
 
 interface FavoritesCardProps {
   favorite: FavoriteItem;
-  onRemove: (destinationId: string) => Promise<void> | void;
+  onRemove?: (destinationId: string) => Promise<void> | void;
+  onRequestDelete?: (favorite: FavoriteItem) => void;
 }
 
-export function FavoritesCard({ favorite, onRemove }: FavoritesCardProps) {
+export function FavoritesCard({ favorite, onRemove, onRequestDelete }: FavoritesCardProps) {
   const [isRemoving, setIsRemoving] = useState(false);
   const dest = favorite.destination;
 
   if (!dest) return null;
 
   const handleRemove = async () => {
-    setIsRemoving(true);
-    try {
-      await onRemove(dest.id || favorite.destinationId);
-    } finally {
-      setIsRemoving(false);
+    if (onRequestDelete) {
+      onRequestDelete(favorite);
+      return;
+    }
+    if (onRemove) {
+      setIsRemoving(true);
+      try {
+        await onRemove(dest.id || favorite.destinationId);
+      } finally {
+        setIsRemoving(false);
+      }
     }
   };
+
 
   const imageSrc =
     dest.coverImage ||

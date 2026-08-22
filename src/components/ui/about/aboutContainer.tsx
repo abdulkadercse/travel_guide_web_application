@@ -126,7 +126,7 @@ export function AboutContainer() {
         </div>
 
         <Container>
-          <div className="mx-auto max-w-5xl flex flex-col items-center text-center space-y-4">
+          <div className="mx-auto max-w-5xl flex flex-col items-center text-center space-y-4" data-aos="fade-up">
             {/* Main Heading */}
             <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-4xl lg:text-5xl leading-[1.15] text-balance drop-shadow-sm">
               Travel information worth trusting, in one place.
@@ -142,7 +142,7 @@ export function AboutContainer() {
             </p>
 
             {/* Glass Metrics Cards */}
-            <div className="mx-auto grid grid-cols-2 gap-3 pt-2 sm:grid-cols-3 w-full max-w-2xl text-center">
+            <div className="mx-auto grid grid-cols-2 gap-3 pt-2 sm:grid-cols-3 w-full max-w-2xl text-center" data-aos="fade-up" data-aos-delay="150">
               <div className="rounded-xl border border-white/15 bg-white/10 p-3 text-white backdrop-blur-md shadow-md transition-all duration-300 hover:border-primary/50 hover:bg-white/15 hover:-translate-y-0.5">
                 <p className="text-xl font-medium tracking-tight text-white">
                   64
@@ -175,7 +175,8 @@ export function AboutContainer() {
       </section>
 
       {/* Academic Information & Development Team Section */}
-      <section className="py-12 sm:py-16 border-y border-border bg-secondary/30">
+      <section className="py-12 sm:py-16 border-y border-border bg-secondary/30" data-aos="fade-up">
+
         <Container className="space-y-8 sm:space-y-10">
           {/* Section Header */}
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">

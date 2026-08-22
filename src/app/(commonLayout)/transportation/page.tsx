@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Container from "@/components/shared/Container";
 import { Button } from "@/components/ui/button";
 import {
@@ -66,20 +67,41 @@ export default function TransportationPage() {
   const allToCities = ["ALL", ...toCities];
 
   return (
-    <div className="py-12 sm:py-16">
-      <Container className="space-y-9">
-        {/* Page header */}
-        <div className="max-w-xl space-y-4">
-          <p className="eyebrow">Getting around</p>
-          <h1 className="heading">Routes that actually run today</h1>
-          <p className="text-lg leading-relaxed text-muted-foreground">
-            Live intercity schedules across Bangladesh — AC coaches, express trains and domestic
-            flights.
-          </p>
-        </div>
+    <div className="min-h-screen">
+      {/* 1. Full-Width Hero Section with Scenic Transportation Background Image */}
+      <section className="relative h-[300px] sm:h-[380px] flex items-center justify-center overflow-hidden border-b border-border" data-aos="fade-up">
+        <Image
+          src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1920&q=80"
+          alt="Transportation Across Bangladesh"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        {/* Dark gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-950/65 to-stone-950/45 backdrop-blur-[0.5px]" />
 
-        {/* Route finder */}
-        <div className="surface space-y-5 p-4 sm:p-5">
+        <Container className="relative z-10 text-center max-w-3xl space-y-3.5" data-aos="fade-up">
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-white text-xs font-semibold shadow-xs">
+            <FaBus className="text-primary h-3.5 w-3.5" />
+            Intercity Coaches, Express Trains & Domestic Flights
+          </span>
+          <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-white drop-shadow-md">
+            Routes That Actually Run Today
+          </h1>
+          <p className="text-sm sm:text-base text-white/85 max-w-2xl mx-auto leading-relaxed drop-shadow-xs">
+            Live intercity schedules across Bangladesh — compare operators, travel times and fares before you commit to a route.
+          </p>
+        </Container>
+      </section>
+
+      {/* 2. Main Content & Listings */}
+      <div className="py-8 sm:py-12">
+        <Container className="space-y-8">
+          {/* Route finder */}
+          <div className="surface space-y-5 p-4 sm:p-5 shadow-xs" data-aos="fade-up" data-aos-delay="100">
+
+
           <div className="flex flex-wrap items-center gap-2">
             {transportTypes.map((t) => {
               const Icon = t.icon;
@@ -139,11 +161,27 @@ export default function TransportationPage() {
 
         {/* Schedule Results */}
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-24 text-muted-foreground">
-            <FaSpinner className="h-6 w-6 animate-spin" />
-            <p className="text-sm">Loading routes…</p>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="surface p-5 rounded-2xl animate-pulse bg-card border border-border space-y-4"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="h-9 w-9 bg-muted rounded-lg" />
+                  <div className="h-5 w-16 bg-muted rounded-full" />
+                </div>
+                <div className="h-5 w-3/4 bg-muted rounded-md" />
+                <div className="h-4 w-1/2 bg-muted rounded-md" />
+                <div className="pt-4 flex items-center justify-between border-t border-border/60">
+                  <div className="h-4 w-16 bg-muted rounded-md" />
+                  <div className="h-5 w-14 bg-muted rounded-md" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : schedules.length === 0 ? (
+
           <div className="space-y-4 rounded-2xl border border-dashed border-border py-24 text-center">
             <FaBus className="mx-auto h-10 w-10 text-muted-foreground/30" />
             <div className="space-y-1.5">
@@ -245,6 +283,8 @@ export default function TransportationPage() {
           />
         )}
       </Container>
+      </div>
     </div>
   );
 }
+

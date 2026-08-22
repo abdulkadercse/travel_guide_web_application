@@ -43,6 +43,27 @@ const createReservationDB = async (data: ICreateReservationInput) => {
     throw new ApiError(400, "End date cannot be before the start date");
   }
 
+  if (data.destinationId) {
+    const dest = await prisma.destination.findUnique({ where: { id: data.destinationId } });
+    if (!dest) {
+      throw new ApiError(404, "Selected destination not found in database");
+    }
+  }
+
+  if (data.hotelId) {
+    const hotel = await prisma.hotel.findUnique({ where: { id: data.hotelId } });
+    if (!hotel) {
+      throw new ApiError(404, "Selected hotel not found in database");
+    }
+  }
+
+  if (data.restaurantId) {
+    const rest = await prisma.restaurant.findUnique({ where: { id: data.restaurantId } });
+    if (!rest) {
+      throw new ApiError(404, "Selected restaurant not found in database");
+    }
+  }
+
   const reservationData: any = {
     user: { connect: { id: data.userId } },
     destination: data.destinationId ? { connect: { id: data.destinationId } } : undefined,
@@ -58,6 +79,7 @@ const createReservationDB = async (data: ICreateReservationInput) => {
     data: reservationData,
     include: reservationInclude,
   });
+
 };
 
 const updateReservationStatusDB = async (id: string, status: ReservationStatus) => {
@@ -74,10 +96,23 @@ const updateReservationStatusDB = async (id: string, status: ReservationStatus) 
   });
 };
 
+const deleteReservationDB = async (id: string) => {
+  const existing = await prisma.reservation.findUnique({ where: { id } });
+
+  if (!existing) {
+    throw new ApiError(404, "Reservation not found");
+  }
+
+  return prisma.reservation.delete({
+    where: { id },
+  });
+};
+
 export const reservationService = {
   getReservationsDB,
   createReservationDB,
   updateReservationStatusDB,
+  deleteReservationDB,
 };
 
 export default reservationService;

@@ -188,15 +188,20 @@
     @apply border-border outline-ring/50;
   }
 
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+    overflow-x: clip;
+  }
+
   body {
     @apply bg-background text-foreground;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    overflow-x: clip;
+    min-height: 100vh;
   }
 
-  html {
-    @apply font-sans;
-  }
 
   /* Headings carry the structure, so they get the tighter tracking. */
   h1,
@@ -218,10 +223,11 @@
 }
 
 @layer components {
-  /* Section rhythm: one class instead of ad-hoc padding on every section. */
+  /* Section rhythm: clean, well-balanced modern padding. */
   .section {
-    @apply py-20 sm:py-24 lg:py-28;
+    @apply py-10 sm:py-14 lg:py-16;
   }
+
 
   /* The eyebrow label above a section heading. */
   .eyebrow {

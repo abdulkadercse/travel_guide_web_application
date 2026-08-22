@@ -74,20 +74,41 @@ export default function RestaurantsListingPage() {
   });
 
   return (
-    <div className="py-12 sm:py-16">
-      <Container className="space-y-9">
-        {/* Page header */}
-        <div className="max-w-xl space-y-4">
-          <p className="eyebrow">Where to eat</p>
-          <h1 className="heading">Tables worth booking ahead</h1>
-          <p className="text-lg leading-relaxed text-muted-foreground">
-            Old Dhaka kacchi, beachside seafood in Cox&apos;s Bazar and Sylheti vorta thalis —
-            rated by the people who ate there.
-          </p>
-        </div>
+    <div className="min-h-screen">
+      {/* 1. Full-Width Hero Section with Culinary Background Image */}
+      <section className="relative h-[300px] sm:h-[380px] flex items-center justify-center overflow-hidden border-b border-border" data-aos="fade-up">
+        <Image
+          src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1920&q=80"
+          alt="Authentic Dining & Restaurants in Bangladesh"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        {/* Dark gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-950/65 to-stone-950/45 backdrop-blur-[0.5px]" />
 
-        {/* Filters */}
-        <div className="surface space-y-4 p-4 sm:p-5">
+        <Container className="relative z-10 text-center max-w-3xl space-y-3.5" data-aos="fade-up">
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-white text-xs font-semibold shadow-xs">
+            <FaUtensils className="text-primary h-3.5 w-3.5" />
+            Culinary Journeys & Authentic Dining
+          </span>
+          <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-white drop-shadow-md">
+            Tables Worth Booking Ahead
+          </h1>
+          <p className="text-sm sm:text-base text-white/85 max-w-2xl mx-auto leading-relaxed drop-shadow-xs">
+            Old Dhaka kacchi, fresh seafood on Cox&apos;s Bazar beach, and traditional Sylheti vorta thalis — verified and rated by food enthusiasts.
+          </p>
+        </Container>
+      </section>
+
+      {/* 2. Main Content & Listings */}
+      <div className="py-8 sm:py-12">
+        <Container className="space-y-8">
+          {/* Filters */}
+          <div className="surface space-y-4 p-4 sm:p-5 shadow-xs" data-aos="fade-up" data-aos-delay="100">
+
+
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div className="relative">
               <FaSearch className="absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
@@ -157,11 +178,30 @@ export default function RestaurantsListingPage() {
 
         {/* Results */}
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-24 text-muted-foreground">
-            <FaSpinner className="h-6 w-6 animate-spin" />
-            <p className="text-sm">Loading restaurants…</p>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="surface overflow-hidden rounded-2xl animate-pulse bg-card border border-border"
+              >
+                <div className="aspect-[4/3] w-full bg-muted" />
+                <div className="p-5 space-y-3">
+                  <div className="h-5 w-3/4 bg-muted rounded-md" />
+                  <div className="h-3.5 w-1/2 bg-muted rounded-md" />
+                  <div className="h-3.5 w-full bg-muted rounded-md" />
+                  <div className="pt-4 flex items-center justify-between border-t border-border/60">
+                    <div className="h-5 w-20 bg-muted rounded-md" />
+                    <div className="flex gap-2">
+                      <div className="h-8 w-18 bg-muted rounded-xl" />
+                      <div className="h-8 w-14 bg-muted rounded-xl" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : sortedRestaurants.length === 0 ? (
+
           <div className="space-y-4 rounded-2xl border border-dashed border-border py-24 text-center">
             <FaUtensils className="mx-auto h-10 w-10 text-muted-foreground/30" />
             <div className="space-y-1.5">
@@ -285,6 +325,8 @@ export default function RestaurantsListingPage() {
           />
         )}
       </Container>
+      </div>
     </div>
   );
 }
+

@@ -24,9 +24,16 @@ export const reservationApi = baseApi.injectEndpoints({
     }),
     updateReservationStatus: builder.mutation({
       query: ({ id, status }) => ({
-        url: '/reservations',
+        url: `/reservations/${id}`,
         method: 'PATCH',
-        body: { id, status },
+        body: { status },
+      }),
+      invalidatesTags: ['Reservation'],
+    }),
+    deleteReservation: builder.mutation({
+      query: (id: string) => ({
+        url: `/reservations/${id}`,
+        method: 'DELETE',
       }),
       invalidatesTags: ['Reservation'],
     }),
@@ -37,4 +44,6 @@ export const {
   useGetReservationsQuery,
   useCreateReservationMutation,
   useUpdateReservationStatusMutation,
+  useDeleteReservationMutation,
 } = reservationApi;
+

@@ -6,8 +6,8 @@ export interface IApiResponse<T> {
   data?: T | null;
 }
 
-export function sendResponse<T>(data: IApiResponse<T>) {
-  const statusCode = data.statusCode || 200;
+export function sendResponse<T>(data: IApiResponse<T>, init?: ResponseInit) {
+  const statusCode = data.statusCode || init?.status || 200;
   const isSuccess = statusCode >= 200 && statusCode < 300;
 
   return NextResponse.json(
@@ -17,9 +17,13 @@ export function sendResponse<T>(data: IApiResponse<T>) {
       message: data.message || null,
       data: data.data !== undefined ? data.data : null,
     },
-    { status: statusCode }
+    {
+      status: statusCode,
+      headers: init?.headers,
+    }
   );
 }
+
 
 export function sendError(error: any) {
   const statusCode = error?.statusCode || 500;

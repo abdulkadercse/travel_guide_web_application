@@ -39,7 +39,27 @@ import {
   FaMapMarkerAlt,
   FaPhoneAlt,
   FaCoins,
+  FaImages,
+  FaListUl,
+  FaInfoCircle,
 } from "react-icons/fa";
+
+const POPULAR_AMENITIES = [
+  "Ocean View Balcony",
+  "Infinity Swimming Pool",
+  "Free High-Speed WiFi",
+  "Complimentary Buffet Breakfast",
+  "24/7 Room Service",
+  "Luxury Spa & Wellness",
+  "Airport Shuttle Service",
+  "Private Beach Access",
+  "Fitness Gym & Sauna",
+  "Smart 4K TV & Mini Bar",
+  "360° Mountain Balcony",
+  "Eco-Friendly Wooden Cottages",
+  "Campfire & BBQ Dinner",
+  "Heated Outdoor Pool",
+];
 
 export default function AdminHotelsPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -62,9 +82,10 @@ export default function AdminHotelsPage() {
     name: "",
     location: "",
     description: "",
-    pricePerNight: 5000,
+    pricePerNight: 6500,
     coverImage: "",
-    amenitiesInput: "Free WiFi, Swimming Pool, Breakfast",
+    galleryImagesInput: "",
+    amenitiesInput: "Ocean View Balcony, Free High-Speed WiFi, Infinity Swimming Pool, Complimentary Buffet Breakfast",
     contactPhone: "+8801700000000",
   });
 
@@ -79,18 +100,29 @@ export default function AdminHotelsPage() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newHotel.coverImage) return toast.error("Please upload a cover image!");
+    if (!newHotel.coverImage) return toast.error("Please provide or upload a cover image!");
     setSubmitting(true);
     const toastId = toast.loading("Creating hotel...");
     try {
-      const amenities = newHotel.amenitiesInput.split(",").map((a) => a.trim()).filter(Boolean);
+      const amenities = newHotel.amenitiesInput
+        .split(",")
+        .map((a) => a.trim())
+        .filter(Boolean);
+
+      const extraImages = newHotel.galleryImagesInput
+        .split(/[\n,]+/)
+        .map((url) => url.trim())
+        .filter(Boolean);
+
+      const allImages = Array.from(new Set([newHotel.coverImage, ...extraImages]));
+
       await createHotel({
         name: newHotel.name,
         location: newHotel.location,
         description: newHotel.description,
         pricePerNight: Number(newHotel.pricePerNight),
         coverImage: newHotel.coverImage,
-        images: [newHotel.coverImage],
+        images: allImages,
         amenities,
         contactPhone: newHotel.contactPhone,
       }).unwrap();
@@ -101,9 +133,10 @@ export default function AdminHotelsPage() {
         name: "",
         location: "",
         description: "",
-        pricePerNight: 5000,
+        pricePerNight: 6500,
         coverImage: "",
-        amenitiesInput: "Free WiFi, Swimming Pool, Breakfast",
+        galleryImagesInput: "",
+        amenitiesInput: "Ocean View Balcony, Free High-Speed WiFi, Infinity Swimming Pool, Complimentary Buffet Breakfast",
         contactPhone: "+8801700000000",
       });
     } catch (err: unknown) {
@@ -114,6 +147,9 @@ export default function AdminHotelsPage() {
   };
 
   const handleOpenEdit = (item: any) => {
+    const imagesList = Array.isArray(item.images) ? item.images : [];
+    const extraImages = imagesList.filter((img: string) => img !== item.coverImage);
+
     setEditingHotel({
       id: item.id,
       name: item.name,
@@ -121,6 +157,7 @@ export default function AdminHotelsPage() {
       description: item.description,
       pricePerNight: item.pricePerNight || 3500,
       coverImage: item.coverImage,
+      galleryImagesInput: extraImages.join("\n"),
       amenitiesInput: (item.amenities || []).join(", "),
       contactPhone: item.contactPhone || "+8801700000000",
     });
@@ -133,7 +170,18 @@ export default function AdminHotelsPage() {
     setSubmitting(true);
     const toastId = toast.loading("Updating hotel...");
     try {
-      const amenities = editingHotel.amenitiesInput.split(",").map((a: string) => a.trim()).filter(Boolean);
+      const amenities = editingHotel.amenitiesInput
+        .split(",")
+        .map((a: string) => a.trim())
+        .filter(Boolean);
+
+      const extraImages = editingHotel.galleryImagesInput
+        .split(/[\n,]+/)
+        .map((url: string) => url.trim())
+        .filter(Boolean);
+
+      const allImages = Array.from(new Set([editingHotel.coverImage, ...extraImages]));
+
       await updateHotel({
         id: editingHotel.id,
         name: editingHotel.name,
@@ -141,7 +189,7 @@ export default function AdminHotelsPage() {
         description: editingHotel.description,
         pricePerNight: Number(editingHotel.pricePerNight),
         coverImage: editingHotel.coverImage,
-        images: [editingHotel.coverImage],
+        images: allImages,
         amenities,
         contactPhone: editingHotel.contactPhone,
       }).unwrap();
@@ -167,6 +215,19 @@ export default function AdminHotelsPage() {
     }
   };
 
+  const toggleAmenity = (
+    amenity: string,
+    currentInput: string,
+    setInput: (val: string) => void
+  ) => {
+    const list = currentInput.split(",").map((a) => a.trim()).filter(Boolean);
+    if (list.includes(amenity)) {
+      setInput(list.filter((a) => a !== amenity).join(", "));
+    } else {
+      setInput([...list, amenity].join(", "));
+    }
+  };
+
   return (
     <ProtectedRoute allowedRoles={["ADMIN", "SUPER_ADMIN"]}>
       <div className="space-y-8 font-sans">
@@ -187,90 +248,150 @@ export default function AdminHotelsPage() {
           <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
             <DialogTrigger
               render={
-                <Button className="gap-2 shrink-0">
+                <Button className="gap-2 shrink-0 rounded-xl">
                   <FaPlus className="h-3.5 w-3.5" /> Add New Hotel
                 </Button>
               }
             />
-            <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-card border-border">
               <DialogHeader>
-                <DialogTitle className="text-lg font-medium">Add New Hotel / Resort</DialogTitle>
+                <DialogTitle className="text-lg font-bold flex items-center gap-2">
+                  <FaHotel className="text-primary" /> Add New Hotel / Resort Property
+                </DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleCreate} className="space-y-4 pt-2">
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold">Hotel Name</label>
+
+              <form onSubmit={handleCreate} className="space-y-5 pt-2">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-foreground">Hotel / Resort Name</label>
                   <Input
                     placeholder="e.g. Sayeman Beach Resort"
                     value={newHotel.name}
                     onChange={(e) => setNewHotel({ ...newHotel, name: e.target.value })}
+                    className="rounded-xl"
                     required
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-semibold">Location / Address</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-foreground">Location / Full Address</label>
                     <Input
-                      placeholder="Cox's Bazar"
+                      placeholder="e.g. Marine Drive, Kolatoli, Cox's Bazar"
                       value={newHotel.location}
                       onChange={(e) => setNewHotel({ ...newHotel, location: e.target.value })}
+                      className="rounded-xl"
                       required
                     />
                   </div>
-                  <div>
-                    <label className="text-xs font-semibold">Price per Night (BDT ৳)</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-foreground">Price per Night (BDT ৳)</label>
                     <Input
                       type="number"
                       value={newHotel.pricePerNight}
                       onChange={(e) => setNewHotel({ ...newHotel, pricePerNight: Number(e.target.value) })}
+                      className="rounded-xl font-semibold"
                       required
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-semibold">Contact Phone Number</label>
-                    <Input
-                      value={newHotel.contactPhone}
-                      onChange={(e) => setNewHotel({ ...newHotel, contactPhone: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-semibold">Amenities (Comma Separated)</label>
-                    <Input
-                      value={newHotel.amenitiesInput}
-                      onChange={(e) => setNewHotel({ ...newHotel, amenitiesInput: e.target.value })}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-xs font-semibold">Description</label>
-                  <Textarea
-                    rows={3}
-                    value={newHotel.description}
-                    onChange={(e) => setNewHotel({ ...newHotel, description: e.target.value })}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-foreground">Contact Helpline Phone</label>
+                  <Input
+                    placeholder="+8801755555555"
+                    value={newHotel.contactPhone}
+                    onChange={(e) => setNewHotel({ ...newHotel, contactPhone: e.target.value })}
+                    className="rounded-xl font-mono text-sm"
                     required
                   />
                 </div>
 
+                {/* Amenities with Quick Click Chips */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                      <FaListUl className="text-primary h-3 w-3" /> Amenities & Facilities
+                    </label>
+                    <span className="text-[11px] text-muted-foreground">Click tags to add/remove</span>
+                  </div>
+
+                  <div className="flex flex-wrap gap-1.5 p-2.5 rounded-xl bg-secondary/40 border border-border">
+                    {POPULAR_AMENITIES.map((am) => {
+                      const isSelected = newHotel.amenitiesInput.includes(am);
+                      return (
+                        <button
+                          key={am}
+                          type="button"
+                          onClick={() => toggleAmenity(am, newHotel.amenitiesInput, (val) => setNewHotel({ ...newHotel, amenitiesInput: val }))}
+                          className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+                            isSelected
+                              ? "bg-primary text-primary-foreground shadow-xs"
+                              : "bg-card border border-border text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          {isSelected ? "✓ " : "+ "}
+                          {am}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <Input
+                    placeholder="Comma-separated amenities (e.g. Free WiFi, Infinity Pool, Breakfast)"
+                    value={newHotel.amenitiesInput}
+                    onChange={(e) => setNewHotel({ ...newHotel, amenitiesInput: e.target.value })}
+                    className="rounded-xl text-xs"
+                    required
+                  />
+                </div>
+
+                {/* Rich Multi-Paragraph Description */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                      <FaInfoCircle className="text-primary h-3 w-3" /> Detailed Description
+                    </label>
+                    <span className="text-[11px] text-muted-foreground">Separate paragraphs with Enter</span>
+                  </div>
+                  <Textarea
+                    rows={4}
+                    placeholder="Provide a comprehensive narrative about room comfort, sea/mountain view balconies, spa, infinity pool, breakfast, and stay policies..."
+                    value={newHotel.description}
+                    onChange={(e) => setNewHotel({ ...newHotel, description: e.target.value })}
+                    className="rounded-xl text-sm leading-relaxed"
+                    required
+                  />
+                </div>
+
+                {/* Cover Image */}
                 <ImageUploader
-                  label="Cover Photo Image"
+                  label="Cover Showcase Image"
                   folder="hotels"
                   value={newHotel.coverImage}
                   onChange={(url) => setNewHotel({ ...newHotel, coverImage: url })}
                   onRemove={() => setNewHotel({ ...newHotel, coverImage: "" })}
                 />
 
-                <div className="flex justify-end gap-2 pt-2">
-                  <Button type="button" variant="outline" onClick={() => setAddDialogOpen(false)}>
+                {/* Multiple Gallery Images */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <FaImages className="text-primary h-3.5 w-3.5" /> Additional Gallery Photo URLs
+                  </label>
+                  <Textarea
+                    rows={3}
+                    placeholder="Paste additional image URLs (one URL per line or separated by comma) for the interactive photo gallery..."
+                    value={newHotel.galleryImagesInput}
+                    onChange={(e) => setNewHotel({ ...newHotel, galleryImagesInput: e.target.value })}
+                    className="rounded-xl text-xs font-mono"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2 border-t border-border">
+                  <Button type="button" variant="outline" onClick={() => setAddDialogOpen(false)} className="rounded-xl">
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={submitting}>
-                    {submitting ? <FaSpinner className="animate-spin" /> : "Save Hotel"}
+                  <Button type="submit" disabled={submitting} className="rounded-xl">
+                    {submitting ? <FaSpinner className="animate-spin mr-2" /> : "Save & Publish Hotel"}
                   </Button>
                 </div>
               </form>
@@ -369,6 +490,11 @@ export default function AdminHotelsPage() {
                     </TableCell>
                     <TableCell>
                       <p className="font-medium text-foreground text-sm">{item.name}</p>
+                      {Array.isArray(item.images) && item.images.length > 1 && (
+                        <span className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                          <FaImages className="h-2.5 w-2.5" /> {item.images.length} photos
+                        </span>
+                      )}
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground">
                       <span className="flex items-center gap-1">
@@ -396,7 +522,7 @@ export default function AdminHotelsPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleOpenEdit(item)}
-                          className="h-8 w-8 p-0 text-primary hover:text-primary hover:bg-primary/10 rounded-lg"
+                          className="h-8 w-8 p-0 text-primary hover:text-primary hover:bg-primary/10 rounded-lg cursor-pointer"
                           title="Edit Hotel"
                         >
                           <FaEdit className="h-3.5 w-3.5" />
@@ -405,7 +531,7 @@ export default function AdminHotelsPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleDelete(item.id)}
-                          className="h-8 w-8 p-0 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-lg"
+                          className="h-8 w-8 p-0 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-lg cursor-pointer"
                           title="Delete Hotel"
                         >
                           <FaTrashAlt className="h-3.5 w-3.5" />
@@ -422,83 +548,137 @@ export default function AdminHotelsPage() {
         {/* Edit Dialog */}
         {editingHotel && (
           <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-            <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-card border-border">
               <DialogHeader>
-                <DialogTitle className="text-lg font-medium">Edit Hotel / Resort</DialogTitle>
+                <DialogTitle className="text-lg font-bold flex items-center gap-2">
+                  <FaEdit className="text-primary" /> Edit Hotel Property & Details
+                </DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleUpdate} className="space-y-4 pt-2">
-                <div>
-                  <label className="text-xs font-semibold">Hotel Name</label>
+
+              <form onSubmit={handleUpdate} className="space-y-5 pt-2">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-foreground">Hotel / Resort Name</label>
                   <Input
                     value={editingHotel.name}
                     onChange={(e) => setEditingHotel({ ...editingHotel, name: e.target.value })}
+                    className="rounded-xl"
                     required
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-semibold">Location</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-foreground">Location</label>
                     <Input
                       value={editingHotel.location}
                       onChange={(e) => setEditingHotel({ ...editingHotel, location: e.target.value })}
+                      className="rounded-xl"
                       required
                     />
                   </div>
-                  <div>
-                    <label className="text-xs font-semibold">Price per Night (BDT ৳)</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-foreground">Price per Night (BDT ৳)</label>
                     <Input
                       type="number"
                       value={editingHotel.pricePerNight}
                       onChange={(e) => setEditingHotel({ ...editingHotel, pricePerNight: Number(e.target.value) })}
+                      className="rounded-xl font-semibold"
                       required
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-semibold">Contact Phone</label>
-                    <Input
-                      value={editingHotel.contactPhone}
-                      onChange={(e) => setEditingHotel({ ...editingHotel, contactPhone: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-semibold">Amenities (Comma Separated)</label>
-                    <Input
-                      value={editingHotel.amenitiesInput}
-                      onChange={(e) => setEditingHotel({ ...editingHotel, amenitiesInput: e.target.value })}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-xs font-semibold">Description</label>
-                  <Textarea
-                    rows={3}
-                    value={editingHotel.description}
-                    onChange={(e) => setEditingHotel({ ...editingHotel, description: e.target.value })}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-foreground">Contact Helpline Phone</label>
+                  <Input
+                    value={editingHotel.contactPhone}
+                    onChange={(e) => setEditingHotel({ ...editingHotel, contactPhone: e.target.value })}
+                    className="rounded-xl font-mono text-sm"
                     required
                   />
                 </div>
 
+                {/* Amenities with Quick Click Chips */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                      <FaListUl className="text-primary h-3 w-3" /> Amenities & Facilities
+                    </label>
+                    <span className="text-[11px] text-muted-foreground">Click tags to toggle</span>
+                  </div>
+
+                  <div className="flex flex-wrap gap-1.5 p-2.5 rounded-xl bg-secondary/40 border border-border">
+                    {POPULAR_AMENITIES.map((am) => {
+                      const isSelected = (editingHotel.amenitiesInput || "").includes(am);
+                      return (
+                        <button
+                          key={am}
+                          type="button"
+                          onClick={() => toggleAmenity(am, editingHotel.amenitiesInput, (val) => setEditingHotel({ ...editingHotel, amenitiesInput: val }))}
+                          className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+                            isSelected
+                              ? "bg-primary text-primary-foreground shadow-xs"
+                              : "bg-card border border-border text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          {isSelected ? "✓ " : "+ "}
+                          {am}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <Input
+                    value={editingHotel.amenitiesInput}
+                    onChange={(e) => setEditingHotel({ ...editingHotel, amenitiesInput: e.target.value })}
+                    className="rounded-xl text-xs"
+                    required
+                  />
+                </div>
+
+                {/* Description */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <FaInfoCircle className="text-primary h-3 w-3" /> Detailed Narrative Description
+                  </label>
+                  <Textarea
+                    rows={4}
+                    value={editingHotel.description}
+                    onChange={(e) => setEditingHotel({ ...editingHotel, description: e.target.value })}
+                    className="rounded-xl text-sm leading-relaxed"
+                    required
+                  />
+                </div>
+
+                {/* Cover Photo */}
                 <ImageUploader
-                  label="Cover Photo Image"
+                  label="Cover Showcase Image"
                   folder="hotels"
                   value={editingHotel.coverImage}
                   onChange={(url) => setEditingHotel({ ...editingHotel, coverImage: url })}
                   onRemove={() => setEditingHotel({ ...editingHotel, coverImage: "" })}
                 />
 
-                <div className="flex justify-end gap-2 pt-2">
-                  <Button type="button" variant="outline" onClick={() => setEditDialogOpen(false)}>
+                {/* Multiple Gallery Images */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <FaImages className="text-primary h-3.5 w-3.5" /> Additional Gallery Photo URLs
+                  </label>
+                  <Textarea
+                    rows={3}
+                    placeholder="Paste additional image URLs (one per line) for the photo gallery..."
+                    value={editingHotel.galleryImagesInput}
+                    onChange={(e) => setEditingHotel({ ...editingHotel, galleryImagesInput: e.target.value })}
+                    className="rounded-xl text-xs font-mono"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2 border-t border-border">
+                  <Button type="button" variant="outline" onClick={() => setEditDialogOpen(false)} className="rounded-xl">
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={submitting}>
-                    {submitting ? <FaSpinner className="animate-spin" /> : "Save Changes"}
+                  <Button type="submit" disabled={submitting} className="rounded-xl">
+                    {submitting ? <FaSpinner className="animate-spin mr-2" /> : "Save Changes"}
                   </Button>
                 </div>
               </form>

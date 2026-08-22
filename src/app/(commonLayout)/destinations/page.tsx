@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Container from "@/components/shared/Container";
@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useSearchParams } from "next/navigation";
 import { ReservationModal } from "@/components/shared/ReservationModal";
 import { useGetDestinationsQuery } from "@/redux/features/destination/destinationApi";
 import {
@@ -23,15 +24,31 @@ import {
   FaSpinner,
 } from "react-icons/fa";
 
-export default function DestinationsListingPage() {
-  const [searchTerm, setSearchTerm] = useState("");
+function DestinationsContent() {
+
+  const searchParams = useSearchParams();
+  const initialSearch = searchParams?.get("searchTerm") || "";
+  const initialCategory = searchParams?.get("category") || "ALL";
+
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [districtFilter, setDistrictFilter] = useState("ALL");
-  const [categoryFilter, setCategoryFilter] = useState("ALL");
+  const [categoryFilter, setCategoryFilter] = useState(initialCategory);
   const [sortBy, setSortBy] = useState("POPULAR");
+
+  // Sync state if URL searchParams change
+  React.useEffect(() => {
+    if (searchParams) {
+      const q = searchParams.get("searchTerm");
+      const cat = searchParams.get("category");
+      if (q !== null && q !== undefined) setSearchTerm(q);
+      if (cat) setCategoryFilter(cat.toUpperCase());
+    }
+  }, [searchParams]);
 
   // Reservation Modal State
   const [resModalOpen, setResModalOpen] = useState(false);
   const [selectedDest, setSelectedDest] = useState<any>(null);
+
 
   const queryParams: Record<string, string> = {};
   if (districtFilter && districtFilter !== "ALL") queryParams.district = districtFilter;
@@ -68,20 +85,40 @@ export default function DestinationsListingPage() {
   });
 
   return (
-    <div className="py-12 sm:py-16">
-      <Container className="space-y-9">
-        {/* Page header */}
-        <div className="max-w-xl space-y-4">
-          <p className="eyebrow">Explore Bangladesh</p>
-          <h1 className="heading">Places worth the journey</h1>
-          <p className="text-lg leading-relaxed text-muted-foreground">
-            Sea beaches, heritage sites, tea gardens and hill tracks — handpicked and rated by
-            travellers.
-          </p>
-        </div>
+    <div className="min-h-screen">
+      {/* 1. Full-Width Hero Section with Background Image */}
+      <section className="relative h-[300px] sm:h-[380px] flex items-center justify-center overflow-hidden border-b border-border" data-aos="fade-up">
+        <Image
+          src="/images/bg-travel.jpg"
+          alt="Explore Bangladesh Destinations"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        {/* Dark gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-950/65 to-stone-950/45 backdrop-blur-[0.5px]" />
 
-        {/* Filters */}
-        <div className="surface space-y-4 p-4 sm:p-5">
+        <Container className="relative z-10 text-center max-w-3xl space-y-3.5" data-aos="fade-up">
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-white text-xs font-semibold shadow-xs">
+            <FaCompass className="text-primary h-3.5 w-3.5" />
+            Discover 64 Districts of Bangladesh
+          </span>
+          <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-white drop-shadow-md">
+            Places Worth The Journey
+          </h1>
+          <p className="text-sm sm:text-base text-white/85 max-w-2xl mx-auto leading-relaxed drop-shadow-xs">
+            Sea beaches, archaeological heritage sites, rolling tea gardens and misty hill tracks — handpicked, verified and rated by travellers.
+          </p>
+        </Container>
+      </section>
+
+      {/* 2. Main Content & Listings */}
+      <div className="py-8 sm:py-12">
+        <Container className="space-y-8">
+          {/* Filters */}
+          <div className="surface space-y-4 p-4 sm:p-5 shadow-xs" data-aos="fade-up" data-aos-delay="100">
+
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div className="relative">
               <FaSearch className="absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
@@ -153,11 +190,30 @@ export default function DestinationsListingPage() {
 
         {/* Results */}
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-24 text-muted-foreground">
-            <FaSpinner className="h-6 w-6 animate-spin" />
-            <p className="text-sm">Loading destinations…</p>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="surface overflow-hidden rounded-2xl animate-pulse bg-card border border-border"
+              >
+                <div className="aspect-[4/3] w-full bg-muted" />
+                <div className="p-5 space-y-3">
+                  <div className="h-5 w-3/4 bg-muted rounded-md" />
+                  <div className="h-3.5 w-1/2 bg-muted rounded-md" />
+                  <div className="h-3.5 w-full bg-muted rounded-md" />
+                  <div className="pt-4 flex items-center justify-between border-t border-border/60">
+                    <div className="h-5 w-24 bg-muted rounded-md" />
+                    <div className="flex gap-2">
+                      <div className="h-8 w-16 bg-muted rounded-xl" />
+                      <div className="h-8 w-16 bg-muted rounded-xl" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : sortedDestinations.length === 0 ? (
+
           <div className="space-y-4 rounded-2xl border border-dashed border-border py-24 text-center">
             <FaCompass className="mx-auto h-10 w-10 text-muted-foreground/30" />
             <div className="space-y-1.5">
@@ -281,6 +337,22 @@ export default function DestinationsListingPage() {
           />
         )}
       </Container>
+      </div>
     </div>
   );
 }
+
+export default function DestinationsListingPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center py-24 text-muted-foreground">
+          <FaSpinner className="h-6 w-6 animate-spin text-primary" />
+        </div>
+      }
+    >
+      <DestinationsContent />
+    </Suspense>
+  );
+}
+

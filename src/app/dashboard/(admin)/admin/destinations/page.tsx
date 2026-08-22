@@ -39,6 +39,8 @@ import {
   FaMapMarkerAlt,
   FaCoins,
   FaLayerGroup,
+  FaImages,
+  FaInfoCircle,
 } from "react-icons/fa";
 
 export default function AdminDestinationsPage() {
@@ -64,7 +66,9 @@ export default function AdminDestinationsPage() {
     district: "",
     category: "Beach",
     coverImage: "",
+    galleryImagesInput: "",
     price: 1500,
+    isFeatured: true,
   });
 
   // Edit Dialog State
@@ -78,14 +82,29 @@ export default function AdminDestinationsPage() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newDest.coverImage) return toast.error("Please upload a cover image!");
+    if (!newDest.coverImage) return toast.error("Please provide or upload a cover image!");
     setSubmitting(true);
     const toastId = toast.loading("Creating destination...");
     try {
+      const extraImages = newDest.galleryImagesInput
+        .split(/[\n,]+/)
+        .map((url) => url.trim())
+        .filter(Boolean);
+
+      const allImages = Array.from(new Set([newDest.coverImage, ...extraImages]));
+
       await createDestination({
-        ...newDest,
+        title: newDest.title,
+        description: newDest.description,
+        location: newDest.location,
+        district: newDest.district,
+        category: newDest.category,
+        coverImage: newDest.coverImage,
+        images: allImages,
         price: Number(newDest.price),
+        isFeatured: Boolean(newDest.isFeatured),
       }).unwrap();
+
       toast.success("Destination created successfully!", { id: toastId });
       setAddDialogOpen(false);
       setNewDest({
@@ -95,7 +114,9 @@ export default function AdminDestinationsPage() {
         district: "",
         category: "Beach",
         coverImage: "",
+        galleryImagesInput: "",
         price: 1500,
+        isFeatured: true,
       });
     } catch (err: unknown) {
       toast.error(errorMessage(err, "Failed to create destination"), { id: toastId });
@@ -105,6 +126,9 @@ export default function AdminDestinationsPage() {
   };
 
   const handleOpenEdit = (item: any) => {
+    const imagesList = Array.isArray(item.images) ? item.images : [];
+    const extraImages = imagesList.filter((img: string) => img !== item.coverImage);
+
     setEditingDest({
       id: item.id,
       title: item.title,
@@ -113,7 +137,9 @@ export default function AdminDestinationsPage() {
       district: item.district,
       category: item.category,
       coverImage: item.coverImage,
+      galleryImagesInput: extraImages.join("\n"),
       price: item.price || 1500,
+      isFeatured: Boolean(item.isFeatured),
     });
     setEditDialogOpen(true);
   };
@@ -124,11 +150,26 @@ export default function AdminDestinationsPage() {
     setSubmitting(true);
     const toastId = toast.loading("Updating destination...");
     try {
+      const extraImages = editingDest.galleryImagesInput
+        .split(/[\n,]+/)
+        .map((url: string) => url.trim())
+        .filter(Boolean);
+
+      const allImages = Array.from(new Set([editingDest.coverImage, ...extraImages]));
+
       await updateDestination({
         id: editingDest.id,
-        ...editingDest,
+        title: editingDest.title,
+        description: editingDest.description,
+        location: editingDest.location,
+        district: editingDest.district,
+        category: editingDest.category,
+        coverImage: editingDest.coverImage,
+        images: allImages,
         price: Number(editingDest.price),
+        isFeatured: Boolean(editingDest.isFeatured),
       }).unwrap();
+
       toast.success("Destination updated successfully!", { id: toastId });
       setEditDialogOpen(false);
       setEditingDest(null);
@@ -172,98 +213,141 @@ export default function AdminDestinationsPage() {
           <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
             <DialogTrigger
               render={
-                <Button className="gap-2 shrink-0">
+                <Button className="gap-2 shrink-0 rounded-xl">
                   <FaPlus className="h-3.5 w-3.5" /> Add New Destination
                 </Button>
               }
             />
-            <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-card border-border">
               <DialogHeader>
-                <DialogTitle className="text-lg font-medium">Add New Tourist Destination</DialogTitle>
+                <DialogTitle className="text-lg font-bold flex items-center gap-2">
+                  <FaCompass className="text-primary" /> Add New Tourist Destination
+                </DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleCreate} className="space-y-4 pt-2">
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold">Destination Title</label>
+
+              <form onSubmit={handleCreate} className="space-y-5 pt-2">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-foreground">Destination Title</label>
                   <Input
                     placeholder="e.g. Cox's Bazar Sea Beach"
                     value={newDest.title}
                     onChange={(e) => setNewDest({ ...newDest, title: e.target.value })}
+                    className="rounded-xl"
                     required
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-semibold">District</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-foreground">District</label>
                     <Input
-                      placeholder="Cox's Bazar"
+                      placeholder="e.g. Cox's Bazar, Bandarban, Sylhet"
                       value={newDest.district}
                       onChange={(e) => setNewDest({ ...newDest, district: e.target.value })}
+                      className="rounded-xl"
                       required
                     />
                   </div>
-                  <div>
-                    <label className="text-xs font-semibold">Location / Address</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-foreground">Location / Full Address</label>
                     <Input
-                      placeholder="Chittagong Division"
+                      placeholder="e.g. Chittagong Division"
                       value={newDest.location}
                       onChange={(e) => setNewDest({ ...newDest, location: e.target.value })}
+                      className="rounded-xl"
                       required
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-semibold">Category</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-foreground">Category</label>
                     <select
                       value={newDest.category}
                       onChange={(e) => setNewDest({ ...newDest, category: e.target.value })}
-                      className="w-full h-10 rounded-md border bg-background px-3 text-sm focus:ring-2 focus:ring-primary"
+                      className="w-full h-10 rounded-xl border bg-background px-3 text-sm focus:ring-2 focus:ring-primary cursor-pointer"
                     >
-                      <option value="Beach">Beach</option>
-                      <option value="Mountain">Mountain</option>
-                      <option value="Historical">Historical</option>
-                      <option value="Eco-Tour">Eco-Tour</option>
-                      <option value="Waterfall">Waterfall</option>
-                      <option value="Resort">Resort</option>
+                      <option value="Beach">Beach & Coastal</option>
+                      <option value="Mountain">Mountain & Hills</option>
+                      <option value="Historical">Historical & Heritage</option>
+                      <option value="Eco-Tour">Eco-Tour & Forests</option>
+                      <option value="Waterfall">Waterfall & Springs</option>
+                      <option value="Resort">Resort & Leisure</option>
                     </select>
                   </div>
-                  <div>
-                    <label className="text-xs font-semibold">Package Price (BDT ৳)</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-foreground">Entry / Tour Price (BDT ৳)</label>
                     <Input
                       type="number"
                       value={newDest.price}
                       onChange={(e) => setNewDest({ ...newDest, price: Number(e.target.value) })}
+                      className="rounded-xl font-semibold"
                       required
                     />
                   </div>
                 </div>
 
-                <div>
-                  <label className="text-xs font-semibold">Description</label>
+                <div className="flex items-center gap-2 pt-1">
+                  <input
+                    type="checkbox"
+                    id="new-featured"
+                    checked={newDest.isFeatured}
+                    onChange={(e) => setNewDest({ ...newDest, isFeatured: e.target.checked })}
+                    className="h-4 w-4 rounded text-primary focus:ring-primary cursor-pointer"
+                  />
+                  <label htmlFor="new-featured" className="text-xs font-semibold text-foreground cursor-pointer">
+                    Feature on Homepage (Show in Featured Destinations carousel)
+                  </label>
+                </div>
+
+                {/* Description */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                      <FaInfoCircle className="text-primary h-3 w-3" /> Detailed Narrative Description
+                    </label>
+                    <span className="text-[11px] text-muted-foreground">Separate paragraphs with Enter</span>
+                  </div>
                   <Textarea
-                    rows={3}
+                    rows={4}
+                    placeholder="Describe geography, historical significance, top sights, travel tips, best season to visit..."
                     value={newDest.description}
                     onChange={(e) => setNewDest({ ...newDest, description: e.target.value })}
+                    className="rounded-xl text-sm leading-relaxed"
                     required
                   />
                 </div>
 
+                {/* Cover Image */}
                 <ImageUploader
-                  label="Cover Photo Image"
+                  label="Cover Showcase Image"
                   folder="destinations"
                   value={newDest.coverImage}
                   onChange={(url) => setNewDest({ ...newDest, coverImage: url })}
                   onRemove={() => setNewDest({ ...newDest, coverImage: "" })}
                 />
 
-                <div className="flex justify-end gap-2 pt-2">
-                  <Button type="button" variant="outline" onClick={() => setAddDialogOpen(false)}>
+                {/* Multiple Photos */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <FaImages className="text-primary h-3.5 w-3.5" /> Additional Gallery Photo URLs
+                  </label>
+                  <Textarea
+                    rows={3}
+                    placeholder="Paste scenic destination photo URLs (one URL per line or separated by comma)..."
+                    value={newDest.galleryImagesInput}
+                    onChange={(e) => setNewDest({ ...newDest, galleryImagesInput: e.target.value })}
+                    className="rounded-xl text-xs font-mono"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2 border-t border-border">
+                  <Button type="button" variant="outline" onClick={() => setAddDialogOpen(false)} className="rounded-xl">
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={submitting}>
-                    {submitting ? <FaSpinner className="animate-spin" /> : "Save Destination"}
+                  <Button type="submit" disabled={submitting} className="rounded-xl">
+                    {submitting ? <FaSpinner className="animate-spin mr-2" /> : "Save & Publish Destination"}
                   </Button>
                 </div>
               </form>
@@ -362,6 +446,11 @@ export default function AdminDestinationsPage() {
                     </TableCell>
                     <TableCell>
                       <p className="font-medium text-foreground text-sm">{item.title}</p>
+                      {Array.isArray(item.images) && item.images.length > 1 && (
+                        <span className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                          <FaImages className="h-2.5 w-2.5" /> {item.images.length} photos
+                        </span>
+                      )}
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground">
                       <span className="flex items-center gap-1">
@@ -388,7 +477,7 @@ export default function AdminDestinationsPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleOpenEdit(item)}
-                          className="h-8 w-8 p-0 text-primary hover:text-primary hover:bg-primary/10 rounded-lg"
+                          className="h-8 w-8 p-0 text-primary hover:text-primary hover:bg-primary/10 rounded-lg cursor-pointer"
                           title="Edit Destination"
                         >
                           <FaEdit className="h-3.5 w-3.5" />
@@ -397,7 +486,7 @@ export default function AdminDestinationsPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleDelete(item.id)}
-                          className="h-8 w-8 p-0 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-lg"
+                          className="h-8 w-8 p-0 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-lg cursor-pointer"
                           title="Delete Destination"
                         >
                           <FaTrashAlt className="h-3.5 w-3.5" />
@@ -414,90 +503,129 @@ export default function AdminDestinationsPage() {
         {/* Edit Dialog */}
         {editingDest && (
           <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-            <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-card border-border">
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-card border-border">
               <DialogHeader>
-                <DialogTitle className="text-lg font-medium">Edit Destination</DialogTitle>
+                <DialogTitle className="text-lg font-bold flex items-center gap-2">
+                  <FaEdit className="text-primary" /> Edit Destination Details
+                </DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleUpdate} className="space-y-4 pt-2">
-                <div>
-                  <label className="text-xs font-semibold">Title</label>
+
+              <form onSubmit={handleUpdate} className="space-y-5 pt-2">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-foreground">Title</label>
                   <Input
                     value={editingDest.title}
                     onChange={(e) => setEditingDest({ ...editingDest, title: e.target.value })}
+                    className="rounded-xl"
                     required
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-semibold">District</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-foreground">District</label>
                     <Input
                       value={editingDest.district}
                       onChange={(e) => setEditingDest({ ...editingDest, district: e.target.value })}
+                      className="rounded-xl"
                       required
                     />
                   </div>
-                  <div>
-                    <label className="text-xs font-semibold">Location</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-foreground">Location / Address</label>
                     <Input
                       value={editingDest.location}
                       onChange={(e) => setEditingDest({ ...editingDest, location: e.target.value })}
+                      className="rounded-xl"
                       required
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-semibold">Category</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-foreground">Category</label>
                     <select
                       value={editingDest.category}
                       onChange={(e) => setEditingDest({ ...editingDest, category: e.target.value })}
-                      className="w-full h-10 rounded-md border bg-background px-3 text-sm"
+                      className="w-full h-10 rounded-xl border bg-background px-3 text-sm cursor-pointer"
                     >
-                      <option value="Beach">Beach</option>
-                      <option value="Mountain">Mountain</option>
-                      <option value="Historical">Historical</option>
-                      <option value="Eco-Tour">Eco-Tour</option>
-                      <option value="Waterfall">Waterfall</option>
-                      <option value="Resort">Resort</option>
+                      <option value="Beach">Beach & Coastal</option>
+                      <option value="Mountain">Mountain & Hills</option>
+                      <option value="Historical">Historical & Heritage</option>
+                      <option value="Eco-Tour">Eco-Tour & Forests</option>
+                      <option value="Waterfall">Waterfall & Springs</option>
+                      <option value="Resort">Resort & Leisure</option>
                     </select>
                   </div>
-                  <div>
-                    <label className="text-xs font-semibold">Price (BDT ৳)</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-foreground">Price (BDT ৳)</label>
                     <Input
                       type="number"
                       value={editingDest.price}
                       onChange={(e) => setEditingDest({ ...editingDest, price: Number(e.target.value) })}
+                      className="rounded-xl font-semibold"
                       required
                     />
                   </div>
                 </div>
 
-                <div>
-                  <label className="text-xs font-semibold">Description</label>
+                <div className="flex items-center gap-2 pt-1">
+                  <input
+                    type="checkbox"
+                    id="edit-featured"
+                    checked={editingDest.isFeatured}
+                    onChange={(e) => setEditingDest({ ...editingDest, isFeatured: e.target.checked })}
+                    className="h-4 w-4 rounded text-primary focus:ring-primary cursor-pointer"
+                  />
+                  <label htmlFor="edit-featured" className="text-xs font-semibold text-foreground cursor-pointer">
+                    Feature on Homepage
+                  </label>
+                </div>
+
+                {/* Description */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <FaInfoCircle className="text-primary h-3 w-3" /> Detailed Description
+                  </label>
                   <Textarea
-                    rows={3}
+                    rows={4}
                     value={editingDest.description}
                     onChange={(e) => setEditingDest({ ...editingDest, description: e.target.value })}
+                    className="rounded-xl text-sm leading-relaxed"
                     required
                   />
                 </div>
 
+                {/* Cover Image */}
                 <ImageUploader
-                  label="Cover Photo Image"
+                  label="Cover Showcase Image"
                   folder="destinations"
                   value={editingDest.coverImage}
                   onChange={(url) => setEditingDest({ ...editingDest, coverImage: url })}
                   onRemove={() => setEditingDest({ ...editingDest, coverImage: "" })}
                 />
 
-                <div className="flex justify-end gap-2 pt-2">
-                  <Button type="button" variant="outline" onClick={() => setEditDialogOpen(false)}>
+                {/* Multiple Gallery Photos */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <FaImages className="text-primary h-3.5 w-3.5" /> Additional Gallery Photo URLs
+                  </label>
+                  <Textarea
+                    rows={3}
+                    placeholder="Paste additional image URLs (one per line)..."
+                    value={editingDest.galleryImagesInput}
+                    onChange={(e) => setEditingDest({ ...editingDest, galleryImagesInput: e.target.value })}
+                    className="rounded-xl text-xs font-mono"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2 border-t border-border">
+                  <Button type="button" variant="outline" onClick={() => setEditDialogOpen(false)} className="rounded-xl">
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={submitting}>
-                    {submitting ? <FaSpinner className="animate-spin" /> : "Save Changes"}
+                  <Button type="submit" disabled={submitting} className="rounded-xl">
+                    {submitting ? <FaSpinner className="animate-spin mr-2" /> : "Save Changes"}
                   </Button>
                 </div>
               </form>

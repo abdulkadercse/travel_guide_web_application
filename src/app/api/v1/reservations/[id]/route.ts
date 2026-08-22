@@ -23,3 +23,23 @@ export async function PATCH(
     return sendError(error);
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    verifyAuth(req, ["ADMIN", "SUPER_ADMIN"]);
+    const result = await reservationService.deleteReservationDB(id);
+
+    return sendResponse({
+      statusCode: 200,
+      message: "Reservation deleted successfully",
+      data: result,
+    });
+  } catch (error) {
+    return sendError(error);
+  }
+}
+

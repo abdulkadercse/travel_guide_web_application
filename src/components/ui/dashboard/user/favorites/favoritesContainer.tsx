@@ -2,11 +2,13 @@
 
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { StatTile } from "@/components/ui/dashboard";
 import { FavoritesCard, FavoriteItem } from "./favoritesCard";
 import { LocationFilter } from "./locationFilter";
+import { DeleteMessage } from "@/components/shared/DeleteMessage";
 import {
   useGetFavoritesQuery,
   useRemoveFavoriteMutation,
@@ -22,6 +24,7 @@ import {
   FaStar,
   FaTriangleExclamation,
 } from "react-icons/fa6";
+
 
 /** Card-shaped placeholder, so the grid does not jump once the data lands. */
 function CardSkeleton() {
@@ -80,6 +83,11 @@ export function FavoritesContainer() {
   );
   const [removeFavorite] = useRemoveFavoriteMutation();
 
+  // Delete Modal State
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [favoriteToDelete, setFavoriteToDelete] = useState<FavoriteItem | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const favorites: FavoriteItem[] = useMemo(() => {
     return favoritesResponse?.data ?? [];
   }, [favoritesResponse]);
@@ -126,17 +134,32 @@ export function FavoritesContainer() {
     setSortBy("recent");
   };
 
-  const handleRemove = async (destinationId: string) => {
+  const handleRequestDelete = (item: FavoriteItem) => {
+    setFavoriteToDelete(item);
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!favoriteToDelete) return;
+    const destId = favoriteToDelete.destinationId || favoriteToDelete.destination?.id;
+    if (!destId) return;
+
+    setIsDeleting(true);
     try {
-      await removeFavorite(destinationId).unwrap();
-      toast.success("Removed from favorites");
+      await removeFavorite(destId).unwrap();
+      toast.success("Removed from saved favorites");
+      setDeleteModalOpen(false);
+      setFavoriteToDelete(null);
     } catch (err: unknown) {
       const msg =
         (err as { data?: { message?: string } })?.data?.message ||
         "Failed to remove favorite";
       toast.error(msg);
+    } finally {
+      setIsDeleting(false);
     }
   };
+
 
   // Filter and sort favorites
   const filteredFavorites = useMemo(() => {
@@ -330,15 +353,68 @@ export function FavoritesContainer() {
                 <FavoritesCard
                   key={fav.id || fav.destinationId}
                   favorite={fav}
-                  onRemove={handleRemove}
+                  onRequestDelete={handleRequestDelete}
                 />
               ))}
             </div>
           )}
         </section>
       )}
+
+      {/* Delete Confirmation Modal */}
+      {favoriteToDelete && (
+        <DeleteMessage
+          isOpen={deleteModalOpen}
+          onClose={() => {
+            if (!isDeleting) {
+              setDeleteModalOpen(false);
+              setFavoriteToDelete(null);
+            }
+          }}
+          onConfirm={handleConfirmDelete}
+          isLoading={isDeleting}
+          title="Remove from Saved Favorites"
+          itemName={favoriteToDelete.destination?.title || "this destination"}
+          description="Are you sure you want to remove this place from your saved list?"
+          confirmText="Yes, Remove"
+          cancelText="Keep"
+        >
+          {favoriteToDelete.destination && (
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-secondary/50 border border-border mt-2">
+              <div className="relative h-12 w-12 rounded-lg overflow-hidden shrink-0 bg-muted">
+                <Image
+                  src={
+                    favoriteToDelete.destination.coverImage ||
+                    favoriteToDelete.destination.images?.[0] ||
+                    "/images/bg-travel.jpg"
+                  }
+                  alt={favoriteToDelete.destination.title}
+                  fill
+                  sizes="48px"
+                  className="object-cover"
+                />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="font-semibold text-sm truncate text-foreground">
+                  {favoriteToDelete.destination.title}
+                </p>
+                <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                  <FaLocationDot className="h-2.5 w-2.5 text-primary shrink-0" />
+                  <span className="truncate">
+                    {favoriteToDelete.destination.location}
+                    {favoriteToDelete.destination.district
+                      ? `, ${favoriteToDelete.destination.district}`
+                      : ""}
+                  </span>
+                </p>
+              </div>
+            </div>
+          )}
+        </DeleteMessage>
+      )}
     </div>
   );
 }
+
 
 export default FavoritesContainer;

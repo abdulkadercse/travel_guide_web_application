@@ -4,7 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/shared/ThemeProvider";
 import { Toaster } from "react-hot-toast";
 import ReduxProvider from "@/lib/providers/ReduxProvider";
-import { Footer, Navbar } from "@/components/shared";
+import { Footer, Navbar, AOSProvider } from "@/components/shared";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,10 +20,14 @@ export const metadata: Metadata = {
   title: "Travla BD - Explore Bangladesh",
   description: "Discover Cox's Bazar, Paharpur, Bandarban, and Sylhet with Travla BD",
   icons: {
-    icon: "/favicon.jpg",
-    shortcut: "/favicon.jpg",
-    apple: "/favicon.jpg",
+    icon: [
+      { url: "/icon" },
+      { url: "/favicon.ico" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-icon",
   },
+
 };
 
 export default function RootLayout({
@@ -43,11 +47,14 @@ export default function RootLayout({
       >
         <ReduxProvider>
           <ThemeProvider attribute="class" defaultTheme="light">
-            {children}
-            <Toaster position="top-center" reverseOrder={false} />
+            <AOSProvider>
+              {children}
+              <Toaster position="top-center" reverseOrder={false} />
+            </AOSProvider>
           </ThemeProvider>
         </ReduxProvider>
       </body>
     </html>
   );
 }
+

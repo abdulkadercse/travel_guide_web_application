@@ -26,11 +26,19 @@ export async function GET(req: NextRequest) {
 
     const result = await hotelService.getAllHotelsDB(filters);
 
-    return sendResponse({
-      statusCode: 200,
-      message: "Hotels fetched successfully",
-      data: result,
-    });
+    return sendResponse(
+      {
+        statusCode: 200,
+        message: "Hotels fetched successfully",
+        data: result,
+      },
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+        },
+      }
+    );
+
   } catch (error) {
     return sendError(error);
   }

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logout, selectCurrentUser, selectCurrentToken } from "@/redux/features/auth/authSlice";
+import { useGetFavoritesQuery } from "@/redux/features/favorite/favoriteApi";
 import {
   FaCompass,
   FaSun,
@@ -18,6 +19,7 @@ import {
   FaTimes,
   FaSignOutAlt,
   FaChevronDown,
+  FaHeart,
 } from "react-icons/fa";
 
 export function Navbar() {
@@ -30,6 +32,9 @@ export function Navbar() {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const { data: favoritesResponse } = useGetFavoritesQuery(undefined, { skip: !user });
+  const favoriteCount = Array.isArray(favoritesResponse?.data) ? favoritesResponse.data.length : 0;
 
   useEffect(() => {
     setMounted(true);
@@ -106,11 +111,30 @@ export function Navbar() {
 
           {/* Actions */}
           <div className="flex items-center gap-1.5">
+            {/* Favorites Icon Button (before Dark Mode) */}
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              asChild
+              className="relative rounded-full text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
+              title="Saved Favorites"
+            >
+              <Link href="/dashboard/favorites" aria-label="Saved Favorites">
+                <FaHeart className="h-3.5 w-3.5 text-rose-500/80 hover:text-rose-500 transition-colors" />
+                {mounted && favoriteCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white shadow-xs">
+                    {favoriteCount > 9 ? "9+" : favoriteCount}
+                  </span>
+                )}
+              </Link>
+            </Button>
+
+            {/* Dark Mode Toggle */}
             <Button
               variant="ghost"
               size="icon-sm"
               onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-              className="rounded-full text-muted-foreground"
+              className="rounded-full text-muted-foreground cursor-pointer"
               aria-label={
                 mounted && resolvedTheme === "dark"
                   ? "Switch to light theme"
@@ -152,7 +176,7 @@ export function Navbar() {
                       </span>
                     </div>
 
-                    <div className="p-1.5">
+                    <div className="p-1.5 space-y-0.5">
                       <Link
                         href={dashboardHref}
                         onClick={() => setUserDropdownOpen(false)}
@@ -160,14 +184,28 @@ export function Navbar() {
                       >
                         Dashboard
                       </Link>
+                      <Link
+                        href="/dashboard/favorites"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-sm transition-colors hover:bg-accent"
+                      >
+                        <FaHeart className="h-3.5 w-3.5 text-rose-500" />
+                        Saved Favorites
+                        {favoriteCount > 0 && (
+                          <span className="ml-auto rounded-full bg-rose-500/15 text-rose-500 text-[10px] font-bold px-1.5 py-0.5">
+                            {favoriteCount}
+                          </span>
+                        )}
+                      </Link>
                       <button
                         onClick={handleLogout}
-                        className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-destructive transition-colors hover:bg-destructive/10"
+                        className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-destructive transition-colors hover:bg-destructive/10 cursor-pointer"
                       >
                         <FaSignOutAlt className="h-3.5 w-3.5" />
                         Sign out
                       </button>
                     </div>
+
                   </div>
                 )}
               </div>

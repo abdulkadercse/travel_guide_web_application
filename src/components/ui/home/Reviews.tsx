@@ -128,14 +128,15 @@ export function Reviews() {
   }, [api]);
 
   return (
-    <section id="reviews" className="section bg-gradient-to-b from-transparent via-primary/5 to-transparent">
+    <section id="reviews" className="section bg-gradient-to-b from-transparent via-primary/5 to-transparent" data-aos="fade-up">
       <Container className="space-y-10">
         {/* Header with Title and Nav Buttons */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between" data-aos="fade-up">
           <div className="max-w-xl space-y-2">
             <p className="eyebrow">Traveller stories</p>
             <h2 className="heading">What people say after the trip</h2>
           </div>
+
 
           {/* Navigation controls */}
           <div className="flex items-center gap-3">

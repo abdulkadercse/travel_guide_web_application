@@ -5,7 +5,11 @@ import { ICreateReviewInput, IReviewFilter } from "./review.interface";
 
 const reviewAuthor = {
   user: { select: { id: true, name: true, avatar: true } },
+  destination: { select: { id: true, title: true } },
+  hotel: { select: { id: true, name: true } },
+  restaurant: { select: { id: true, name: true } },
 } satisfies Prisma.ReviewInclude;
+
 
 const getReviewsDB = async (filters: IReviewFilter) => {
   const whereClause: Prisma.ReviewWhereInput = {};

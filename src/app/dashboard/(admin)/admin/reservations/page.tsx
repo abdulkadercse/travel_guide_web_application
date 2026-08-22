@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
-import { ProtectedRoute } from "@/components/shared";
+import { ProtectedRoute, DeleteMessage } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -17,6 +17,7 @@ import {
 import {
   useGetReservationsQuery,
   useUpdateReservationStatusMutation,
+  useDeleteReservationMutation,
 } from "@/redux/features/reservation/reservationApi";
 import {
   FaCalendarCheck,
@@ -28,19 +29,23 @@ import {
   FaHotel,
   FaUtensils,
   FaGlobe,
-  FaUsers,
   FaCoins,
+  FaTrashAlt,
 } from "react-icons/fa";
+
 
 export default function AdminReservationsPage() {
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<any | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const { data: resResponse, isLoading } = useGetReservationsQuery({
     status: statusFilter !== "ALL" ? statusFilter : undefined,
   });
 
   const [updateReservationStatus] = useUpdateReservationStatusMutation();
+  const [deleteReservation] = useDeleteReservationMutation();
 
   const allReservations: any[] = Array.isArray(resResponse?.data)
     ? resResponse.data
@@ -65,6 +70,22 @@ export default function AdminReservationsPage() {
     } catch (err: unknown) {
       const msg = (err as { data?: { message?: string } })?.data?.message || "Failed to update reservation";
       toast.error(msg, { id: toastId });
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget?.id) return;
+    setIsDeleting(true);
+    const toastId = toast.loading("Deleting reservation...");
+    try {
+      await deleteReservation(deleteTarget.id).unwrap();
+      toast.success("Reservation deleted successfully!", { id: toastId });
+      setDeleteTarget(null);
+    } catch (err: unknown) {
+      const msg = (err as { data?: { message?: string } })?.data?.message || "Failed to delete reservation";
+      toast.error(msg, { id: toastId });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -264,7 +285,7 @@ export default function AdminReservationsPage() {
                             </>
                           )}
                           {item.status === "CONFIRMED" && (
-                            <div className="flex items-center gap-1.5">
+                            <>
                               <Button
                                 size="sm"
                                 variant="outline"
@@ -282,7 +303,7 @@ export default function AdminReservationsPage() {
                               >
                                 Cancel
                               </Button>
-                            </div>
+                            </>
                           )}
                           {item.status === "CANCELLED" && (
                             <Button
@@ -294,6 +315,15 @@ export default function AdminReservationsPage() {
                               Re-Accept
                             </Button>
                           )}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setDeleteTarget(item)}
+                            className="h-8 w-8 p-0 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-lg cursor-pointer"
+                            title="Delete Reservation"
+                          >
+                            <FaTrashAlt className="h-3.5 w-3.5" />
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -303,7 +333,64 @@ export default function AdminReservationsPage() {
             </Table>
           )}
         </div>
+
+        {/* Delete Confirmation Modal using Shared DeleteMessage Component */}
+        <DeleteMessage
+          isOpen={!!deleteTarget}
+          onClose={() => setDeleteTarget(null)}
+          onConfirm={handleConfirmDelete}
+          isLoading={isDeleting}
+          title="Delete Reservation"
+          description="This action is permanent and cannot be undone."
+          itemName={
+            deleteTarget?.user?.name
+              ? `the reservation for ${deleteTarget.user.name}`
+              : "this reservation"
+          }
+        >
+          {deleteTarget && (
+            <div className="p-3 rounded-xl bg-muted/40 border border-border/80 space-y-2 mt-2">
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">Booking Item:</span>
+                <span className="font-medium text-foreground">
+                  {deleteTarget.hotel?.name ||
+                    deleteTarget.restaurant?.name ||
+                    deleteTarget.destination?.title ||
+                    "Custom Service"}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">Customer Email:</span>
+                <span className="font-mono text-muted-foreground">
+                  {deleteTarget.user?.email || "N/A"}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">Dates:</span>
+                <span className="font-mono text-muted-foreground">
+                  {new Date(deleteTarget.startDate).toLocaleDateString()} -{" "}
+                  {new Date(deleteTarget.endDate).toLocaleDateString()}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">Total Cost:</span>
+                <span className="font-semibold text-emerald-400">
+                  ৳{(deleteTarget.totalCost || 0).toLocaleString()}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">Status:</span>
+                <span className="font-semibold text-foreground">
+                  {deleteTarget.status}
+                </span>
+              </div>
+            </div>
+          )}
+        </DeleteMessage>
       </div>
     </ProtectedRoute>
   );
 }
+
+
+

@@ -31,15 +31,16 @@ export function FAQSection() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="section">
+    <section id="faq" className="section" data-aos="fade-up">
       <Container className="max-w-3xl">
-        <div className="max-w-xl space-y-3">
+        <div className="max-w-xl space-y-3" data-aos="fade-up">
           <p className="eyebrow">Questions</p>
           <h2 className="heading">Before you book</h2>
         </div>
 
-        <dl className="mt-10 divide-y divide-border border-y border-border">
+        <dl className="mt-10 divide-y divide-border border-y border-border" data-aos="fade-up" data-aos-delay="100">
           {faqs.map((faq, idx) => {
+
             const isOpen = openFaq === idx;
             return (
               <div key={faq.question}>

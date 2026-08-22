@@ -12,3 +12,6 @@ export * from "./DatePicker";
 export * from "./ReservationModal";
 export * from "./AddToTripPlanModal";
 export * from "./DashboardTopControls";
+export * from "./DeleteMessage";
+export * from "./AOSProvider";
+
